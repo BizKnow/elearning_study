@@ -12,7 +12,7 @@ define('ADMIN_DIR', 'admins');//not ready
 define('UPLOAD','upload/');
 define('DEFAULT_USER_ICON','assets/media/avatars/300-1.jpg');
 
-// DB
+// DB 
 define('DB_DBDRIVER', 'mysqli');
 define('DB_HOSTNAME', 'localhost');
 define('DB_USERNAME', 'root');
