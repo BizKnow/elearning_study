@@ -20,12 +20,6 @@ define('DB_PASSWORD', '');
 define('DB_DATABASE', 'elearn');
 define('DB_DBPREFIX', 'arya_');
 
-define('RAZORPAY_KEY_ID','rzp_live_ABhCNofHHvwLt6');
-define('RAZORPAY_KEY_SECRET','aR67HmwLcsCpDbj54vYDBr1O');
-// define('RAZORPAY_KEY_ID','');
-// define('RAZORPAY_KEY_SECRET','');
-define('isDemo',false);
-define('CALENDARIFIC_API_KEY','fnj8MYhSPZBicNFK1AXve7n0KW2Sz1Gq');
 /*
 
 {HDFC Bank Credit Card
