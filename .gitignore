@@ -11,4 +11,3 @@ modules/document/views
 asstes/formats
 modules/api/config/*
 test
-config_test.php
