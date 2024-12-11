@@ -24,7 +24,8 @@ function module_view_exists($module_name, $view_file)
     }
     return false;
 }
-function delete_first_level_directories($dir_path,$skip_items = ['acme',THEME]) {
+function delete_first_level_directories($dir_path, $skip_items = ['acme', THEME])
+{
     // Check if directory exists
     if (!is_dir($dir_path)) {
         return false;
@@ -134,7 +135,8 @@ if (!function_exists('humnize_duration_with_ordinal')) {
         return (ordinal_number($duration) . ' ' . ucfirst($duration_type));
     }
 }
-function humnize($number,$string){
+function humnize($number, $string)
+{
     return $number > 1 ? plural($string) : singular($string);
 }
 if (!function_exists('print_string')) {
@@ -212,13 +214,14 @@ function CHECK_PERMISSION($type)
     return defined($type) ? constant($type) === 'yes' : false;
 }
 
-function search_file($folder_path, $file_name) {
+function search_file($folder_path, $file_name)
+{
 
     $folder_path = rtrim($folder_path, '/') . '/';
 
     $files = scandir($folder_path);
 
-    $found_files = array_filter($files, function($file) use ($file_name) {
+    $found_files = array_filter($files, function ($file) use ($file_name) {
         return strpos($file, $file_name) !== false;
     });
 
@@ -441,7 +444,8 @@ function timeAgo($time)
     }
 }
 
-function getYouTubeId($url) {
+function getYouTubeId($url)
+{
     // Regular expression for YouTube URL
     $regex = '/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/';
 
@@ -453,7 +457,8 @@ function getYouTubeId($url) {
         return false; // Not a valid YouTube URL
     }
 }
-function getFirstCharacter($string) {
+function getFirstCharacter($string)
+{
     // Check if input is a string and not empty
     if (!is_string($string) || empty($string)) {
         return false; // Or handle the error as needed
@@ -461,4 +466,26 @@ function getFirstCharacter($string) {
 
     // Use mb_substr for multibyte safety
     return mb_substr($string, 0, 1, "UTF-8");
+}
+
+function calculate_course_days($duration_value, $duration_type)
+{
+    $total_days = 0;
+    switch ($duration_type) {
+        case 'years':
+        case 'year':
+            $total_days = $duration_value * 365;
+            break;
+        case 'months':
+        case 'month':
+            $total_days = $duration_value * 30;
+            break;
+        case 'semesters':
+        case 'semester':
+            $total_days = $duration_value * 182.5;
+            break;
+        default:
+            $total_days = 0;
+    }
+    return $total_days;
 }

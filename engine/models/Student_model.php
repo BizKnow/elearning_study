@@ -34,31 +34,31 @@ class Student_model extends MY_Model
                 state.*,
                 district.*'
         )
-        /*
-                c.course_name,
-                c.fees as course_fees,
-                c.id as course_id,
-                c.duration,
-                c.duration_type,
-                b.batch_name,
-                ce.institute_name as center_name,
-                ce.id as institute_id,
-                ce.center_full_address,
-                ce.center_number as center_code,
-                ce.signature as center_signature,
-                ce.state_id as center_state,
-                ce.city_id as center_city,
+            /*
+                    c.course_name,
+                    c.fees as course_fees,
+                    c.id as course_id,
+                    c.duration,
+                    c.duration_type,
+                    b.batch_name,
+                    ce.institute_name as center_name,
+                    ce.id as institute_id,
+                    ce.center_full_address,
+                    ce.center_number as center_code,
+                    ce.signature as center_signature,
+                    ce.state_id as center_state,
+                    ce.city_id as center_city,
 
-        */
+            */
             ->from('students as s')
             // ->where('s.status',1)
             // ->join("course as c", "s.course_id = c.id ", 'left')
             ->join('state', 'state.STATE_ID = s.state_id')
             ->join('district', 'district.DISTRICT_ID = s.city_id and district.STATE_ID = state.STATE_ID')
-            ;
-            // ->join('batch as b', "b.id = s.batch_id", 'left');
-        if(CHECK_PERMISSION('ADMISSION_WITH_SESSION'))
-            $this->db->select('s.session_id,ses.title as session')->join('session as ses','ses.id =  s.session_id','left');
+        ;
+        // ->join('batch as b', "b.id = s.batch_id", 'left');
+        if (CHECK_PERMISSION('ADMISSION_WITH_SESSION'))
+            $this->db->select('s.session_id,ses.title as session')->join('session as ses', 'ses.id =  s.session_id', 'left');
         if (!isset($without_admission_status))
             $this->db->where('s.admission_status', isset($admission_status) ? $admission_status : 1);
         // if (($this->isCenter() and $withCenter) or ($case == 'center' and isset($center_id)))
@@ -178,7 +178,7 @@ class Student_model extends MY_Model
                 // $this->db->join('student_certificates as sce', 'sce.student_id = s.id', 'left'); //AND sce.course_id = s.course_id
 
                 // $this->db->where('sce.student_id IS NULL');
-                if(isset($condition['session_id'])){
+                if (isset($condition['session_id'])) {
                     $this->db->where('s.session_id', $condition['session_id']);
                     unset($condition['session_id']);
                 }
@@ -355,8 +355,9 @@ class Student_model extends MY_Model
     {
         return $this->get_switch('roll_no', ['roll_no' => $rollNo]);
     }
-    function get_student_mobile($mobile){
-        return $this->get_switch('via_contact_number',['contact_number' => $mobile]);
+    function get_student_mobile($mobile)
+    {
+        return $this->get_switch('via_contact_number', ['contact_number' => $mobile]);
     }
     function get_student_via_id($id = 0)
     {
@@ -421,7 +422,7 @@ class Student_model extends MY_Model
             ->select('c.id as course_id,c.course_name,sm.*')
             ->from('study_material as sm')
             ->join('course as c', 'c.id = sm.course_id', 'left');
-            // ->join('centers as ce', 'ce.id = sm.center_id', 'left')
+        // ->join('centers as ce', 'ce.id = sm.center_id', 'left')
         // if ($this->isCenter())
         //     $this->db->where('ce.id', $this->loginId());
         return $this->db->get();
@@ -492,13 +493,78 @@ class Student_model extends MY_Model
     {
 
     }
-    function course(){
+    function course()
+    {
         return $this->db->get('course');
     }
-    function student_course($where){
-        return $this->db->get_where('student_courses',$where);
+    function student_course($where)
+    {
+        return $this->db->get_where('student_courses', $where);
     }
-    function add_student_course($data){
-        return $this->db->insert('student_courses',$data);
+    function add_student_course($data)
+    {
+        return $this->db->insert('student_courses', $data);
     }
+    function get_non_purchase_courses(){
+        $this->db->select('*');
+        $this->db->from('course');
+        $this->db->join('student_courses', 'student_courses.course_id = course.id and student_courses.student_id = '.$this->studentId(),
+        'left');
+        $this->db->where('student_courses.course_id IS NULL');
+        return $this->db->get();
+    }
+    function get_purchase_details($id){
+        // return $this->db->get('purchase_details');
+        // if(!is_array($where))
+        //     $where = ['id' => $where];
+        // return $this->db->get_where('student_courses', $where);
+        return $this->db->select('c.*,sc.*')
+                ->from('student_courses as sc')
+                ->join('course as c', 'c.id = sc.course_id')
+                ->where('sc.id', $id)
+                ->get();
+    }
+    public function show_remaining_days($purchase_id)
+    {
+        // Fetch purchase details
+        $purchase = $this->get_purchase_details($purchase_id);
+
+        if (!$purchase->num_rows()) {
+            throw new Exception("Invalid purchase ID.");
+        }
+        $purchase = $purchase->row();
+        // pre($purchase);
+        $purchase_date = date('Y-m-d',$purchase->starttime);
+        $total_days = calculate_course_days($purchase->duration,$purchase->duration_type);
+        // echo $total_days;
+        // pre($purchase,true);
+        // Calculate remaining days
+        $purchase_date = new DateTime($purchase_date);
+        // $total_days = total_days;
+
+        // Calculate the end date
+        $end_date = clone $purchase_date;
+        $end_date->modify("+$total_days days");
+
+        // Calculate the days left
+        $current_date = new DateTime();
+
+        $is_expired = $current_date > $end_date;
+        $remaining_days = $current_date > $end_date ? 0 : $current_date->diff($end_date)->days;
+        $data = [
+            'course_id' => $purchase->course_id,
+            'duration' => $purchase->duration,
+            'duration_type' => $purchase->duration_type,
+            'course_name' => $purchase->course_name,
+            'enrollment_no' => $purchase->enrollment_no,
+            'fee' => $purchase->fees,
+            'remaining_days' => $remaining_days,
+            'total_days' => $total_days ,
+            'purchase_date' => $purchase_date->format('Y-m-d'),
+            'expiration_date' => $end_date->format('Y-m-d'),
+            'status' => $is_expired ? 'Expired' : 'Active'
+        ];
+        return (object) $data;
+    }
+
 }

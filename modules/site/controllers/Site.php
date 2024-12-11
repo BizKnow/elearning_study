@@ -195,7 +195,15 @@ class Site extends Site_Controller
     }
     function test()
     {
-        echo $this->gen_roll_no();
+        // echo $this->gen_roll_no();
+        try{
+            $get = $this->student_model->show_remaining_days(3);
+
+            pre($get);
+        }
+        catch(Exception $e){
+            echo $e->getMessage();
+        }
         // echo ($this->ki_theme->isDiwali()) ? 'YES' : 'NO';
         // pre($this->ki_theme->get_festival());
         // pre(search_file(FCPATH . UPLOAD, '23322'));

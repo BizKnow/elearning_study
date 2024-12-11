@@ -174,16 +174,21 @@ class Assets extends MY_Controller
         $width = 30;
         $height = 30;
         $image = imagecreatetruecolor($width, $height);
+        // Change this to any letter from A to Z
 
         // Set colors
-        $background_color = imagecolorallocate($image, 133, 5, 5); // Black background
+        if ($this->uri->segment(4, 0))
+            $background_color = imagecolorallocate($image, 5, 115, 5); // Black background
+        else
+            $background_color = imagecolorallocate($image, 115, 5, 5); // Black background
+
         $text_color = imagecolorallocate($image, 255, 255, 255); // White text
 
         // Fill the background
         imagefill($image, 0, 0, $background_color);
 
         // Define the character to render (you can dynamically set this)
-        $character = $this->uri->segment(3,"A"); // Change this to any letter from A to Z
+        $character = $this->uri->segment(3, "A"); // Change this to any letter from A to Z
 
         // Use a built-in font to render the character
         $font_size = 30; // Built-in font size

@@ -41,16 +41,16 @@ document.addEventListener('DOMContentLoaded', function (e) {
                     targets: 1,
                     render: function (data, type, row) {
                         if (row.category)
-                            return `<label class="badge badge-dark">${row.category}</label>`;
+                            return `<label class="badge bg-dark">${row.category}</label>`;
                         else
-                            return `<label class="badge badge-danger">Category Deleted</label>`;
+                            return `<label class="badge bg-danger">Category Deleted</label>`;
                     }
                 },
                 {
                     targets: 2,
                     render: function (data, type, row) {
                         var badgeClass = duration_badge(row.duration_type, duration_colors);//) ? duration_colors[row.duration_type] : 'danger';
-                        return `<lable class="badge badge-${badgeClass}"> ${course_duration_humnize_without_ordinal(row.duration, row.duration_type)}</lable>`;//row.duration+ ` </>`;
+                        return `<lable class="badge bg-${badgeClass}"> ${course_duration_humnize_without_ordinal(row.duration, row.duration_type)}</lable>`;//row.duration+ ` </>`;
                     }
                 },
                 {

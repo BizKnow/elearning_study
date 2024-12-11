@@ -989,6 +989,9 @@ const duration_colors = {
 const duration_label = (type) => {
     return ($.inArray(type, duration_colors)) ? duration_colors[type] : 'danger';
 }
+const duration_badge = (type) => {
+    return duration_label(type);
+}
 const SwalShowloading = (message = '') => {
     Swal.fire({
         title: 'Loading....',
