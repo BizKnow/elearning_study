@@ -25,7 +25,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(247, 147, 29, .8);
+        background-color: rgb(14 126 137 / 76%);
         opacity: 0;
         -webkit-transform: scale(0);
         -ms-transform: scale(0);
