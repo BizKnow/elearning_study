@@ -183,7 +183,7 @@ form input[type="submit"]:hover, form input[type="reset"]:hover, .btn-submit:hov
 .header { transition: all 1s ease; }
 
 /*topBar*/
-.topBar { border-top: 5px solid rgb(20 0 255); background: #ffffff; background: -moz-linear-gradient(left, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); background: -webkit-linear-gradient(left, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); background: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#202020', GradientType=0); letter-spacing: 1px; font-weight: 300; }
+.topBar { border-top: 5px solid #0e7e89; background: #ffffff; background: -moz-linear-gradient(left, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); background: -webkit-linear-gradient(left, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); background: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #325b6f 50%, #325b6f 50%, #325b6f 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#202020', GradientType=0); letter-spacing: 1px; font-weight: 300; }
 .topBar a, .topBar span { color: #ffffff; display: block; font-size: 16px;}
 .topBar ul { padding: 0; margin: 0; list-style: none; text-align: right; }
 .topBar ul li { display: inline-block; position: relative; }
@@ -205,8 +205,8 @@ ul.topLinks li:hover > ul { display: block; overflow: visible; max-height: 1000p
 .conInfo { }
 .conInfo a { display: inline-block; }
 .conInfo a:first-child { margin-right: 15px; }
-.conInfo .fa { color: #ffffff; font-size: 14px; width: 28px; height: 25px; text-align: center; line-height: 20px; background: #1400ff; border: 1px solid white; }
-.conInfo a:hover .fa { border: 1px solid #1400ff; color: #1400ff; background: white; }
+.conInfo .fa { color: #ffffff; font-size: 14px; width: 28px; height: 25px; text-align: center; line-height: 20px; background: #0e7e89; border: 1px solid white; }
+.conInfo a:hover .fa { border: 1px solid #0e7e89; color: #0e7e89; background: white; }
 @media (min-width:768px) {
 	.topBar-right { text-align: right; padding-left: 30px; }
 	.logoWrap { }
@@ -214,7 +214,7 @@ ul.topLinks li:hover > ul { display: block; overflow: visible; max-height: 1000p
 
 /* NAVBAR STYLING
 -------------------------------------------------- */
-.navbar { color: #ffffff; font-size: 18px; letter-spacing: 1px; font-weight: 300; padding: 0 15px; background: rgb(20 0 255) }
+.navbar { color: #ffffff; font-size: 18px; letter-spacing: 1px; font-weight: 300; padding: 0 15px; background: #0e7e89 }
 .navbar-nav .nav-link { color: #fff; padding: 5px 15px; display: block; }
 .dropdown-item { white-space: inherit; }
 @media (max-width:991px) {
@@ -223,9 +223,9 @@ ul.topLinks li:hover > ul { display: block; overflow: visible; max-height: 1000p
 }
 @media (min-width:992px) {
 	ul.topnav > li > a:hover, ul.topnav > li:hover > a, ul.topnav > li.active > a { background-color: rgba(255, 255, 255, 0.2); }
-	ul.topnav ul { display: none; width: 220px; position: absolute; left: 0; top: 100%; z-index: 999; background: #fff; border: solid #1400ff; border-width: 3px 0 0 0; display: block; padding: 0; border-radius: 0; -webkit-transform-origin: 0% 0%; -moz-transform-origin: 0% 0%; -ms-transform-origin: 0% 0%; -o-transform-origin: 0% 0%; transform-origin: 0% 0%; overflow: hidden; max-height: 0px; max-width: 0px; opacity: 0; -webkit-transform: scale(0); -moz-transform: scale(0); -ms-transform: scale(0); -o-transform: scale(0); transform: scale(0); -webkit-transition: -webkit-transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; -o-transition: -o-transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; transition: transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; }
+	ul.topnav ul { display: none; width: 220px; position: absolute; left: 0; top: 100%; z-index: 999; background: #fff; border: solid #0e7e89; border-width: 3px 0 0 0; display: block; padding: 0; border-radius: 0; -webkit-transform-origin: 0% 0%; -moz-transform-origin: 0% 0%; -ms-transform-origin: 0% 0%; -o-transform-origin: 0% 0%; transform-origin: 0% 0%; overflow: hidden; max-height: 0px; max-width: 0px; opacity: 0; -webkit-transform: scale(0); -moz-transform: scale(0); -ms-transform: scale(0); -o-transform: scale(0); transform: scale(0); -webkit-transition: -webkit-transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; -o-transition: -o-transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; transition: transform 0.5s ease, opacity 0.6s ease, max-height 0.6s step-end, max-width 0.6s step-end, padding 0.6s step-end; }
 	ul.topnav ul ul { left: 100%; top: 0; }
-	ul.topnav ul li { border-top: 1px solid #1400ff; }
+	ul.topnav ul li { border-top: 1px solid #0e7e89; }
 	ul.topnav ul li:hover, ul.topnav ul li:hover > a { background: #325b6f; color: #fff; }
 	ul.topnav li:hover > ul { display: block; overflow: visible; max-height: 1000px; max-width: 1000px; opacity: 1; -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); transform: scale(1); -webkit-transition: -webkit-transform 0.5s ease, opacity 0.2s ease, max-height 0s step-end, max-width 0s step-end, padding 0s step-end; -o-transition: -o-transform 0.5s ease, opacity 0.2s ease, max-height 0s step-end, max-width 0s step-end, padding 0s step-end; transition: transform 0.5s ease, opacity 0.2s ease, max-height 0s step-end, max-width 0s step-end, padding 0s step-end; }
 	ul.topnav ul li a { color: #202020; padding: 5px 15px; }
@@ -307,12 +307,12 @@ ul.topLinks li:hover > ul { display: block; overflow: visible; max-height: 1000p
 .content-area { }
 .title-wrap { margin: 0 0 30px; }
 .pageTitle, .secTitle { margin: 0 0 5px; font-weight: 600; text-transform: capitalize; color: #202020; font-family: 'Libre Baskerville', serif; }
-.pageTitle > span, .secTitle > span { color: rgb(20 0 255); }
+.pageTitle > span, .secTitle > span { color: #0e7e89; }
 .dark-bg .pageTitle, .dark-bg .secTitle { color: #ffffff; }
 .title-wrap p { font-size: 18px; line-height: 24px; }
 .pageTitle { margin: 0 0 20px 0; }
 .imgBox { position: relative; padding: 15px 0 0 15px; }
-.imgBox .borderBox { position: absolute; left: 0; top: 0; width: calc(100% - 15px); height: calc(100% - 15px); border: 3px solid rgb(20 0 255); z-index: 1; }
+.imgBox .borderBox { position: absolute; left: 0; top: 0; width: calc(100% - 15px); height: calc(100% - 15px); border: 3px solid #0e7e89; z-index: 1; }
 .imgBox img { position: relative; z-index: 2; }
 @media (min-width:1200px) {
 	.pageTitle, .secTitle { font-size: 28px; }
