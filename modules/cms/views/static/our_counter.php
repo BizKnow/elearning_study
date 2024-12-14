@@ -36,12 +36,12 @@
                                         <input name='{$index}_text' class='custom_setting_input'
                                     value='$title'>
                                         </td>
-                                        <td>
+                                        <td class='d-flex btn-group'>
                                             ".inconPickerInput($index.'_icon',$icon)."
                                         </td>
                                         <td>
-                                        <input name='{$index}_value' class='custom_setting_input'
-                                        value='$value'>
+                                        <input name='{$index}_value' class='custom_setting_input w-100'
+                                        value='$value' placeholder='Enter value of $counter'>
                                         </td>
                                     </tr>
                                 

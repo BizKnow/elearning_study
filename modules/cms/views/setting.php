@@ -166,10 +166,10 @@
     </div>
 </div>
 <?php
-if (THEME == 'theme-03') {
+if (THEME == 'mytheme') {
     echo '<div class="row mb-2 mt-4">
             <div class="col-md-12">
-                <div class="alert alert-success d-flex align-items-center p-5 mb-10">
+                <div class="alert alert-success d-flex align-items-center mb-10">
                     <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
                         <h4 class="mb-1 text-success">This is an Information</h4>
                         <span>

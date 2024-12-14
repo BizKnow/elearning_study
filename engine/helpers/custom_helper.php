@@ -306,12 +306,13 @@ function notice_board()
 function inconPickerInput($inputName = '', $value = '')
 {
     return '
-                
-                <div class="symbol symbol-50px border border-primary">
+                <div class="btn-group">
+                <div class="w-50 text-center border border-primary">
                     <div class="symbol-label fs-2 fw-semibold text-success"><i class="' . $value . '" style="font-size:30px" id="IconPreview_' . $inputName . '"></i></div>
                 </div>
                 <button type="button" class="arya-icon-picker btn btn-primary btn-rounded btn-sm" id="GetIconPicker" data-iconpicker-input="input#IconInput_' . $inputName . '" data-iconpicker-preview="i#IconPreview_' . $inputName . '">Select Icon</button>
-            <input id="IconInput_' . $inputName . '" name="' . $inputName . '" type="hidden" value="' . $value . '">';
+            <input id="IconInput_' . $inputName . '" name="' . $inputName . '" type="hidden" value="' . $value . '">
+        </div>';
 }
 function get_month_number($date)
 {

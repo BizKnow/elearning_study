@@ -66,46 +66,6 @@ class Ki_theme
         }
         $this->removeCache();
 
-        $file = FCPATH . 'assets/fas/festivals_' . date('Y') . '.json';
-        if (!file_exists($file)) {
-            if (defined('CALENDARIFIC_API_KEY')) {
-                $api_key = CALENDARIFIC_API_KEY;
-                $year = date('Y');  // 
-                $country = 'IN';  // 
-                $url = "https://calendarific.com/api/v2/holidays?api_key={$api_key}&country={$country}&year={$year}";
-                try {
-                    $response = $this->CI->curl->_simple_call('get', $url);
-                    // pre($rss, true);
-                    $data = json_decode($response, true);
-
-                    if (isset($data['response']['holidays']) && !empty($data['response']['holidays'])) {
-                        $festivals = $data['response']['holidays'];
-
-                        $sorted_festivals = [];
-
-                        foreach ($festivals as $festival) {
-                            $date = date('Y-m-d', strtotime($festival['date']['iso']));
-
-                            if (!isset($sorted_festivals[$date])) {
-                                $sorted_festivals[$date] = [];
-                            }
-
-                            $sorted_festivals[$date][] = [
-                                'name' => $festival['name'],
-                                'description' => $festival['description'],
-                                'type' => $festival['type'],
-                            ];
-                        }
-                        $this->festivals = $sorted_festivals;
-                        $this->save_to_json($sorted_festivals, $file);
-                    }
-                } catch (Exception $e) {
-
-                }
-            }
-        } else {
-            $this->festivals = $this->load_from_json($file);
-        }
         $this->login_type = $this->CI->session->userdata('admin_type');
         $this->login_id = $this->CI->session->userdata('admin_id');
         $this->breadcrumb_data['controller'] = ucfirst($this->CI->router->fetch_class());
@@ -1444,7 +1404,7 @@ class Ki_theme
             $linkData = $this->CI->SiteModel->get_setting($inputLinkName);
         }
         return '<div class="form-group">
-                    <label for="title" class="form-label mt-4">' . $title . '</label>
+                    <label for="title" class="form-label mt-2">' . $title . '</label>
                     <input type="text" placeholder="Enter Title" name="' . $inputTextName . '"
                         value="' . $titleData . '" class="form-control"
                         style="border-radius: 12px 12px 0 0;border-bottom: 0;">

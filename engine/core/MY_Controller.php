@@ -31,8 +31,18 @@ class MY_Controller extends MX_Controller
         //     $this->ki_theme->breadcrumb_action_html('<p class="con" id="Diwalitext">Happy Diwali</p>');
         // }
         // exit(THEME_ID);
-        
-        $adminCard = $this->center_model->isAdminOrCenter() ? '' : 'border-2 border-primary';
+        if (file_exists(THEME_PATH . 'config.php') and !defined('theme_config')) {
+            // ob_start();
+            define('theme_config', true);
+            require THEME_PATH . 'config.php';
+            if (isset($config) && sizeof($config)) {
+                foreach ($config as $item => $value)
+                    $this->ki_theme->set_config_item($item, $value);
+                unset($config);
+            } else
+                throw new Exception('Your Theme Config File Is Empty.');
+        }
+        $adminCard = /*$this->center_model->isAdminOrCenter() ? '' : */'border-2 border-primary';
         $this->public_data = [
             'base_url' => base_url(),
             'wallet_message' => '',
@@ -337,12 +347,12 @@ class Site_Controller extends MY_Controller
     function __construct()
     {
         parent::__construct();
-        // $this->set_data('link_css', $this->parse('_common/head', [], true));
+        $this->set_data('link_css', $this->parse('_common/head', [], true));
         $this->set_data('YEAR', date('Y'));
         $this->set_data('copyright', ' All right reserved designed by
         <img src="' . base_url('assets') . '/second.gif" style="height:23px">
-        <span><a style="color:#ffffff;" href="https://hyperprowebtech.com/" target="_blank"
-                rel="noopener noreferrer"> Hyper Pro
+        <span><a style="color:#ffffff;" href="" target="_blank"
+                rel="noopener noreferrer"> SN Digital Hub
                 Webtech .</a></span>');
         $items = $this->SiteModel->print_menu_items([], true);
         $this->set_data('menus', $items['menus']);

@@ -22,6 +22,8 @@
 
     <!-- App css -->
     <link href="{base_url}assets/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <link rel="stylesheet" href="{base_url}assets/icon-picker/dist/iconpicker-1.5.0.css">
+    <script src="{base_url}assets/icon-picker/dist/iconpicker-1.5.0.js"></script>
     <link href="{base_url}assets/custom/custom.css" rel="stylesheet" type="text/css" />
 
     <script>var base_url = '{base_url}',login_type = 'admin';</script>
@@ -32,6 +34,12 @@
             --bs-body-bg: var(--osen-secondary-bg);
             --bs-danger-rgb: 255, 0, 0;
         }
+        .custom_setting_input {
+    font-size: 21px;
+    background: transparent;
+    border: 0;
+    outline: 0;
+}
         .m-h-100px{
             min-height: 75px;
         }
@@ -982,6 +990,7 @@
     <script src="{base_url}assets/custom/jquery.nestable.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
+    <script src="{base_url}assets/custom/jquery.nestable.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/formvalidation@0.6.2-dev/dist/js/formValidation.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/formvalidation@0.6.2-dev/dist/css/formValidation.min.css" rel="stylesheet"> -->
     <script src="{base_url}assets/custom/custom.js"></script>

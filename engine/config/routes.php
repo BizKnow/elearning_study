@@ -67,7 +67,7 @@ $route['co-ordinate/(:any)/(:any)'] = 'Coordinate/$1/$2';
 $route['404_override'] = 'site/error_404';
 $route['translate_uri_dashes'] = TRUE;
 
-$route['default_controller'] = 'student';
+$route['default_controller'] = 'site';
 
 
 

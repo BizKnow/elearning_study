@@ -1,4 +1,4 @@
-<!-- <script src="{base_url}assets/jquery-1.12.4.min.js"></script> -->
+<script src="{base_url}assets/jquery-1.12.4.min.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"
     integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g=="
@@ -44,6 +44,8 @@
         ajax_url = base_url + 'ajax/';
     <?php
     foreach ($this->ki_theme->default_vars() as $var => $var_value) {
+        if($var == 'dateFormat')
+            continue;
         ?>
         const <?= $var ?> = `<?= $var_value ?>`;
         <?php
