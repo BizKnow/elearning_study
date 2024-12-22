@@ -1,6 +1,26 @@
 <?php
 class Course extends Ajax_Controller
 {
+    function add_combo(){
+        if($this->validation('combo')){
+            // $this->response('data',$_POST);
+            $data = [
+                'title' => $_POST['title'],
+                'courses' => json_encode($_POST['courses']),
+                'amount' => $_POST['amount'],
+                'description' => $_POST['description']
+            ];
+            $this->db->insert('combo',$data);
+            $this->response('status',true);
+        }
+    }
+    function list_combo(){
+        $this->response('data',$this->db->get('combo')->result_array());
+    }
+    function delete_combo($id){
+        $this->db->where('id',$id);
+        $this->response('status' , $this->db->delete('combo'));
+    }
     //for course
     function add()
     {

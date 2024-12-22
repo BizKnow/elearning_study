@@ -1,3 +1,5 @@
+
+
 $(document).ready(function () {
     // alert(3);
     //log($('.student-verification-form'));
@@ -349,7 +351,8 @@ $(document).ready(function () {
             if (res.status) {
                 mySwal(`Welcome <b>${res.student_name}</b>`, 'Student Login Successfully.').then((r) => {
                     if (r.isConfirmed) {
-                        location.href = `${base_url}student/dashboard`;
+                        // location.href = `${base_url}student/dashboard`;
+                        location.reload();
                     }
                 })
             }
@@ -419,7 +422,23 @@ $(document).ready(function () {
             ]
         });
     }
+    $(document).on('click', '.show-course', function () {
+        var courses = $(this).data('courses');
+        const parts = courses.split('|');
+        document.getElementById("subjectList").innerHTML = '';
+        document.getElementById('smTitle').innerHTML = 'Courses of ' + $(this).data('title');
 
+        $.each(parts, function (index, value) {
+            // log(value)
+            document.getElementById("subjectList").innerHTML += `<li class="list-group-item">${value}</li>`;
+        });
+        var subjectModal = new bootstrap.Modal(document.getElementById('mymodal'));
+        // alert(4);
+
+        // document.getElementById('smTitle').innerHTML = ' Courses';
+
+        subjectModal.show();
+    })
     /*===================================*
       08. CONTACT FORM JS
       *===================================*/

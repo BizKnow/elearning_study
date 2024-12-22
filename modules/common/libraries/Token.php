@@ -18,8 +18,10 @@ class Token
         $this->data['exp'] = $endtime;
         return $this;
     }
-    function expiredOn()
+    function expiredOn($type = '')
     {
+        if($type == 'js')
+            return date("Y-m-d\TH:i:s", ($this->decodeData->exp));
         return date('d-m-Y h:i A', $this->decodeData->exp);
     }
     function encode($payload)

@@ -430,5 +430,36 @@ $config = array(
                 'percentage_check' => 'Percentage should be between 0 and 100'
             )
         ),
+    ),
+    'combo' => array(
+        array(
+            'field' => 'title',
+            'label' => 'Title',
+            'rules' => 'required|is_unique[combo.title]',
+            'errors' => array(
+                'is_unique' => 'This title already exists'
+            )
+        ),
+        array(
+            'field' => 'description',
+            'label' => 'Description',
+            'rules' => 'required'
+        ),
+        array(
+            'field' => 'amount',
+            'label' => 'Amount',
+            'rules' => 'required|numeric',
+            'errors' => array(
+                'numeric' => 'Price should be a number',
+            )
+        ),
+        array(
+            'field' => 'courses[]',
+            'label' => 'Courses',
+            'rules' => 'required',
+            'errors' => array(
+                'required' => 'Please select at least one course',
+            ),
+        )
     )
 );

@@ -6,6 +6,12 @@ class Course extends MY_Controller
         // echo 'gudiya';
         pre($this->ki_theme->course_duration());
     }
+    function combo(){
+        $this->ki_theme->breadcrumb_action_html(
+            $this->ki_theme->drawer_button('page','course_combo',humanize('Course Combo'))
+        );
+        $this->view('combo');
+    }
     function category()
     {
         $this->view('category');

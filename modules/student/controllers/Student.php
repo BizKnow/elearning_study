@@ -4,9 +4,22 @@ class Student extends MY_Controller
     function index()
     {
         if ($this->student_model->isStudent())
-            $this->student_view('index',['isValid'=>true]);
+            $this->student_view('index', ['isValid' => true]);
         else
             redirect('student/profile');
+    }
+    function purchase_combo()
+    {
+        $this->access_method();
+        try {
+            $token = $this->uri->segment(3, 0);
+            $this->token->decode($token);
+            $this->student_view('purchase-combo',$this->token->data());
+        } catch (Exception $e) {
+            $this->student_view('purchase-combo',[
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
     function my_exam()
     {

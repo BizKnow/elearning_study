@@ -13,7 +13,7 @@ $config['academics'] = array(
         array(
             'label' => 'Course Area',
             'type' => 'course_area',
-            'icon' => array('learning', 2),
+            'icon' => array('book', 2),
             'submenu' => array(
                 array(
                     'label' => 'Category',
@@ -42,9 +42,15 @@ $config['academics'] = array(
             )
         ),
         array(
+            'label' => 'Course Combo',
+            'type' => 'course_combo',
+            'icon' => array('package', 4),
+            'url' => 'course/combo',
+        ),
+        array(
             'label' => 'Session',
             'type' => 'session_area',
-            'icon' => array('others', 4),
+            'icon' => array('calendar', 4),
             'url' => 'academic/session',
         )
     )
@@ -55,7 +61,7 @@ $config['menu'] = array(
         array(
             'label' => 'Student Information',
             'type' => 'student_information',
-            'icon' => array('profile-user', 3),
+            'icon' => array('users', 3),
             'submenu' => array(
                 array(
                     'label' => 'Student Details',
@@ -120,19 +126,19 @@ $config['cms_setting'] = array(
         array(
             'label' => 'Setting',
             'type' => 'cms_setting',
-            'icon' => array('setting-2', 4),
+            'icon' => array('settings', 4),
             'url' => 'cms/setting'
         ),
         array(
             'label' => 'Gallery Image',
             'type' => 'gallery_setting',
-            'icon' => array('picture', 4),
+            'icon' => array('folder', 4),
             'url' => 'cms/gallery-images'
         ),
         array(
             'label' => 'Slider',
             'type' => 'slider_setting',
-            'icon' => array('picture', 4),
+            'icon' => array('map', 4),
             'url' => 'cms/slider'
         ),
         array(

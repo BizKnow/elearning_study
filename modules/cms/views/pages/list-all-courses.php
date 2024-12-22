@@ -39,14 +39,14 @@
                                             </select>
                                         </div>
                                     </center>
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" style="border:1px groove #13637d">
                                         <table class="table table-bordered table-striped w-100">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Category</th>
                                                     <th>Course Name</th>
-                                                    <th>Duration</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -60,8 +60,13 @@
                                                             <tr data-category_id="' . $cat->id . '">
                                                                 <td>' . $i++ . '.</td>
                                                                 <td>' . $cat->title . '</td>
-                                                                <td>' . $course->course_name . '</td>
-                                                                <td>' . $course->duration . ' ' . $course->duration_type . '</td>
+                                                                <td>' . $course->course_name . ' ' . $course->duration . ' ' . $course->duration_type . '</td>
+                                                                <td>
+                                                                    
+                                                                    <button class="btn btn-default">
+                                                                        <span><span class="hvr-bounce-to-bottom" style="padding:5px">'.$course->fees.' {inr} Purchase Now </span></span>
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                         ';
                                                         endforeach;
