@@ -37,7 +37,8 @@ class Course extends Ajax_Controller
     {
         $this->db->where('id', $this->post('id'))->update('course', [
             'course_name' => $this->post('course_name'),
-            'fees' => $this->post('fees')
+            'fees' => $this->post('fees'),
+            'referral_amount' => $this->post('referral_amount')
         ]);
         $this->response('html','Course Updated Successfully..');
         $this->response('status', true);

@@ -17,7 +17,7 @@
     .galpic { height: 300px;display: block; position: relative; border: 1px solid rgb(19,72,125); padding: 5px;}
     .galpic img { border: 3px solid rgb(19,72,125); width: 100%; height: 100%;}
     .galpic .galpic-hover { transition: all ease .5s; opacity: 0; position: absolute; top: 0; left: 0; right: 0;
-        width: 100%; height: 0; background-color: rgba(247, 147, 29, .8); color: #fff; padding: 15px;
+        width: 100%; height: 0; background-color: rgb(14 126 137 / 80%); color: #fff; padding: 15px;
     }
     .galpic:hover .galpic-hover { opacity: 1; height: 100%; }
     .galpic .galpic-hover h3{ text-align: center; font-weight: 600; border-top: 1px solid #fff; border-bottom: 1px solid #fff; text-transform: uppercase; letter-spacing: 1px; }

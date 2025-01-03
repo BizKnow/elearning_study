@@ -51,6 +51,12 @@
                                 <label class="form-label">Enter Total Course Fee</label>
                                 <input type="number" name="fees" class="form-control" placeholder="Enter Course Fee">
                             </div>
+
+                            <div class="form-group col-md-3 ">
+                                <label class="form-label required">Enter Referral Amount</label>
+                                <input type="number" name="referral_amount" value="0" class="form-control"
+                                    placeholder="Enter Referral Amount.">
+                            </div>
                         </div>
 
                     </div>
@@ -82,6 +88,7 @@
                                     <th>Course Category</th>
                                     <th>Duration</th>
                                     <th width=12%>Fee</th>
+                                    <th width=12%>Referral Amount</th>
                                     <th class="text-end min-w-150px">Actions</th>
                                 </tr>
                             </thead>
@@ -117,6 +124,7 @@
                                     <th>Course Category</th>
                                     <th>Duration</th>
                                     <th width=12%>Fee</th>
+                                    <th width=12%>Referral Amount</th>
                                     <th class="text-end min-w-150px">Actions</th>
                                 </tr>
                             </thead>
@@ -140,5 +148,10 @@
     <div class="form-group ">
         <label class="form-label">Enter Course Fee</label>
         <input type="number" name="fees" class="form-control" placeholder="Enter Course Fee" value="{{fees}}">
+    </div>
+    
+    <div class="form-group ">
+        <label class="form-label">Enter Referral Amount</label>
+        <input type="number" name="referral_amount" class="form-control" placeholder="Enter Referral Amount" value="{{referral_amount}}">
     </div>
 </script>

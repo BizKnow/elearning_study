@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         { 'data': 'category' },
         { 'data': 'duration' },
         { 'data': 'fees' },
+        {'data': 'referral_amount'},
         { 'data': null }
     ];
     // var dt = '';
@@ -55,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 },
                 {
                     targets: 3,
+                    render: function (data, type, row) {
+                        return (data ? data : 0) + ` <i class="fa fa-rupee"></i>`;
+                    }
+                },
+                {
+                    targets: 4,
                     render: function (data, type, row) {
                         return (data ? data : 0) + ` <i class="fa fa-rupee"></i>`;
                     }
@@ -200,8 +207,17 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 }
             }
         });
-
-
+        //referral_amount
+        validator.addField('referral_amount', {
+            validators: {
+                notEmpty: {
+                    message: 'Please Enter Referral Amount'
+                },
+                numeric: {
+                    message: 'Please enter a valid Referral Amount.'
+                }
+            }
+        });
         validator.addField('duration', {
             validators: {
                 notEmpty: {
