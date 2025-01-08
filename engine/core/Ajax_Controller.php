@@ -8,12 +8,12 @@ class Ajax_Controller extends MY_Controller
     {
         parent::__construct();
         if (
-                !$this->center_model->isLogin() and 
-                $this->router->fetch_method() != 'admin_login' and 
-                $this->router->fetch_class() != 'website' and
-                $this->uri->segment(1,0) != 'api' and
-                $this->uri->segment(1,0) != 'site'
-            ) {
+            !$this->center_model->isLogin() and
+            $this->router->fetch_method() != 'admin_login' and
+            $this->router->fetch_class() != 'website' and
+            $this->uri->segment(1, 0) != 'api' and
+            $this->uri->segment(1, 0) != 'site'
+        ) {
             $this->response('html', 'Invalid Security Token , Please Re-login Now.');
             $this->response('login_expired', true);
             exit;
@@ -21,12 +21,13 @@ class Ajax_Controller extends MY_Controller
         if (!count($this->post()))
             $this->response('html', 'Form Data is Empty.');
     }
-    function isDemo(){
-        if(isDemo()){
+    function isDemo()
+    {
+        if (isDemo()) {
             $html = 'This is a demo panel, you can not update some function in it .';
-            $this->response('html',$html);
-            $this->response('error',$html);
-            $this->response('errors',['isDemo'=>$html]);
+            $this->response('html', $html);
+            $this->response('error', $html);
+            $this->response('errors', ['isDemo' => $html]);
             return true;
         }
         return false;
@@ -44,7 +45,7 @@ class Ajax_Controller extends MY_Controller
     protected function post($index = 0, $default = '')
     {
         $post = $this->input->post();
-        return $index ? (isset ($post[$index]) ? $this->input->post($index, true) : $default) : $post;
+        return $index ? (isset($post[$index]) ? $this->input->post($index, true) : $default) : $post;
     }
 
     protected function errors()
@@ -71,11 +72,13 @@ class Ajax_Controller extends MY_Controller
 
     function json_response($data = [])
     {
-        $this->output->set_content_type('application/json')
+        if (http_response_code() != 500) {
+            $this->output->set_content_type('application/json')
 
-            ->set_output(json_encode($data ? $data : $this->response()));
-        echo $this->output->get_output();
-        die();
+                ->set_output(json_encode($data ? $data : $this->response()));
+            echo $this->output->get_output();
+            die();
+        }
         // echo ();
     }
     function __destruct()
@@ -98,7 +101,7 @@ class Ajax_Controller extends MY_Controller
         return array_filter(
             $array,
             function ($val, $key) use ($allowed) { // N.b. $val, $key not $key, $val
-                return isset ($allowed[$key]) && ($allowed[$key] === true || $allowed[$key] === $val);
+                return isset($allowed[$key]) && ($allowed[$key] === true || $allowed[$key] === $val);
             },
             ARRAY_FILTER_USE_BOTH
         );
@@ -107,11 +110,11 @@ class Ajax_Controller extends MY_Controller
     public function filterKeyword($data, $search, $field = '')
     {
         $filter = '';
-        if (isset ($search['value'])) {
+        if (isset($search['value'])) {
             $filter = $search['value'];
         }
-        if (!empty ($filter)) {
-            if (!empty ($field)) {
+        if (!empty($filter)) {
+            if (!empty($field)) {
                 if (strpos(strtolower($field), 'date') !== false) {
                     // filter by date range
                     $data = $this->filterByDateRange($data, $filter, $field);
@@ -136,7 +139,7 @@ class Ajax_Controller extends MY_Controller
     public function filterByDateRange($data, $filter, $field)
     {
         // filter by range
-        if (!empty ($range = array_filter(explode('|', $filter)))) {
+        if (!empty($range = array_filter(explode('|', $filter)))) {
             $filter = $range;
         }
 

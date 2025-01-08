@@ -21,6 +21,10 @@ class Student extends MY_Controller
             ]);
         }
     }
+    function refer_to_earn(){
+        $this->access_method();
+        $this->student_view('refer-to-earn');
+    }
     function my_exam()
     {
         $this->student_view('my-exam');

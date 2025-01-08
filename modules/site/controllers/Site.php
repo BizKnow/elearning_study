@@ -4,6 +4,12 @@ use chillerlan\QRCode\Data\Number;
 defined('BASEPATH') or exit('No direct script access allowed');
 class Site extends Site_Controller
 {
+    function register(){
+        // echo 'YES';
+        $this->render('register',[
+            'page_name' => 'Student Registration'
+        ]);
+    }
     function program()
     {
         $amount = $saveAmount = 1578;

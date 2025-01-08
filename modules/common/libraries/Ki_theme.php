@@ -74,6 +74,30 @@ class Ki_theme
     {
         return $this->festivals;
     }
+    function referral_template($token = false)
+    {
+        if (isset($_GET['token']))
+            $token = $_GET['token'];
+        try {
+            if ($token) {
+                $this->CI->token->decode($token);
+                $data = $this->CI->token->data();
+                if($this->CI->token->data('referral_id')){
+                    return $this->parse('template/box/referra-box',$data,true);
+                }
+                else if($this->CI->token->data('course_id')){
+                    // return 'It is Course Code';
+                    return $this->parse('template/box/course-box',$data,true);
+                }
+                else if($this->CI->token->data('combo_id')){
+                    // return 'It is Combo Code';
+                    return $this->parse('template/box/combo-box',$data,true);
+                }
+            }
+        } catch (Exception $e) {
+
+        }
+    }
     function get_festival($date = 0)
     {
         $date = $date == 0 ? date('Y-m-d') : $date;
@@ -1090,7 +1114,7 @@ class Ki_theme
             $menuItemActive = (isset($menuItem['submenu']) ? $this->recursiveArraySearch($this->uri_string(), $menuItem['submenu']) : false);
 
             $html .= '<li class="side-nav-item">';
-            
+
             $icon = '';
             if ($type == 'menu' && isset($menuItem['icon'])) {
 
@@ -1113,7 +1137,7 @@ class Ki_theme
                           ' . $icon . '' . $text . '<span class="menu-arrow"></span>';
             } else
                 $html .= '<a class="side-nav-link" href="' . (isset($menuItem['submenu']) ? '#' : $this->gen_link(@$menuItem['url'])) . '">
-                                ' . $icon.''.$text;
+                                ' . $icon . '' . $text;
 
             $html .= '</a>';
             if (isset($menuItem['submenu'])) {

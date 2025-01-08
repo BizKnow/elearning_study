@@ -79,7 +79,7 @@
                                     $string = (implode('|',$myCourses));
                                 }
 
-                                $token = $this->token->withExpire()->encode([
+                                $token = $this->token->encode([
                                     'combo_id' => $row->id
                                 ]);
                                 ?>
@@ -106,7 +106,7 @@
                                                 <button class="btn btn-outline-light show-course" data-courses="<?=$string?>"
                                                   data-title="<?=$row->title?>"  style="padding: .25rem 1.25rem;font-weight: 600;">Courses List</button>
 
-                                                <a href="{base_url}student/purchase-combo/<?=$token?>" style="padding: .25rem 1.25rem;font-weight: 600;"
+                                                <a href="{base_url}register?token=<?=$token?>" style="padding: .25rem 1.25rem;font-weight: 600;"
                                                     class="btn btn-light btn-sm fw-bold">Purchase Now</a>
                                             </div>
                                         </div>

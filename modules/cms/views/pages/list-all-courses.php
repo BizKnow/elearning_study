@@ -56,6 +56,9 @@
                                                     if ($courses->num_rows()) {
                                                         $i = 1;
                                                         foreach ($courses->result() as $course):
+                                                            $token = $this->token->encode([
+                                                                'course_id' => $course->id
+                                                            ]);
                                                             echo '
                                                             <tr data-category_id="' . $cat->id . '">
                                                                 <td>' . $i++ . '.</td>
@@ -63,9 +66,9 @@
                                                                 <td>' . $course->course_name . ' ' . $course->duration . ' ' . $course->duration_type . '</td>
                                                                 <td>
                                                                     
-                                                                    <button class="btn btn-default">
+                                                                    <a target="_blank" href="{base_url}register?token='.$token.'" class="btn btn-default">
                                                                         <span><span class="hvr-bounce-to-bottom" style="padding:5px">'.$course->fees.' {inr} Purchase Now </span></span>
-                                                                    </button>
+                                                                    </a>
                                                                 </td>
                                                             </tr>
                                                         ';

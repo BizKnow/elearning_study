@@ -221,6 +221,26 @@
                                     </span>
                                 </a>
                             </li>
+                            <li
+                                class="nav-item <?= $this->router->fetch_method() == 'study-material' ? 'active' : '' ?>">
+                                <a class="nav-link" href="{base_url}student/refer-to-earn">
+                                    <span
+                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/ghost -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-wallet">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
+                                            <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-title">
+                                        Refer to Earn
+                                    </span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -330,8 +350,51 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4@5/bootstrap-4.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-    <script src="{base_url}assets/common.js"></script>
-    <script src="{base_url}assets/admin.js"></script>
+    <!-- <script src="{base_url}assets/common.js"></script>
+    <script src="{base_url}assets/admin.js"></script> -->
+    <script>
+        $(document).on('click', 'a.my-link', function (e) {
+            e.preventDefault();
+            // alert(this.id);
+            var type = this.id,
+                selectedURL = this.href;
+            // alert(href);
+            switch (type) {
+                case 'whatsapp':
+                    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(selectedURL)}`;
+                    window.open(whatsappURL, "_blank");
+                    break;
+                case 'facebook':
+                    const facebookURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(selectedURL)}`;
+                    window.open(facebookURL, "_blank");
+                    break;
+                case 'twitter':
+                    const twitterURL = `https://twitter.com/intent/tweet?url=${encodeURIComponent(selectedURL)}`;
+                    window.open(twitterURL, "_blank");
+                    break;
+                case 'linkedin':
+                    const linkedinURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(selectedURL)}`;
+                    window.open(linkedinURL, "_blank");
+                    break;
+                default:
+                    const tempInput = $("<input>");
+                    $("body").append(tempInput);
+                    tempInput.val(selectedURL).select();
+                    document.execCommand("copy");
+                    tempInput.remove();
+                    // Swal.fire('Copy!','Link Copied Successfully..');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Link Copied Successfully..',
+                        icon: 'success',
+                        timer: 2000, // 2 seconds
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    break;
+            }
+        })
+    </script>
 </body>
 
 </html>
