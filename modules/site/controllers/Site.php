@@ -4,17 +4,41 @@ use chillerlan\QRCode\Data\Number;
 defined('BASEPATH') or exit('No direct script access allowed');
 class Site extends Site_Controller
 {
-    function register(){
+    function register()
+    {
         // echo 'YES';
-        $this->render('register',[
+        if ($this->student_model->isStudent()) {
+            if (isset($_GET['token'])) {
+                $this->session->set_userdata(array('referral_token' => $_GET['token']));
+                try {
+                    $token = $_GET['token'];
+                    if ($token) {
+                        $this->token->decode($token);
+                        $data = $this->token->data();
+                        if ($this->student_model->studentId() == $this->token->data('referral_id')) {
+                            $this->render(alert('wrong','danger'),'page');
+                        } else
+                            redirect('checkout');
+                    }
+                } catch (Exception $e) {
+                }
+            }
+        }
+        $this->render('register', [
             'page_name' => 'Student Registration'
+        ]);
+    }
+    function checkout()
+    {
+        $this->render('checkout', [
+            'page_name' => 'Checkout'
         ]);
     }
     function program()
     {
         $amount = $saveAmount = 1578;
 
-        $array = [1000,500,100, 50, 10, 5, 2, 1];
+        $array = [1000, 500, 100, 50, 10, 5, 2, 1];
         $total = 0;
         $notes = [];
         foreach ($array as $num) {
@@ -24,15 +48,15 @@ class Site extends Site_Controller
             $notes[$num] = $myNote;
         }
         echo 'My Rupee : ' . $saveAmount . '<br>';
-        echo $total.'<br>';
+        echo $total . '<br>';
         // pre($notes);
         $str = '';
-        foreach($notes as $note => $count){
+        foreach ($notes as $note => $count) {
             // echo "<h3>$count Note of $note.</h3>";
-            $str .= str_repeat('+'.$note,$count);
-         
+            $str .= str_repeat('+' . $note, $count);
+
         }
-        echo '<h1 style="color:red">'.trim($str,'+') .'=' . $saveAmount.'</h1>';
+        echo '<h1 style="color:red">' . trim($str, '+') . '=' . $saveAmount . '</h1>';
 
         // $nohun = intval($amount / 100); // 
         // $amount = $amount % 100;
@@ -202,12 +226,11 @@ class Site extends Site_Controller
     function test()
     {
         // echo $this->gen_roll_no();
-        try{
+        try {
             $get = $this->student_model->show_remaining_days(3);
 
             pre($get);
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
         // echo ($this->ki_theme->isDiwali()) ? 'YES' : 'NO';

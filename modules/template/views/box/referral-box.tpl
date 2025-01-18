@@ -4,9 +4,9 @@
             alt="">
     </div>
     <div class="user-card-info">
-        <h2>Refer By <b class="text-success">Mohamed Yousef</b></h2>
-        <p><span>Course Name:</span> example@example.com</p>
-        <p><span>Duration:</span> Palestine, Gaza Strip</p>
-        <p><span>Price:</span> Web Developer</p>
+        <h2>Refer By <b class="text-success"></b></h2>
+        <p><span>Course Name:</span> </p>
+        <p><span>Duration:</span> </p>
+        <p><span>Price:</span> </p>
     </div>
 </div>

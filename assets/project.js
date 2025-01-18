@@ -83,12 +83,12 @@ $(document).ready(function () {
             data: new FormData(this),
         }).then((r) => {
             if (r.status) {
-                mySwal('Admission Successfully..', `
-                    Your Roll No. is <b>${r.roll_no}</b>
+                mySwal('Registration Successfully..', `
+                   
                 `).then((res) => {
                     if (res.isConfirmed) {
-                        location.reload();
-                        // location.href = base_url + 'student';
+                        // location.reload();
+                        location.href = r.url;
                     }
                 });
                 // location.href = r.url;

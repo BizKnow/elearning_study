@@ -29,12 +29,12 @@ class Student_model extends MY_Model
                 s.family_id,
                 s.password,
                 s.adhar_front as student_aadhar,
-                s.upload_docs as student_docs,
-                
+                s.upload_docs as student_docs'
+            )   /*   
                 state.*,
                 district.*'
-        )
-            /*
+       
+           
                     c.course_name,
                     c.fees as course_fees,
                     c.id as course_id,
@@ -52,10 +52,10 @@ class Student_model extends MY_Model
             */
             ->from('students as s')
             // ->where('s.status',1)
-            // ->join("course as c", "s.course_id = c.id ", 'left')
-            ->join('state', 'state.STATE_ID = s.state_id')
-            ->join('district', 'district.DISTRICT_ID = s.city_id and district.STATE_ID = state.STATE_ID')
-        ;
+            ->join("course as c", "s.course_id = c.id ", 'left');
+            // ->join('state', 'state.STATE_ID = s.state_id')
+            // ->join('district', 'district.DISTRICT_ID = s.city_id and district.STATE_ID = state.STATE_ID')
+        // ;
         // ->join('batch as b', "b.id = s.batch_id", 'left');
         if (CHECK_PERMISSION('ADMISSION_WITH_SESSION'))
             $this->db->select('s.session_id,ses.title as session')->join('session as ses', 'ses.id =  s.session_id', 'left');

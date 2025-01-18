@@ -7,6 +7,7 @@ class Api_Controller extends Ajax_Controller
         parent::__construct();
         $this->method = strtolower($this->input->server('REQUEST_METHOD'));
         $this->load->library('common/curl');
+        $this->load->helper('security'); // For security handling
     }
 
     protected function isPost()

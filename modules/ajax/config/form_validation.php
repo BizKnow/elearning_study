@@ -147,43 +147,46 @@ $config = array(
             'field' => 'name',
             'rules' => 'required'
         ),
+        // array(
+        //     'label' => 'Gender',
+        //     'field' => 'gender',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Date of Birth',
+        //     'field' => 'dob',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Center',
+        //     'field' => 'center_id',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Roll Number',
+        //     'field' => 'roll_no',
+        //     'rules' => 'required|is_unique[students.roll_no]',
+        //     'errors' => [
+        //         'is_unique' => 'Sorry, Your Admission failed, Please contact our Administrator.'
+        //     ]
+        // ),
+        // array(
+        //     'label' => 'Course',
+        //     'field' => 'course_id',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Time table',
+        //     'field' => 'batch_id',
+        //     'rules' => 'required'
+        // ),
         array(
-            'label' => 'Gender',
-            'field' => 'gender',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Date of Birth',
-            'field' => 'dob',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Center',
-            'field' => 'center_id',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Roll Number',
-            'field' => 'roll_no',
-            'rules' => 'required|is_unique[students.roll_no]',
-            'errors' => [
-                'is_unique' => 'Sorry, Your Admission failed, Please contact our Administrator.'
-            ]
-        ),
-        array(
-            'label' => 'Course',
-            'field' => 'course_id',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Time table',
-            'field' => 'batch_id',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Whatsapp Number',
+            'label' => 'Mobile Number',
             'field' => 'contact_number',
-            'rules' => 'required'
+            'rules' => 'required|is_unique[students.contact_number]',
+            'errors' => [
+                'is_unique' => 'This %s is already exists.'
+            ]
         ),
         array(
             'label' => 'Email',
@@ -198,31 +201,31 @@ $config = array(
             'field' => 'father_name',
             'rules' => 'required'
         ),
-        array(
-            'label' => 'Mother Name',
-            'field' => 'mother_name',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Address',
-            'field' => 'address',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'State',
-            'field' => 'state_id',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'City',
-            'field' => 'city_id',
-            'rules' => 'required'
-        ),
-        array(
-            'label' => 'Pincode',
-            'field' => 'pincode',
-            'rules' => 'required'
-        )
+        // array(
+        //     'label' => 'Mother Name',
+        //     'field' => 'mother_name',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Address',
+        //     'field' => 'address',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'State',
+        //     'field' => 'state_id',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'City',
+        //     'field' => 'city_id',
+        //     'rules' => 'required'
+        // ),
+        // array(
+        //     'label' => 'Pincode',
+        //     'field' => 'pincode',
+        //     'rules' => 'required'
+        // )
 
     ),
     'update_center_roll_no' => array(

@@ -131,6 +131,7 @@ if ($llsit->num_rows()) {
           <div class="row">
             <?php
             foreach($llsit->result() as $row){
+              $character = getFirstCharacter($row->course_name);
               echo '<div class="col-md-4">
             <div class="card border-danger">
                   <div class="card-header border-danger">
@@ -141,7 +142,7 @@ if ($llsit->num_rows()) {
                         </div>
                         <div class="col">
                           <div class="card-title">' . $row->course_name . '</div>
-                          <div class="card-subtitle">' . humnize_duration($row->duration, $courseRow->duration_type) . '</div>
+                          <div class="card-subtitle">' . humnize_duration($row->duration, $row->duration_type) . '</div>
                         </div>
                       </div>
                     </div>
@@ -162,6 +163,9 @@ if ($llsit->num_rows()) {
                     </table>
                   </div>
                   <div class="card-footer text-end border-danger">
+                    <button class="btn btn-primary">
+                      Refer Now
+                    </button>
                     <button class="btn btn-danger">
                       Purchase Now
                     </button>

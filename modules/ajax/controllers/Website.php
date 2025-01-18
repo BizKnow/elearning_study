@@ -6,8 +6,9 @@ class Website extends Ajax_Controller
     {
         $this->_update_profile('students');
     }
-    function upload_gallery_image(){
-        $this->response('data',$_FILES);
+    function upload_gallery_image()
+    {
+        $this->response('data', $_FILES);
     }
     public function fetch_attendance()
     {
@@ -228,14 +229,21 @@ class Website extends Ajax_Controller
     {
         if ($this->validation('student_admission')) {
             // $this->response('status', true);
-            $roll_no = $this->genrate_a_new_rollno();
-            $this->response('roll_no', $roll_no);
+            // $roll_no = $this->genrate_a_new_rollno();
+            // $this->response('roll_no', $roll_no);
             // $this->response($this->post());
             $data = $this->post();
+            $token = 0;
+            if (isset($data['token'])) {
+                $token = $data['token'];
+                $this->session->set_userdata('referral_token', $token);
+                unset($data['token']);
+            }
             $data['status'] = 0;
-            $data['roll_no'] = $roll_no;
+            // $data['roll_no'] = $roll_no;
             $data['added_by'] = isset($data['added_by']) ? $data['added_by'] : 'web';
             $data['admission_type'] = isset($data['admission_type']) ? $data['admission_type'] : 'offline';
+            /*
             // $data['type'] = 'center';
             unset($data['upload_docs']);
             $upload_docs_data = [];
@@ -258,8 +266,10 @@ class Website extends Ajax_Controller
             // $data['adhar_back'] = $this->file_up('adhar_back');
             $data['image'] = $this->file_up('image');
             $data['upload_docs'] = json_encode($upload_docs_data);
+            */
             $chk = $this->db->insert('students', $data);
             $this->response('status', $chk);
+            $this->response('url', base_url('checkout'));
             $this->session->set_userdata([
                 'student_login' => true,
                 'student_id' => $this->db->insert_id()

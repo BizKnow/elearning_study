@@ -50,6 +50,8 @@ class Ajax_Controller extends MY_Controller
 
     protected function errors()
     {
+        if($this->router->fetch_class() === 'v1')
+            return strip_tags(validation_errors());
         return validation_errors('<div class="alert alert-danger">', '</div>');
     }
 
