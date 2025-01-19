@@ -256,13 +256,13 @@ $template = $this->ki_theme->referral_template();
                                     <div class="card">
                                         <div class="card-body ">
                                             <div class="row">
-                                                <div class="form-group mb-4 col-lg-4 col-xs-12 col-sm-12 d-none">
+                                                <div class="form-group mb-4 col-lg-6 col-xs-12 col-sm-12 d-none">
                                                     <label class="form-label required">Admission Date</label>
                                                     <input readonly type="text" name="admission_date"
                                                         class="form-control" placeholder="Select Admission Date"
                                                         value="<?= $this->ki_theme->date() ?>">
                                                 </div>
-                                                <div class="form-group mb-4 col-lg-4 col-xs-12 col-sm-12">
+                                                <div class="form-group mb-4 col-lg-6 col-xs-12 col-sm-12">
                                                     <label class="form-label required required">Student
                                                         Name</label>
                                                     <input type="text" name="name" class="form-control"
@@ -271,12 +271,12 @@ $template = $this->ki_theme->referral_template();
 
 
 
-                                                <div class="form-group mb-4 col-lg-4 col-xs-12 col-sm-12">
+                                                <!-- <div class="form-group mb-4 col-lg-4 col-xs-12 col-sm-12">
                                                     <label class="form-label required">Father Name</label>
                                                     <input type="text" name="father_name" class="form-control"
                                                         placeholder="Enter Father Name">
-                                                </div>
-                                                <div class="form-group mb-4 col-lg-4 col-xs-12 col-sm-12">
+                                                </div> -->
+                                                <div class="form-group mb-4 col-lg-6 col-xs-12 col-sm-12">
                                                     <label class="form-label required">E-Mail ID</label>
                                                     <input type="email" name="email" class="form-control"
                                                         placeholder="Enter E-Mail ID">

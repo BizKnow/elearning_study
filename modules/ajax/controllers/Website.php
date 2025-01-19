@@ -349,7 +349,7 @@ class Website extends Ajax_Controller
     function student_login_form()
     {
         // sleep(5);
-        $rollno = $this->post('mobile');
+        $rollno = $this->post('contact_number');
         $password = $this->post('password');
         if ($this->validation('student_login_form')) {
 
@@ -377,7 +377,7 @@ class Website extends Ajax_Controller
                     $this->response('error', alert('Your Account is In-active. Please Contact Your Admin', 'danger'));
                 }
             } else {
-                $this->response('error', alert('Wrong Roll Number or Password.', 'danger'));
+                $this->response('error', alert('Wrong Mobile Number or Password.', 'danger'));
             }
         }
     }

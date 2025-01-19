@@ -16,7 +16,7 @@ class Site extends Site_Controller
                         $this->token->decode($token);
                         $data = $this->token->data();
                         if ($this->student_model->studentId() == $this->token->data('referral_id')) {
-                            $this->render(alert('wrong','danger'),'page');
+                            $this->render(alert('wrong', 'danger'), 'page');
                         } else
                             redirect('checkout');
                     }
@@ -28,11 +28,100 @@ class Site extends Site_Controller
             'page_name' => 'Student Registration'
         ]);
     }
+    function response()
+    {
+        if (isset($_GET['order_id'])) {
+            $this->render('response', [
+                'page_name' => 'Order Response'
+            ]);
+        } else
+            redirect(base_url());
+    }
+    function content($content){
+        $html = '<div class="container"><div class="row"><div class="col-md-12 p-4">'.$content.'</div></div></div>';
+        //$this->
+        $this->render($html, 'contnet');
+    }
     function checkout()
     {
-        $this->render('checkout', [
-            'page_name' => 'Checkout'
-        ]);
+        if ($this->input->post()) {
+            // pre($_POST);
+            $token = $_POST['token'];
+            $server_token = $this->session->userdata('referral_token');
+            // echo $server_token;
+            if ($server_token == $token) {
+                $data = $this->ki_theme->referral_data($token);
+                $referral_id = $data['referral_id'] ?? 0;
+                $time = time();
+
+                // pre($data);
+                if (isset($data['combo_id'])) {
+                    $check = $this->db->get_where('student_courses', [
+                        'student_id' => $data['student_id'],
+                        'combo_id' => $data['combo_id']
+                    ]);
+                    if ($check->num_rows() > 0) {
+                        $this->set_data('page_name','Already Purchased');
+                        $this->content(alert('Already Purchased..','danger'));
+                    } else {
+                        $list = $this->db->where('id', $data['combo_id'])->get('combo');
+                        if ($list->num_rows() > 0) {
+                            $combo = $list->row();
+                            if ($referral_id) {
+                                $this->db->set('wallet', 'wallet + ' . $combo->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                            }
+                            // pre($combo);
+                            $courses = json_decode($combo->courses, true);
+                            if (sizeof($courses) > 0) {
+                                foreach ($courses as $course) {
+                                    $getCourse = $this->db->get_where('course', ['id' => $course]);
+                                    if ($getCourse->num_rows() > 0) {
+                                        $course = $getCourse->row();
+                                        $this->db->insert('student_courses', [
+                                            'student_id' => $data['student_id'],
+                                            'course_id' => $course->id,
+                                            'starttime' => $time,
+                                            'status' => 1,
+                                            'enrollment_no' => $this->gen_roll_no(),
+                                            'added_via' => 'web',
+                                            'referral_id' => $data['referral_id'],
+                                            'amount' => $data['amount'],
+                                            'combo_id' => $combo->id
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                        redirect('response?order_id=' . $time);
+                    }
+                } else if (isset($data['course_id'])) {
+                    $getCourse = $this->db->get_where('course', ['id' => $data['course_id']]);
+                    if ($getCourse->num_rows() > 0) {
+                        $course = $getCourse->row();
+                        // pre($course, true);
+                        if ($referral_id) {
+                            $this->db->set('wallet', 'wallet + ' . $course->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                        }
+                        $this->db->insert('student_courses', [
+                            'student_id' => $data['student_id'],
+                            'course_id' => $course->id,
+                            'starttime' => $time,
+                            'status' => 1,
+                            'enrollment_no' => $this->gen_roll_no(),
+                            'added_via' => 'web',
+                            'referral_id' => $data['referral_id'],
+                            'amount' => $course->fees
+                        ]);
+                        redirect('response?order_id=' . $time);
+
+                    }
+                }
+            }
+        } else {
+            $this->render('checkout', [
+                'page_name' => 'Checkout'
+            ]);
+        }
     }
     function program()
     {

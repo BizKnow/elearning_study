@@ -82,21 +82,53 @@ class Ki_theme
             if ($token) {
                 $this->CI->token->decode($token);
                 $data = $this->CI->token->data();
-                if($this->CI->token->data('referral_id')){
-                    return $this->parse('template/box/referra-box',$data,true);
-                }
-                else if($this->CI->token->data('course_id')){
+                if ($this->CI->token->data('referral_id')) {
+                    return $this->parse('template/box/referra-box', $data, true);
+                } else if ($this->CI->token->data('course_id')) {
                     // return 'It is Course Code';
-                    return $this->parse('template/box/course-box',$data,true);
-                }
-                else if($this->CI->token->data('combo_id')){
+                    return $this->parse('template/box/course-box', $data, true);
+                } else if ($this->CI->token->data('combo_id')) {
                     // return 'It is Combo Code';
-                    return $this->parse('template/box/combo-box',$data,true);
+                    return $this->parse('template/box/combo-box', $data, true);
                 }
             }
         } catch (Exception $e) {
 
         }
+    }
+    function referral_data($token = false)
+    {
+        $studentId = $this->CI->session->userdata('student_id') ?? 0;
+        // $data = [];
+        $myData = ['student_id' => $studentId];
+        if (isset($_GET['token']))
+            $token = $_GET['token'];
+        try {
+            if ($token) {
+                $this->CI->token->decode($token);
+                // $data = $this->CI->token->data();
+                $myData['referral_id'] = ($this->CI->token->data('referral_id'));
+
+                if ($courseId = $this->CI->token->data('course_id')) {
+                    $get = $this->CI->db->where('id', $courseId)->get('course');
+                    if ($get->num_rows()) {
+                        $data = $get->row();
+                        $myData['amount'] = $data->fees;
+                        $myData['course_id'] = $data->id;
+                    }
+                } else if ($comboId = $this->CI->token->data('combo_id')) {
+                    $get = $this->CI->db->where('id', $comboId)->get('combo');
+                    if ($get->num_rows()) {
+                        $data = $get->row();
+                        $myData['amount'] = $data->amount;
+                        $myData['combo_id'] = $data->id;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+
+        }
+        return $myData;
     }
     function get_festival($date = 0)
     {

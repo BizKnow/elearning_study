@@ -196,11 +196,17 @@ $config = array(
                 'is_unique' => 'This %s is already exists.'
             ]
         ),
+        //password
         array(
-            'label' => 'Father Name',
-            'field' => 'father_name',
+            'label' => 'Password',
+            'field' => 'password',
             'rules' => 'required'
         ),
+        // array(
+        //     'label' => 'Father Name',
+        //     'field' => 'father_name',
+        //     'rules' => 'required'
+        // ),
         // array(
         //     'label' => 'Mother Name',
         //     'field' => 'mother_name',
@@ -340,7 +346,7 @@ $config = array(
     ),
     'student_login_form' => array(
         array(
-            'field' => 'mobile',
+            'field' => 'contact_number',
             'label' => 'Mobile No',
             'rules' => 'required'
         ),

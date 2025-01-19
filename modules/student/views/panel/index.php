@@ -1,5 +1,5 @@
 <style>
-  .card-stamp-icon{
+  .card-stamp-icon {
     left: 25px;
     top: -35px;
   }
@@ -30,21 +30,22 @@
             </div>
           </div>
         </div>
-        <?php
-        $check_course = $this->student_model->student_course([
-          'student_id' => $student_id
-        ]);
-        // pre($this->session->userdata());
-        if ($check_course->num_rows()) {
-          foreach ($check_course->result() as $row) {
-            try {
-              $courseRow = $this->student_model->show_remaining_days($row->id);
-              // $course = $this->db->get_where('course', [
-              //     'id' => $row->course_id
-              // ]);
-              $character = getFirstCharacter($courseRow->course_name);
+        <div class="row">
+          <?php
+          $check_course = $this->student_model->student_course([
+            'student_id' => $student_id
+          ]);
+          // pre($this->session->userdata());
+          if ($check_course->num_rows()) {
+            foreach ($check_course->result() as $row) {
+              try {
+                $courseRow = $this->student_model->show_remaining_days($row->id);
+                // $course = $this->db->get_where('course', [
+                //     'id' => $row->course_id
+                // ]);
+                $character = getFirstCharacter($courseRow->course_name);
 
-              echo '
+                echo '
             
             <div class="col-md-4">
             <div class="card border-success">
@@ -84,15 +85,16 @@
             
             ';
 
-            } catch (Exception $e) {
+              } catch (Exception $e) {
 
+              }
             }
+          } else {
+            echo alert('You don\'t have any course, Purchase First', 'danger');
           }
-        } else {
-          echo alert('You don\'t have any course, Purchase First', 'danger');
-        }
 
-        ?>
+          ?>
+        </div>
       </div>
     </div>
   </div>
@@ -130,7 +132,7 @@ if ($llsit->num_rows()) {
           </div>
           <div class="row">
             <?php
-            foreach($llsit->result() as $row){
+            foreach ($llsit->result() as $row) {
               $character = getFirstCharacter($row->course_name);
               echo '<div class="col-md-4">
             <div class="card border-danger">
@@ -152,10 +154,10 @@ if ($llsit->num_rows()) {
                   <div class="card-body p-0">
                     <table class="table table-striped table-bordered">
                       <tr>
-                        <th>Price</th><td>'.$row->fees.' {inr}</td>
+                        <th>Price</th><td>' . $row->fees . ' {inr}</td>
                       </tr>
                       <tr>
-                        <th>Start Now</th><td>'.date('Y-m-d').'</td>
+                        <th>Start Now</th><td>' . date('Y-m-d') . '</td>
                       </tr>
                       <tr>
                         <th>End by this date</th><td>2025-12-11</td>
