@@ -37,8 +37,9 @@ class Site extends Site_Controller
         } else
             redirect(base_url());
     }
-    function content($content){
-        $html = '<div class="container"><div class="row"><div class="col-md-12 p-4">'.$content.'</div></div></div>';
+    function content($content)
+    {
+        $html = '<div class="container"><div class="row"><div class="col-md-12 p-4">' . $content . '</div></div></div>';
         //$this->
         $this->render($html, 'contnet');
     }
@@ -61,8 +62,8 @@ class Site extends Site_Controller
                         'combo_id' => $data['combo_id']
                     ]);
                     if ($check->num_rows() > 0) {
-                        $this->set_data('page_name','Already Purchased');
-                        $this->content(alert('Already Purchased..','danger'));
+                        $this->set_data('page_name', 'This combo already Purchased');
+                        $this->content(alert('This combo already Purchased..', 'danger'));
                     } else {
                         $list = $this->db->where('id', $data['combo_id'])->get('combo');
                         if ($list->num_rows() > 0) {
@@ -95,25 +96,33 @@ class Site extends Site_Controller
                         redirect('response?order_id=' . $time);
                     }
                 } else if (isset($data['course_id'])) {
-                    $getCourse = $this->db->get_where('course', ['id' => $data['course_id']]);
-                    if ($getCourse->num_rows() > 0) {
-                        $course = $getCourse->row();
-                        // pre($course, true);
-                        if ($referral_id) {
-                            $this->db->set('wallet', 'wallet + ' . $course->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                    $check = $this->db->get_where('student_courses', [
+                        'student_id' => $data['student_id'],
+                        'course_id' => $data['course_id']
+                    ]);
+                    if ($check->num_rows() > 0) {
+                        $this->set_data('page_name', 'This Course already Purchased');
+                        $this->content(alert('This Course already Purchased..', 'danger'));
+                    } else {
+                        $getCourse = $this->db->get_where('course', ['id' => $data['course_id']]);
+                        if ($getCourse->num_rows() > 0) {
+                            $course = $getCourse->row();
+                            // pre($course, true);
+                            if ($referral_id) {
+                                $this->db->set('wallet', 'wallet + ' . $course->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                            }
+                            $this->db->insert('student_courses', [
+                                'student_id' => $data['student_id'],
+                                'course_id' => $course->id,
+                                'starttime' => $time,
+                                'status' => 1,
+                                'enrollment_no' => $this->gen_roll_no(),
+                                'added_via' => 'web',
+                                'referral_id' => $data['referral_id'],
+                                'amount' => $course->fees
+                            ]);
+                            redirect('response?order_id=' . $time);
                         }
-                        $this->db->insert('student_courses', [
-                            'student_id' => $data['student_id'],
-                            'course_id' => $course->id,
-                            'starttime' => $time,
-                            'status' => 1,
-                            'enrollment_no' => $this->gen_roll_no(),
-                            'added_via' => 'web',
-                            'referral_id' => $data['referral_id'],
-                            'amount' => $course->fees
-                        ]);
-                        redirect('response?order_id=' . $time);
-
                     }
                 }
             }
