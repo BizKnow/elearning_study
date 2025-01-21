@@ -169,7 +169,14 @@ $config['cms_setting'] = array(
         )
     )
 );
-$staticMenus = [];
+$staticMenus = array(
+    array(
+        'label' => 'Forms',
+        'type' => 'static_forms',
+        'icon' => array('file', 4),
+        'url' => 'cms/forms'
+    )
+);
 if (file_exists(THEME_PATH . 'config/menu.php')) { {
         require THEME_PATH . 'config/menu.php';
         $staticMenus[] = $menu;

@@ -267,6 +267,9 @@ class Website extends Ajax_Controller
             $data['image'] = $this->file_up('image');
             $data['upload_docs'] = json_encode($upload_docs_data);
             */
+            $data['image'] = $this->file_up('image');
+            $data['password'] = sha1($data['password']);
+            $data['status'] = 1;
             $chk = $this->db->insert('students', $data);
             $this->response('status', $chk);
             $this->response('url', base_url('checkout'));

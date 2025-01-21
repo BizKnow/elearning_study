@@ -63,7 +63,10 @@ class Site extends Site_Controller
                     ]);
                     if ($check->num_rows() > 0) {
                         $this->set_data('page_name', 'This combo already Purchased');
-                        $this->content(alert('This combo already Purchased..', 'danger'));
+                        $html = alert('This combo already Purchased..', 'danger');
+                        $html .= '<center>' . $this->ki_theme->set_attribute('target', '_blank')->set_class('btn btn-primary')->add_action('<i class="fa fa-home"></i> Go to Dashboard', base_url('student')) . '</center>';
+
+                        $this->content($html);
                     } else {
                         $list = $this->db->where('id', $data['combo_id'])->get('combo');
                         if ($list->num_rows() > 0) {
@@ -102,7 +105,10 @@ class Site extends Site_Controller
                     ]);
                     if ($check->num_rows() > 0) {
                         $this->set_data('page_name', 'This Course already Purchased');
-                        $this->content(alert('This Course already Purchased..', 'danger'));
+                        $html = alert('This Course already Purchased..', 'danger');
+                        $html .= '<center>' . $this->ki_theme->set_attribute('target', '_blank')->set_class('btn btn-primary')->add_action('<i class="fa fa-home"></i> Go to Dashboard', base_url('student')) . '</center>';
+
+                        $this->content($html);
                     } else {
                         $getCourse = $this->db->get_where('course', ['id' => $data['course_id']]);
                         if ($getCourse->num_rows() > 0) {

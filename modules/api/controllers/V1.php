@@ -93,6 +93,22 @@ class V1 extends Api_Controller
             $this->response('message', $e->getMessage());
         }
     }
+    function student_registration(){
+        if($this->isPost()){
+            if($this->validation('student_registration')){
+                $data = [
+                    'name' => $this->post('name'),
+                    'email' => $this->post('email'),
+                    'contact_number' => $this->post('mobile'),
+                    'password' => sha1($this->post('password')),
+                    'status' => 1
+                ];
+                $this->db->insert('students',$data);
+                $this->response('status', true);
+                $this->response('message','Student Registration Successfully...');
+            }
+        }
+    }
     function student_login()
     {
         if ($this->isPost()) {
