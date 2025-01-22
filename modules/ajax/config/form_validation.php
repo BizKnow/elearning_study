@@ -346,7 +346,7 @@ $config = array(
     ),
     'student_login_form' => array(
         array(
-            'field' => 'contact_number',
+            'field' => 'mobile',
             'label' => 'Mobile No',
             'rules' => 'required'
         ),
