@@ -5,6 +5,12 @@
         }
     }
 
+    @media screen and (max-width: 768px) {
+        .hide-on-mobile {
+            display: none;
+        }
+    }
+
     .gray-bg,
     .card,
     .form-control {
@@ -57,7 +63,7 @@
 <body>
     <header id="header" class="header">
         <div class="clearfix topBar">
-            <div class="container">
+            <div class="container" style="width:100%">
                 <div class="clearfix row">
                     <div class="col-md-4 logoWrap">
                         <a href="#" class="logo"><img src="{base_url}upload/{logo}" alt="" width="421" height="92"></a>
@@ -83,7 +89,7 @@
                                 ?>
                             </ul>
                         </div>
-                        <div class="clearfix conInfo">
+                        <div class="clearfix conInfo hide-on-mobile">
                             <a href="tel:{number}" class="mr-0 mr-xl-3">
                                 <i class="fa fa-phone mr-xl-2"></i>
                                 <span class="d-none d-xl-inline-block"> {number}</span>
@@ -249,7 +255,7 @@
             </div>
             <div class="clearfix copyright text-center">
                 <p>Copyright ©
-                        All Rights Reserved. {title} {YEAR}.
+                    All Rights Reserved. {title} {YEAR}.
                 </p>
             </div>
         </div>
