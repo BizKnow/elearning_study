@@ -352,7 +352,7 @@ class Website extends Ajax_Controller
     function student_login_form()
     {
         // sleep(5);
-        $rollno = $this->post('contact_number');
+        $rollno = $this->post('mobile');
         $password = $this->post('password');
         if ($this->validation('student_login_form')) {
 
