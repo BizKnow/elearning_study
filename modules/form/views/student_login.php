@@ -18,7 +18,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="" class="form-label mt-2 required">Mobile No.</label>
-                                <input type="text" name="contact_number" placeholder="Enter Roll No."
+                                <input type="text" name="mobile" placeholder="Enter Roll No."
                                     class="form-control">
                             </div>
                             <div class="form-group">
