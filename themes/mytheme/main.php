@@ -66,7 +66,7 @@
             <div class="container" style="width:100%">
                 <div class="clearfix row">
                     <div class="col-md-4 logoWrap">
-                        <a href="#" class="logo"><img src="{base_url}upload/{logo}" alt="" width="421" height="92"></a>
+                        <a href="https://rainboweduzone.com/" class="logo"><img src="{base_url}upload/{logo}" alt="" width="421" height="92"></a>
                     </div>
                     <div class="col-md-8 topBar-right">
                         <div class="clearfix">
