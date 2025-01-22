@@ -53,7 +53,6 @@ class Student extends MY_Controller
         redirect('student');
     }
 
-
     function pending_list()
     {
         $this->view('all', ['title' => 'Pending']);

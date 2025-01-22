@@ -75,7 +75,7 @@
                                 <?php
                                 if ($this->session->has_userdata("student_id")) {
                                     echo '<li><a href="{base_url}student" target="_blank"><i class="fa fa-dashboard"></i> Dashboard</a></li>';
-                                    echo '<li><a href="{base_url}student/logout" target="_blank"><i class="fa fa-power-off"></i> Logout</a></li>';
+                                    echo '<li><a href="{base_url}student/sign_out" target="_blank"><i class="fa fa-power-off"></i> Logout</a></li>';
                                 } else {
                                     $header_sections = $this->ki_theme->config('header_sections');
                                     if ($header_sections) {
