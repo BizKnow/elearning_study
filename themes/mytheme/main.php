@@ -66,22 +66,28 @@
             <div class="container" style="width:100%">
                 <div class="clearfix row">
                     <div class="col-md-4 logoWrap">
-                        <a href="https://rainboweduzone.com/" class="logo"><img src="{base_url}upload/{logo}" alt="" width="421" height="92"></a>
+                        <a href="https://rainboweduzone.com/" class="logo"><img src="{base_url}upload/{logo}" alt=""
+                                width="421" height="92"></a>
                     </div>
                     <div class="col-md-8 topBar-right">
                         <div class="clearfix">
                             <ul class="topLinks">
                                 <?php
-                                $header_sections = $this->ki_theme->config('header_sections');
-                                if ($header_sections) {
-                                    foreach ($header_sections as $index => $title) {
-                                        // $myTitle = $this->SiteModel->get_setting($index . '_text', $title);
-                                        $fields = $this->SiteModel->get_setting($index . '_links', '', true);
-                                        if ($fields) {
-                                            foreach ($fields as $value) {
-                                                $my_index = $this->ki_theme->parse_string($value->title);
-                                                $value = $value->link;
-                                                echo "<li><a href='$value' target='_blank'><span>$my_index</span></a></li>";
+                                if ($this->session->has_userdata("student_id")) {
+                                    echo '<li><a href="{base_url}student" target="_blank"><i class="fa fa-dashboard"></i> Dashboard</a></li>';
+                                    echo '<li><a href="{base_url}student/logout" target="_blank"><i class="fa fa-power-off"></i> Logout</a></li>';
+                                } else {
+                                    $header_sections = $this->ki_theme->config('header_sections');
+                                    if ($header_sections) {
+                                        foreach ($header_sections as $index => $title) {
+                                            // $myTitle = $this->SiteModel->get_setting($index . '_text', $title);
+                                            $fields = $this->SiteModel->get_setting($index . '_links', '', true);
+                                            if ($fields) {
+                                                foreach ($fields as $value) {
+                                                    $my_index = $this->ki_theme->parse_string($value->title);
+                                                    $value = $value->link;
+                                                    echo "<li><a href='$value' target='_blank'><span>$my_index</span></a></li>";
+                                                }
                                             }
                                         }
                                     }
