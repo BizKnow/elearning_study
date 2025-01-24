@@ -14,6 +14,8 @@
                         <div class="card-body">
                             <?php
                             $template = $this->ki_theme->referral_template($token);
+                            // pre($this->token->decode($token));
+                            
                             echo $template;
                             $detail = ($this->ki_theme->referral_data($token));
                             // echo form_hidden((array)$detail);

@@ -134,7 +134,11 @@ if ($llsit->num_rows()) {
             <?php
             foreach ($llsit->result() as $row) {
               $character = getFirstCharacter($row->course_name);
-              echo '<div class="col-md-4">
+              // pre($row);
+              $token = $this->token->encode([
+                'course_id' => $row->id
+            ]);
+              echo '<div class="col-md-4" '.$row->id.'>
             <div class="card border-danger">
                   <div class="card-header border-danger">
                     <div>
@@ -165,12 +169,9 @@ if ($llsit->num_rows()) {
                     </table>
                   </div>
                   <div class="card-footer text-end border-danger">
-                    <button class="btn btn-primary">
-                      Refer Now
-                    </button>
-                    <button class="btn btn-danger">
+                    <a target="_blank" href="{base_url}register?token='.$token.'" class="btn btn-danger">
                       Purchase Now
-                    </button>
+                    </a>
                   </div>
                 </div>
             

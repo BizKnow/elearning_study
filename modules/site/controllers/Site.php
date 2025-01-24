@@ -4,6 +4,14 @@ use chillerlan\QRCode\Data\Number;
 defined('BASEPATH') or exit('No direct script access allowed');
 class Site extends Site_Controller
 {
+    private $salt;
+    private $marchantId;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->salt = PHONEPAY_SALT;
+        $this->marchantId = PHONEPAY_MID;
+    }
     function register()
     {
         // echo 'YES';
@@ -49,7 +57,7 @@ class Site extends Site_Controller
             // pre($_POST);
             $token = $_POST['token'];
             $server_token = $this->session->userdata('referral_token');
-            // echo $server_token;
+
             if ($server_token == $token) {
                 $data = $this->ki_theme->referral_data($token);
                 $referral_id = $data['referral_id'] ?? 0;
@@ -59,7 +67,8 @@ class Site extends Site_Controller
                 if (isset($data['combo_id'])) {
                     $check = $this->db->get_where('student_courses', [
                         'student_id' => $data['student_id'],
-                        'combo_id' => $data['combo_id']
+                        'combo_id' => $data['combo_id'],
+                        'status' => 1
                     ]);
                     if ($check->num_rows() > 0) {
                         $this->set_data('page_name', 'This combo already Purchased');
@@ -85,7 +94,7 @@ class Site extends Site_Controller
                                             'student_id' => $data['student_id'],
                                             'course_id' => $course->id,
                                             'starttime' => $time,
-                                            'status' => 1,
+                                            // 'status' => 1,
                                             'enrollment_no' => $this->gen_roll_no(),
                                             'added_via' => 'web',
                                             'referral_id' => $data['referral_id'],
@@ -96,12 +105,16 @@ class Site extends Site_Controller
                                 }
                             }
                         }
-                        redirect('response?order_id=' . $time);
+                        // redirect('response?order_id=' . $time);
+                        // $this->redirect_to_payment($time);
+                        redirect('site/payment/' . $time);
+
                     }
                 } else if (isset($data['course_id'])) {
                     $check = $this->db->get_where('student_courses', [
                         'student_id' => $data['student_id'],
-                        'course_id' => $data['course_id']
+                        'course_id' => $data['course_id'],
+                        'status' => 1
                     ]);
                     if ($check->num_rows() > 0) {
                         $this->set_data('page_name', 'This Course already Purchased');
@@ -121,13 +134,14 @@ class Site extends Site_Controller
                                 'student_id' => $data['student_id'],
                                 'course_id' => $course->id,
                                 'starttime' => $time,
-                                'status' => 1,
+                                // 'status' => 1,
                                 'enrollment_no' => $this->gen_roll_no(),
                                 'added_via' => 'web',
                                 'referral_id' => $data['referral_id'],
                                 'amount' => $course->fees
                             ]);
-                            redirect('response?order_id=' . $time);
+                            redirect('site/payment/' . $time);
+                            // $this->redirect_to_payment($time);
                         }
                     }
                 }
@@ -136,6 +150,65 @@ class Site extends Site_Controller
             $this->render('checkout', [
                 'page_name' => 'Checkout'
             ]);
+        }
+    }
+    function payment($time)
+    {
+        $client = new \GuzzleHttp\Client();
+        $get = $this->db->select('s.*,sc.amount')
+                        ->from('students as s')
+                        ->join('student_courses as sc','s.id = sc.student_id AND sc.starttime = '.$time)
+                        ->get();
+        $row = $get->row();
+        // pre($row,true);
+        try {
+            $requestData = [
+                'merchantId' => PHONEPAY_MID,// $this->marchantId,
+                'merchantTransactionId' => $time,
+                'amount' => $row->amount * 100,
+                'merchantUserId' => $row->id,
+                'redirectUrl' => base_url('response'),
+                'callbackUrl' => base_url('response'),
+                'paymentInstrument' => [
+                    'type' => 'PAY_PAGE'
+                ],
+                'mobileNumber' => $row->contact_number
+            ];
+            // pre($requestData,true);
+
+            $requestJson = json_encode($requestData);
+
+            $base = base64_encode($requestJson);
+
+            $hasValue = base64_encode($requestJson) . '/pg/v1/pay' . PHONEPAY_SALT;
+            
+
+            $hashRequest = hash('sha256', $hasValue);
+
+            $hasFinalRequest = $hashRequest . "###1";
+            // exit($hasFinalRequest);
+            $mRequest['request'] = $base;
+            // pre($mRequest,true);
+            $response = $client->request('POST', 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', [
+
+                'body' => json_encode($mRequest),
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'accept' => 'application/json',
+                    'X-VERIFY' => $hasFinalRequest
+                ]
+            ]);
+
+            $decodeJson = json_decode($response->getBody()->getContents());
+
+            if ($decodeJson->success) {
+                $paymentUrl = $decodeJson->data->instrumentResponse->redirectInfo->url;
+                header("Location: " . $paymentUrl);
+            } else {
+                pre($decodeJson);
+            }
+        } catch (Exception $r) {
+            echo $r->getMessage();
         }
     }
     function program()

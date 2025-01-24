@@ -506,7 +506,7 @@ class Student_model extends MY_Model
         return $this->db->insert('student_courses', $data);
     }
     function get_non_purchase_courses(){
-        $this->db->select('*');
+        $this->db->select('*,course.id');
         $this->db->from('course');
         $this->db->join('student_courses', 'student_courses.course_id = course.id and student_courses.student_id = '.$this->studentId(),
         'left');

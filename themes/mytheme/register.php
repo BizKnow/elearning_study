@@ -345,19 +345,13 @@ $template = $this->ki_theme->referral_template();
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label for="" class="form-label mt-2 required">Mobile Number</label>
-                                                <input type="text" name="contact_number" placeholder="Enter Mobile Number."
+                                                <input type="text" name="mobile" placeholder="Enter Mobile Number."
                                                     class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label for="" class="form-label required">Password</label>
                                                 <input type="text" name="password" placeholder="Enter Password"
                                                     class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <p><i class="fa fa-bell"></i> If the password has not been created
-                                                    or changed, then enter 2 letters of your name and the year of
-                                                    your date of birth. <br>Password Example : <code> AJ1998</code>
-                                                </p>
                                             </div>
                                         </div>
                                         <div class="card-footer">

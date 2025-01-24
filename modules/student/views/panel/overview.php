@@ -23,24 +23,6 @@
                         <th>Email</th>
                         <td><a href="mailto:{email}">{email}</a></td>
                     </tr>
-                    <tr>
-                        <th>Father Name</th>
-                        <td>{father_name}</td>
-                        <th>Mother Name</th>
-                        <td>{mother_name}</td>
-                    </tr>
-                    <tr>
-                        <th>State Name</th>
-                        <td>{STATE_NAME}</td>
-                        <th>City Name</th>
-                        <td>{DISTRICT_NAME}</td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>{address}</td>
-                        <th>Pincode</th>
-                        <td>{pincode}</td>
-                    </tr>   
 
                 </table>
             </div>
