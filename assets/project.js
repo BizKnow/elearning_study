@@ -351,8 +351,8 @@ $(document).ready(function () {
             if (res.status) {
                 mySwal(`Welcome <b>${res.student_name}</b>`, 'Student Login Successfully.').then((r) => {
                     if (r.isConfirmed) {
-                        location.href = `${base_url}student/dashboard`;
-                        // location.reload();
+                        // location.href = `${base_url}student/dashboard`;
+                        location.reload();
                     }
                 })
             }
