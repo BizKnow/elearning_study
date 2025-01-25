@@ -63,14 +63,15 @@ class V1 extends Api_Controller
     }
     private function student_id()
     {
-        $headers = apache_request_headers();
-        $received_token = isset($headers['Authorization']) ? $headers['Authorization'] : '';
+        $headers = $this->input->request_headers();//getallheaders();
 
+        $received_token = isset($headers['Rainbowtoken']) ? $headers['Rainbowtoken'] : '';
+        if($received_token == '')
+            throw new Exception('Mission Rainbowtoken');
         $stored_token = $this->db->where([
             'token' => $received_token,
             'expired' => 0
         ])->get('api_tokens'); // Replace with DB call if needed
-
         if ($stored_token->num_rows() > 0) {
             return $stored_token->row('student_id');
         } else
@@ -99,7 +100,7 @@ class V1 extends Api_Controller
     private function generate_token($student_id)
     {
         $token = bin2hex(random_bytes(32));
-        $this->db->set('expired',1)->where('student_id',$student_id)->update('api_tokens');
+        $this->db->set('expired', 1)->where('student_id', $student_id)->update('api_tokens');
         $this->db->insert('api_tokens', [
             'student_id' => $student_id,
             'token' => $token
