@@ -67,7 +67,7 @@ class V1 extends Api_Controller
 
         $received_token = isset($headers['Rainbowtoken']) ? $headers['Rainbowtoken'] : '';
         if($received_token == '')
-            throw new Exception('Mission Rainbowtoken');
+            throw new Exception('Missing Rainbowtoken');
         $stored_token = $this->db->where([
             'token' => $received_token,
             'expired' => 0
