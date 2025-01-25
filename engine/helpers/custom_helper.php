@@ -458,6 +458,7 @@ function getYouTubeId($url)
         return false; // Not a valid YouTube URL
     }
 }
+
 function getFirstCharacter($string)
 {
     // Check if input is a string and not empty

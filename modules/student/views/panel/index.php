@@ -39,6 +39,17 @@
           if ($check_course->num_rows()) {
             foreach ($check_course->result() as $row) {
               try {
+                /*
+                $token = $this->token->encode([
+                  'student_id' => $row->student_id,
+                  'course_id' => $row->course_id
+                ]);
+                <div class="card-footer  text-end border-danger d-none">
+                    <a href="{base_url}student/study-material/'.$token.'" class="btn btn-primary">
+                      <i class="fa fa-eye"></i> Study Material
+                    </a>
+                  </div>
+                  */
                 $courseRow = $this->student_model->show_remaining_days($row->id);
                 // $course = $this->db->get_where('course', [
                 //     'id' => $row->course_id
@@ -77,6 +88,7 @@
                             </tr>
                         </table>
                   </div>
+                  
                 </div>
             
             </div>

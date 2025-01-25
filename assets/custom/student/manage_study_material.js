@@ -33,17 +33,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
             notEmpty: { message: 'Please Select a course' }
         }
     });
-    validation.addField('file', {
-        validators: {
-            notEmpty: { message: 'Please Select A File' },
-            file: {
-                extension: 'jpg,jpeg,png,gif,pdf',
-                type: 'image/jpeg,image/png,image/gif,application/pdf',
-                maxSize: 10485760, // 5 MB
-                message: 'The selected file is not valid. Allowed types: jpg, jpeg, png, gif and pdf. Maximum size: 10 MB.'
-            }
-        }
-    });
     study_table.DataTable({
         ajax : {
             url : ajax_url + 'student/list-study-material'

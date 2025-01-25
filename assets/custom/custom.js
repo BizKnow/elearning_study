@@ -1718,6 +1718,7 @@ $.AryaAjax = async function (options) {
                     success: function (data) {
                         if (data.uploading) {
                             var progress = Math.round((currentChunk / totalChunks) * 100);
+                            alert(1);
                             Swal.update({
                                 title: 'Uploading..',
                                 html: `

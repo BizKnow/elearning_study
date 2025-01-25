@@ -14,14 +14,15 @@ class Student extends MY_Controller
         try {
             $token = $this->uri->segment(3, 0);
             $this->token->decode($token);
-            $this->student_view('purchase-combo',$this->token->data());
+            $this->student_view('purchase-combo', $this->token->data());
         } catch (Exception $e) {
-            $this->student_view('purchase-combo',[
+            $this->student_view('purchase-combo', [
                 'error' => $e->getMessage(),
             ]);
         }
     }
-    function refer_to_earn(){
+    function refer_to_earn()
+    {
         $this->access_method();
         $this->student_view('refer-to-earn');
     }
@@ -252,20 +253,34 @@ class Student extends MY_Controller
                 // throw new Exception('HELLO');
                 $this->token->decode($view);
                 $id = ($this->token->data('id'));
-                $get = $this->student_model->get_student_study(['material_id' => $id]);
+                $student_id = ($this->token->data('student_id'));
+                if ($student_id == $this->session->userdata('student_id')) {
+                    $get = $this->db->where(['material_id' => $id])->get('study_material');
 
-                if (!$get->num_rows())
-                    throw new Exception('Not Found..');
-                // echo $this->token->expiredOn();
-                $row = $get->row();
-                $file = $row->material_file;
-                $this->load->view('panel/study', ['url' => base_url('assets/student-study/' . $file)]);
+                    if (!$get->num_rows())
+                        throw new Exception('Material Not Found..');
+                    // echo $this->token->expiredOn();
+                    $row = $get->row();
+                    if ($row->file_type == 'file') {
+                        $file = $row->file;
+                        $this->load->view('panel/study', ['url' => base_url('assets/student-study/' . $file)]);
+                    } else if ($row->file_type == 'youtube') {
+                        if ($videoId = getYouTubeId($row->file)) {
+                            // echo $videoId;
+                            $this->load->view('panel/youtube-study', ['id' => $videoId]);
+
+                        } else
+                            throw new Exception('Invalid File..');
+                    } else
+                        throw new Exception('Something went wrong.');
+                } else
+                    throw new Exception('This link not available..');
 
             } catch (Exception $e) {
-
+                echo $e->getMessage();
             }
         } else
-            $this->student_view('study-material');
+            $this->student_view('study-material', ['isValid' => true]);
     }
 }
 ?>

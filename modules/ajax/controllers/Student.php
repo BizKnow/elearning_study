@@ -671,8 +671,13 @@ class Student extends Ajax_Controller
         //     $this->db->insert('study_material', $data);
         // }
         if ($post = $this->input->post()) {
-            $this->response('status', true);
-            $data = $this->post();
+            $data = [
+                'file_type' => $post['file_type'],
+                'course_id' => $post['course_id'],
+                'title' => $post['title'],
+                'description' => $post['description'],
+                'material_id' => time()
+            ];
             if ($post['file_type'] == 'file') {
                 $this->chunkUpload('study-mat');
                 $data['file'] = $this->post('_file_name');
@@ -683,7 +688,7 @@ class Student extends Ajax_Controller
                 unset($data['youtube_link']);
             }
             $data['upload_by'] = $this->student_model->login_type();
-            $this->db->insert('study_material', $data);
+            $this->response('status', $this->db->insert('study_material', $data));
         }
     }
 
@@ -746,17 +751,19 @@ class Student extends Ajax_Controller
             'url' => base_url('id-card/' . $this->ki_theme->encrypt($this->post('student_id')))
         ]);
     }
-    function assign_course(){
+    function assign_course()
+    {
 
-        $this->response('html',$this->set_data($this->post())->template('assign-course'));
+        $this->response('html', $this->set_data($this->post())->template('assign-course'));
     }
-    function do_assign_course(){
-        if($this->student_model->student_course($this->post())->num_rows()){
-            $this->response('error','This course already assigned, please refresh page and check it..');
-        }
-        else{
-            
-            $this->response('status',
+    function do_assign_course()
+    {
+        if ($this->student_model->student_course($this->post())->num_rows()) {
+            $this->response('error', 'This course already assigned, please refresh page and check it..');
+        } else {
+
+            $this->response(
+                'status',
                 $this->student_model->add_student_course([
                     'student_id' => $this->post('student_id'),
                     'course_id' => $this->post('course_id'),
