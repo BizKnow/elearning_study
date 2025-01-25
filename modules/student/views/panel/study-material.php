@@ -1,6 +1,6 @@
 <?php
 $login_id = $this->student_model->studentId();
-$list = $this->db->group_by('course_id')->get_where('student_courses', [
+$list = $this->db->get_where('student_courses', [
     'student_id' => $login_id
 ]);
 if ($list->num_rows()) {
