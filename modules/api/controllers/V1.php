@@ -93,9 +93,10 @@ class V1 extends Api_Controller
             $this->response('message', $e->getMessage());
         }
     }
-    function student_registration(){
-        if($this->isPost()){
-            if($this->validation('student_registration')){
+    function student_registration()
+    {
+        if ($this->isPost()) {
+            if ($this->validation('student_registration')) {
                 $data = [
                     'name' => $this->post('name'),
                     'email' => $this->post('email'),
@@ -103,9 +104,20 @@ class V1 extends Api_Controller
                     'password' => sha1($this->post('password')),
                     'status' => 1
                 ];
-                $this->db->insert('students',$data);
+                $this->db->insert('students', $data);
                 $this->response('status', true);
-                $this->response('message','Student Registration Successfully...');
+                $token = bin2hex(random_bytes(32));
+                unset($data['password']);
+                $data['mobile'] = $data['contact_number'];
+                unset($data['contact_number']);
+                unset($data['status']);
+                $this->session->set_userdata([
+                    'token' => $token,
+                    'student_id' => $this->db->insert_id(),//->student_id
+                ]);
+                $this->response('token', $token);
+                $this->response('details', $data);
+                $this->response('message', 'Student Registration Successfully...');
             }
         }
     }
@@ -131,6 +143,11 @@ class V1 extends Api_Controller
                             $this->session->set_userdata([
                                 'token' => $token,
                                 'student_id' => $row->student_id
+                            ]);
+                            $this->response('details', [
+                                'name' => $row->student_name,
+                                'email' => $row->email,
+                                'mobile' => $row->contact_number,
                             ]);
                             $this->response('token', $token);
                             $this->response('status', true);

@@ -57,10 +57,10 @@ class Student_model extends MY_Model
             // ->join('district', 'district.DISTRICT_ID = s.city_id and district.STATE_ID = state.STATE_ID')
         // ;
         // ->join('batch as b', "b.id = s.batch_id", 'left');
-        if (CHECK_PERMISSION('ADMISSION_WITH_SESSION'))
-            $this->db->select('s.session_id,ses.title as session')->join('session as ses', 'ses.id =  s.session_id', 'left');
-        if (!isset($without_admission_status))
-            $this->db->where('s.admission_status', isset($admission_status) ? $admission_status : 1);
+        // if (CHECK_PERMISSION('ADMISSION_WITH_SESSION'))
+        //     $this->db->select('s.session_id,ses.title as session')->join('session as ses', 'ses.id =  s.session_id', 'left');
+        // if (!isset($without_admission_status))
+        //     $this->db->where('s.admission_status', isset($admission_status) ? $admission_status : 1);
         // if (($this->isCenter() and $withCenter) or ($case == 'center' and isset($center_id)))
         //     $this->db->join('centers as ce', 'ce.id = s.center_id AND s.center_id = ' . (isset($center_id) ? $center_id : $this->loginId()));
         // else
@@ -192,7 +192,6 @@ class Student_model extends MY_Model
                 break;
             case 'via_contact_number':
                 $this->db->where('s.contact_number', $contact_number);
-
                 break;
             case 'roll_no':
                 $this->db->where('s.roll_no', $roll_no);
