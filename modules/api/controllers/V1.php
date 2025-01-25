@@ -66,10 +66,13 @@ class V1 extends Api_Controller
         $headers = apache_request_headers();
         $received_token = isset($headers['Authorization']) ? $headers['Authorization'] : '';
 
-        $stored_token = $this->session->userdata('token'); // Replace with DB call if needed
+        $stored_token = $this->db->where([
+            'token' => $received_token,
+            'expired' => 0
+        ])->get('api_tokens'); // Replace with DB call if needed
 
-        if ($stored_token === $received_token) {
-            return $this->session->userdata('student_id');
+        if ($stored_token->num_rows() > 0) {
+            return $stored_token->row('student_id');
         } else
             throw new Exception('Token Expired.');
     }
@@ -93,6 +96,16 @@ class V1 extends Api_Controller
             $this->response('message', $e->getMessage());
         }
     }
+    private function generate_token($student_id)
+    {
+        $token = bin2hex(random_bytes(32));
+        $this->db->set('expired',1)->where('student_id',$student_id)->update('api_tokens');
+        $this->db->insert('api_tokens', [
+            'student_id' => $student_id,
+            'token' => $token
+        ]);
+        return $token;
+    }
     function student_registration()
     {
         if ($this->isPost()) {
@@ -105,16 +118,14 @@ class V1 extends Api_Controller
                     'status' => 1
                 ];
                 $this->db->insert('students', $data);
+                $student_id = $this->db->insert_id();
                 $this->response('status', true);
-                $token = bin2hex(random_bytes(32));
+                // $token = bin2hex(random_bytes(32));
+                $token = $this->generate_token($student_id);
                 unset($data['password']);
                 $data['mobile'] = $data['contact_number'];
                 unset($data['contact_number']);
                 unset($data['status']);
-                $this->session->set_userdata([
-                    'token' => $token,
-                    'student_id' => $this->db->insert_id(),//->student_id
-                ]);
                 $this->response('token', $token);
                 $this->response('details', $data);
                 $this->response('message', 'Student Registration Successfully...');
@@ -138,12 +149,9 @@ class V1 extends Api_Controller
                             $stdPassword = sha1($stdPassword);
                         }
                         if ($stdPassword == sha1($password)) {
-                            // $this->response('data', $row);
-                            $token = bin2hex(random_bytes(32));
-                            $this->session->set_userdata([
-                                'token' => $token,
-                                'student_id' => $row->student_id
-                            ]);
+
+                            $token = $this->generate_token($row->student_id);
+
                             $this->response('details', [
                                 'name' => $row->student_name,
                                 'email' => $row->email,
