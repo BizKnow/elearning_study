@@ -9,8 +9,8 @@ class Site extends Site_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->salt = PHONEPAY_SALT;
-        $this->marchantId = PHONEPAY_MID;
+        $this->salt = defined('PHONEPAY_SALT') ? PHONEPAY_SALT : '';
+        $this->marchantId = defined('PHONEPAY_MID') ? PHONEPAY_MID : '';
     }
     function register()
     {
