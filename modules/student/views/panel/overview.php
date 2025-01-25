@@ -18,8 +18,14 @@
             <div class="card-body p-0">
                 <table class="table table-bordered">
                     <tr>
+                        <th>Student Name</th>
+                        <td>{student_name}</td>
+                    </tr>
+                    <tr>
                         <th>Mobile</th>
-                        <td><a href="tel:{contact_number}">{contact_number}</a> <label class="badge badge-info text-capitalize">{contact_no_type}</label></td>
+                        <td><a href="tel:{contact_number}">{contact_number}</a></td>
+                    </tr>
+                    <tr>
                         <th>Email</th>
                         <td><a href="mailto:{email}">{email}</a></td>
                     </tr>

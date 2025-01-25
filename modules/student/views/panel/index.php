@@ -6,7 +6,7 @@
 </style>
 <div class="row">
   <div class="col-12 mt-3 mb-3">
-    <div class="card card-md sticky-top">
+    <div class="card card-md ">
       <div class="card-stamp card-stamp-lg">
         <div class="card-stamp-icon bg-primary">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -26,38 +26,37 @@
           <div class="col-10">
             <h3 class="h1">Purchased Course(s)</h3>
             <div class="markdown text-secondary">
-
             </div>
           </div>
         </div>
         <div class="row">
           <?php
           $check_course = $this->student_model->student_course([
-            'student_id' => $student_id
+            'student_id' => $student_id,
+            'status' => 1
           ]);
           // pre($this->session->userdata());
           if ($check_course->num_rows()) {
             foreach ($check_course->result() as $row) {
               try {
-                /*
-                $token = $this->token->encode([
+                $pdfToken = $this->token->encode([
                   'student_id' => $row->student_id,
-                  'course_id' => $row->course_id
+                  'course_id' => $row->course_id,
+                  'file_type' => 'file'
                 ]);
-                <div class="card-footer  text-end border-danger d-none">
-                    <a href="{base_url}student/study-material/'.$token.'" class="btn btn-primary">
-                      <i class="fa fa-eye"></i> Study Material
-                    </a>
-                  </div>
-                  */
+                
+                $videoToken = $this->token->encode([
+                  'student_id' => $row->student_id,
+                  'course_id' => $row->course_id,
+                  'file_type' => 'youtube'
+                ]);
                 $courseRow = $this->student_model->show_remaining_days($row->id);
                 // $course = $this->db->get_where('course', [
                 //     'id' => $row->course_id
                 // ]);
+                $expred = $courseRow->status === 'Expired';
                 $character = getFirstCharacter($courseRow->course_name);
-
                 echo '
-            
             <div class="col-md-4">
             <div class="card border-success">
                   <div class="card-header border-success">
@@ -88,23 +87,28 @@
                             </tr>
                         </table>
                   </div>
-                  
+                  <div class="card-footer d-flex ">
+                    ';
+                    if($expred){
+                        echo alert('This Course was expired','danger p-3 m-0');
+                    }
+                    else{
+                        echo '
+                    <a href="{base_url}student/course-study-material/'.$pdfToken.'" class="btn me-2 btn-green "><i class="fa text-red fa-file-pdf me-2"></i> PDF File(s)</a>
+                    <a href="{base_url}student/course-study-material/'.$videoToken.'" class="btn btn-green "><i class="fab text-red fa-youtube me-2"></i> Video Lecture(s)</a>
+                        ';
+                }
+                    echo '
+                  </div>
                 </div>
-            
             </div>
-            
-            
-            
             ';
-
               } catch (Exception $e) {
-
               }
             }
           } else {
             echo alert('You don\'t have any course, Purchase First', 'danger');
           }
-
           ?>
         </div>
       </div>
@@ -114,11 +118,11 @@
 <?php
 $llsit = $this->student_model->get_non_purchase_courses();
 if ($llsit->num_rows()) {
+  // echo $this->db->last_query();
   ?>
-
   <div class="row">
     <div class="col-12 mt-3 mb-3">
-      <div class="card card-md sticky-top">
+      <div class="card card-md ">
         <div class="card-stamp card-stamp-lg">
           <div class="card-stamp-icon bg-danger">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -138,7 +142,6 @@ if ($llsit->num_rows()) {
             <div class="col-10">
               <h3 class="h1">For Purchase</h3>
               <div class="markdown text-secondary">
-
               </div>
             </div>
           </div>
@@ -149,8 +152,11 @@ if ($llsit->num_rows()) {
               // pre($row);
               $token = $this->token->encode([
                 'course_id' => $row->id
-            ]);
-              echo '<div class="col-md-4" '.$row->id.'>
+              ]);
+              $total_days = (int) calculate_course_days($row->duration, $row->duration_type);
+              $end_date = new DateTime();
+              $end_date->modify("+$total_days days");
+              echo '<div class="col-md-4" ' . $row->id . '>
             <div class="card border-danger">
                   <div class="card-header border-danger">
                     <div>
@@ -176,17 +182,28 @@ if ($llsit->num_rows()) {
                         <th>Start Now</th><td>' . date('Y-m-d') . '</td>
                       </tr>
                       <tr>
-                        <th>End by this date</th><td>2025-12-11</td>
+                        <th>End by this date</th><td>' . $end_date->format('Y-m-d') . '</td>
                       </tr>
                     </table>
                   </div>
-                  <div class="card-footer text-end border-danger">
-                    <a target="_blank" href="{base_url}register?token='.$token.'" class="btn btn-danger">
+                  <div class="card-footer text-end border-danger">';
+              $checkPayment = $this->db->where([
+                'combo_id' => 0,
+                'course_id' => $row->id,
+                'student_id' => $student_id,
+                'status' => 0
+              ])->get('student_courses');
+              // echo $this->db->last_query();
+              if ($checkPayment->num_rows()) {
+                  echo '<a class="btn btn-warning" href="{base_url}site/payment/'.$checkPayment->row('starttime').'">Try Again.</a>';
+              } else {
+                echo '<a target="_blank" href="{base_url}register?token=' . $token . '" class="btn btn-danger">
                       Purchase Now
-                    </a>
+                    </a>';
+              }
+              echo '
                   </div>
                 </div>
-            
             </div>';
             }
             // ... rest of the code

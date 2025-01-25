@@ -51,12 +51,23 @@ class Assets extends MY_Controller
     {
         $file = ($this->uri->segment(3, 0));
         if ($this->student_model->isStudent() or $this->center_model->isAdminOrCenter()) {
+            if ($this->uri->segment(4, 0) === 'preview')
+                $this->load->view('student/panel/study', ['url' => base_url('assets/student-study/' . $file)]);
+            else
+                $this->_view('study-mat/' . $file);
 
-            $this->_view('study-mat/' . $file);
         } else {
             $this->output->set_status_header(403);
             $this->output->set_output("Permission Denied: You do not have access to this file.");
 
+        }
+    }
+    function youtube()
+    {
+        $file = ($this->uri->segment(3, 0));
+        // exit($file);
+        if ($file) {
+            $this->load->view('student/panel/youtube-study', ['id' => $file, 'title' => 'Play Video']);
         }
     }
     function all_files()

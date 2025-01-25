@@ -33,7 +33,7 @@
                                 if ($this->session->has_userdata("student_id")) {
                                     // echo '<div class="col-md-12">';
                                     // echo alert('HII');
-                                    echo $this->ki_theme->set_class('btn btn-outline-success')->button('<span><i class="fa fa-sign-in"></i> Login in</span>', 'submit');
+                                    echo $this->ki_theme->set_class('btn btn-outline-primary')->add_action('<span><i class="fa fa-sign-in"></i> Go to Dashboard</span>', 'student/profile');
 
                                     // echo '</div>';
                                 }

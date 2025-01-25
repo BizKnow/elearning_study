@@ -283,6 +283,18 @@ const hourConvert = (timeString) => {
     }
     return output;
 }
+$(document).on('keyup','#search-study',function(){
+    var searchText = $(this).val().toLowerCase();
+    // alert(search)
+    $(this).closest('.card').find('.card').each(function(){
+        let cardText = $(this).data('text').toLowerCase();
+        if (cardText.includes(searchText)) {
+            $(this).closest('.col-md-4').removeClass('d-none');
+        } else {
+            $(this).closest('.col-md-4').addClass('d-none');
+        }
+    })
+})
 const my_template = (selectorId, Data = false) => {
     var deferred = $.Deferred();
     var templateSource = document.getElementById(selectorId);
@@ -303,29 +315,7 @@ const my_template = (selectorId, Data = false) => {
     }
     return deferred.promise();
 }
-const select2Student = (element) => {
-    $(element).select2({
-        templateSelection: optionsAjaxStudents,
-        templateResult: optionsAjaxStudents,
-        ajax: {
-            url: ajax_url + 'student/filter-for-select',
-            type: 'POST',
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                // log(data);
-                return data;
-            },
-            error: function (x, v, c) {
-                log(x.responseText, v, c);
-            },
-            cache: true,
-            minimumInputLength: 3, // Set the minimum number of characters before making a request
-            placeholder: 'Search for Students...',
-            escapeMarkup: function (markup) { return markup; } // Allows markup for formatting results
-        }
-    });
-}
+
 const handleImageError = (element) => {
     element.src = `${base_url}assets/dark-placeholder.png`; // Replace with the path to your placeholder image
     element.alt = 'Deleted File';

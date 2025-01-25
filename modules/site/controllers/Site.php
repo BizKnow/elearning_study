@@ -32,9 +32,12 @@ class Site extends Site_Controller
                 }
             }
         }
-        $this->render('register', [
-            'page_name' => 'Student Registration'
-        ]);
+        else{
+            // echo 'YES';
+            $this->render('register', [
+                'page_name' => 'Student Registration'
+            ]);
+        }
     }
     function response()
     {

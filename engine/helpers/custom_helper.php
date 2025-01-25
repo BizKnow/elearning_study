@@ -458,7 +458,24 @@ function getYouTubeId($url)
         return false; // Not a valid YouTube URL
     }
 }
+function getYouTubeThumbnail($videoID, $quality = 'maxresdefault') {
+    // YouTube thumbnail base URL
+    $baseUrl = "https://img.youtube.com/vi/";
 
+    // Thumbnail URL
+    $thumbnailUrl = $baseUrl . $videoID . "/" . $quality . ".jpg";
+
+    // Check if the thumbnail exists
+    $headers = get_headers($thumbnailUrl, 1);
+
+    // Return thumbnail URL if valid
+    if (strpos($headers[0], '200')) {
+        return $thumbnailUrl;
+    } else {
+        // Fallback to a lower resolution if maxresdefault is not available
+        return $baseUrl . $videoID . "/hqdefault.jpg";
+    }
+}
 function getFirstCharacter($string)
 {
     // Check if input is a string and not empty
@@ -484,7 +501,7 @@ function calculate_course_days($duration_value, $duration_type)
             break;
         case 'semesters':
         case 'semester':
-            $total_days = $duration_value * 182.5;
+            $total_days = $duration_value * 182;
             break;
         default:
             $total_days = 0;

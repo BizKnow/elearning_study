@@ -8,6 +8,7 @@ class V1 extends Api_Controller
         $this->response = ['status' => false];
         $this->select = [
             'courses' => [
+                'id',
                 'course_name',
                 'fees as amount',
                 "CONCAT(duration, ' ', duration_type) AS duration",

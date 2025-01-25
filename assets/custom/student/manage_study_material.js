@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function (e) {
     const validation = MyFormValidation(form);
     const file_type = $('select[name="file_type"]');
 
-    file_type.on('change',function(){
+    file_type.on('change', function () {
         // alert(this.value);
-        if(this.value == 'file'){
-            $('.file').removeClass('d-none').find('input').attr('required','required');
+        if (this.value == 'file') {
+            $('.file').removeClass('d-none').find('input').attr('required', 'required');
             $('.youtube').addClass('d-none').find('input').removeAttr('required');;
         }
-        else{            
-            $('.youtube').removeClass('d-none').find('input').attr('required','required');
+        else {
+            $('.youtube').removeClass('d-none').find('input').attr('required', 'required');
             $('.file').addClass('d-none').find('input').removeAttr('required');
         }
     })
@@ -34,44 +34,58 @@ document.addEventListener('DOMContentLoaded', function (e) {
         }
     });
     study_table.DataTable({
-        ajax : {
-            url : ajax_url + 'student/list-study-material'
+        ajax: {
+            url: ajax_url + 'student/list-study-material'
         },
-        column : [
-            {'data':null},
-            {'data':null},
-            {'data':null},
-            {'data':null}
+        column: [
+            { 'data': null },
+            { 'data': null },
+            { 'data': null },
+            { 'data': null }
         ],
-        columnDefs : [
+        columnDefs: [
             {
-                targets : 0,
-                render : function(data,type,row){
+                targets: 0,
+                render: function (data, type, row) {
                     return `${row.course_name} `;
                 }
             },
             {
-                targets : 1,
-                render : function(data,type,row){
+                targets: 1,
+                render: function (data, type, row) {
                     return row.title;
                 }
             },
             {
-                targets : 2,
-                render : function(data,type,row){
-                    return `<a href="${base_url}assets/student-study/${row.file}" target="_blank" class="btn btn-info btn-xs btn-sm"><i class="fa fa-eye"></i> File</a>`;
+                targets: 2,
+                render: function (data, type, row) {
+                    if (row.file_type == 'youtube') {
+                        var url = row.file;
+                        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+
+                        const match = url.match(youtubeRegex);
+
+                        // If URL matches the regex, extract the video ID and filter it
+                        if (match) {
+                            const videoId = match[1];
+                            return `<a href="${base_url}assets/youtube/${videoId}" target="_blank" class="btn btn-info btn-xs btn-sm"><i class="fa fa-eye"></i> File</a>`;
+
+                        }
+                    }
+                    else
+                        return `<a href="${base_url}assets/student-study/${row.file}/preview" target="_blank" class="btn btn-info btn-xs btn-sm"><i class="fa fa-eye"></i> File</a>`;
                 }
             },
             {
-                targets : -1,
-                render : function(data,type,row){
+                targets: -1,
+                render: function (data, type, row) {
                     return `
-                            ${deleteBtnRender(1,row.material_id,'Study Material')}
+                            ${deleteBtnRender(1, row.material_id, 'Study Material')}
                             `;
                 }
             },
         ]
-    }).on('draw',function(r){
+    }).on('draw', function (r) {
         handleDeleteRows('student/delete-study-material');
         study_table.find('.assign').on('click', function () {
             var rowData = study_table.DataTable().row($(this).closest('tr')).data();
@@ -100,21 +114,21 @@ document.addEventListener('DOMContentLoaded', function (e) {
                                 student_id: $(this).val(),
                                 material_id: rowData.material_id,
                                 center_id: $(this).data('center_id'),
-                                check_status : checkStatus
+                                check_status: checkStatus
                             }
                         }).then((e) => {
                             log(e);
                             toastr.clear();
-                            if(e.status)
+                            if (e.status)
                                 toastr.success(`Study Material ${checkStatus ? 'Assigned' : 'Removed'} Successfully..`);
                             else
                                 toastr.error('Something Went Wrong!');
                         });
                     })
                 }
-                else{
+                else {
                     // alert(4);
-                    SwalWarning('Alert','Students are not found on this Institute..');
+                    SwalWarning('Alert', 'Students are not found on this Institute..');
                 }
             })
         })
@@ -125,9 +139,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
         file = file_type.val() == 'file' ? file : null;
         $.AryaAjax({
             url: 'student/upload-study-material',
-            file : file,
+            file: file,
             data: new FormData(form),
-            validation: validation,            
+            validation: validation,
         }).then((s) => {
             log(s);
             showResponseError(s);
@@ -140,5 +154,5 @@ document.addEventListener('DOMContentLoaded', function (e) {
     // }
     // study_table.DataTable();
 
-    
+
 });

@@ -26,26 +26,10 @@ class Student extends MY_Controller
         $this->access_method();
         $this->student_view('refer-to-earn');
     }
-    function my_exam()
-    {
-        $this->student_view('my-exam');
-    }
     function dashboard()
     {
         redirect('student/profile');
         // $this->student_view('profile');
-    }
-    function marksheets()
-    {
-        $this->student_view('marksheets');
-    }
-    function admit_card()
-    {
-        $this->student_view('admit-card');
-    }
-    function certificate()
-    {
-        $this->student_view('certificate');
     }
     function sign_out()
     {
@@ -84,64 +68,6 @@ class Student extends MY_Controller
     {
         $this->view('all');
     }
-    function attendance()
-    {
-        $this->view('attendance');
-    }
-    function attendance_report()
-    {
-        $this->view('attendance');
-    }
-    function generate_admit_card()
-    {
-        $this->view('generate-admit-card');
-    }
-    function get_admit_card()
-    {
-        $this->view('get-admit-card');
-    }
-    function list_admit_card()
-    {
-        $this->view('list-admit-card');
-    }
-    function collect_fees() // old of collect_student_fees
-    {
-        $this->access_method();
-        $this->view('collect-fees');
-    }
-    function collect_student_fees() // updated from collect_fees
-    {
-        $this->view('collect-student-fees');
-    }
-    function search_fees_payment()
-    {
-        $this->ki_theme->breadcrumb_action_html('filter_fee_record', true);
-        $this->view('search-fees-payment');
-    }
-    function generate_certificate()
-    {
-        $this->ki_theme->get_wallet_amount('student_certificate_fees');
-
-        $this->view('generate-ceriticate');
-    }
-    function get_certificate()
-    {
-        $this->view('get-certificate');
-    }
-    function create_marksheet()
-    {
-        $this->ki_theme->get_wallet_amount('student_marksheet_fees');
-
-        $this->view('create-marksheet');
-    }
-    function list_marksheet()
-    {
-        $this->view('list-marksheet');
-    }
-    function get_marksheet()
-    {
-        $this->view('get-marksheet');
-    }
     function assign_course()
     {
         $this->view('assign-course');
@@ -149,7 +75,7 @@ class Student extends MY_Controller
     function profile($stdId = 0, $tab = 'overview')
     {
         $tabs = [
-            'overview' => ['title' => 'Account Overview', 'icon' => array('people', 2), 'url' => ''],
+            'overview' => ['title' => 'Account Overview', 'icon' => array('user', 2), 'url' => ''],
             'setting' => ['title' => 'Update', 'icon' => array('pencil', 3), 'url' => 'setting'],
             // 'fee-record' => ['title' => 'Account Fees Record', 'icon' => array('two-credit-cart', 3), 'url' => 'fee-record'],
             'change-password' => ['title' => 'Account Change Password', 'icon' => array('key', 2), 'url' => 'change-password']
@@ -191,17 +117,6 @@ class Student extends MY_Controller
             } else
                 $this->student_view('index');
         }
-    }
-    function your_attendance()
-    {
-        $this->student_view('your_attendance');
-    }
-    function id_card()
-    {
-        if ($this->student_model->isStudent()) {
-            redirect('id-card/' . $this->ki_theme->encrypt($this->student_model->studentId()));
-        } else
-            show_404();
     }
 
     function manage_study_material()
@@ -245,6 +160,24 @@ class Student extends MY_Controller
     function list_by_session()
     {
         $this->view('list-by-session');
+    }
+    function course_study_material(){
+        if($view = $this->uri->segment(3,0)){
+            // echo $view;
+            try{
+                $this->token->decode($view);
+                // pre($this->token->data(),true);
+                $this->student_view('course-study-material',[
+                    'isValid' => true,
+                    'course_id' => $this->token->data('course_id'),
+                    'student_id' => $this->token->data('student_id'),
+                    'file_type' => $this->token->data('file_type'),
+                ]);
+            }
+            catch(Exception $e){
+                echo $e->getMessage();
+            }
+        }
     }
     function study_material()
     {

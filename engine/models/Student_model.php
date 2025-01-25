@@ -507,7 +507,7 @@ class Student_model extends MY_Model
     function get_non_purchase_courses(){
         $this->db->select('*,course.id');
         $this->db->from('course');
-        $this->db->join('student_courses', 'student_courses.course_id = course.id and student_courses.student_id = '.$this->studentId(),
+        $this->db->join('student_courses', 'student_courses.course_id = course.id and student_courses.status = 1 and student_courses.student_id = '.$this->studentId(),
         'left');
         $this->db->where('student_courses.course_id IS NULL');
         return $this->db->get();

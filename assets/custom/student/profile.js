@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function (d) {
     const update_profile = document.getElementById('save-student-data');
     const course_box = $('select[name="course_id"]');
-    select2Student('select[name="student_id"]');
+    // select2Student('select[name="student_id"]');
     const search = $('.search');
     search.on('click', function () {
         var box = $(this).closest('.menu');

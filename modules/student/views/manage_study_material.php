@@ -36,7 +36,7 @@
                                 <label class="form-label required">File Type</label>
                                 <select class="form-select" name="file_type" data-control="select2"
                                     data-placeholder="Select a File Type">
-                                    <option value="file">File</option>
+                                    <option value="file">PDF File</option>
                                     <option value="youtube">Youtube Link</option>
                                 </select>
                             </div>
@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-4 file">
                                 <label for="file" class="form-label required">File</label>
-                                <input type="file" class="form-control" id="file">
+                                <input type="file" class="form-control" id="file" accept="application/pdf">
                             </div>
                             <div class="form-group mb-4 youtube d-none">
                                 <label for="" class="form-label required">Youtube Link</label>

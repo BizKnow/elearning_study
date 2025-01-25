@@ -82,8 +82,9 @@ class Ki_theme
             if ($token) {
                 $this->CI->token->decode($token);
                 $data = $this->CI->token->data();
+                // return $this->CI->token->data('referral_id');
                 if ($this->CI->token->data('referral_id')) {
-                    return $this->parse('template/box/referra-box', $data, true);
+                    return $this->parse('template/box/referral-box', $data, true);
                 } else if ($this->CI->token->data('course_id')) {
                     // return 'It is Course Code';
                     return $this->parse('template/box/course-box', $data, true);
@@ -91,9 +92,12 @@ class Ki_theme
                     // return 'It is Combo Code';
                     return $this->parse('template/box/combo-box', $data, true);
                 }
+                else{
+                    return 'E';
+                }
             }
         } catch (Exception $e) {
-
+            return $e->getMessage();
         }
     }
     function referral_data($token = false)
