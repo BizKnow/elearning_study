@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <?= $file_type == 'pdf' ? '<i class="fa text-red fa-file-pdf me-2"></i> PDF File' : '<i class="fab text-red fa-youtube me-2"></i> Video Lecture' ?>(s)
+                    <?= $file_type == 'file' ? '<i class="fa text-red fa-file-pdf me-2"></i> PDF File' : '<i class="fab text-red fa-youtube me-2"></i> Video Lecture' ?>(s)
                 </h3>
                 <div class="ms-auto">
                     <div class="input-icon mb-3">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body row">
                 <?php
                 $data = $this->db->select('c.duration,c.duration_type,sm.*')
                     ->from('study_material as sm')
