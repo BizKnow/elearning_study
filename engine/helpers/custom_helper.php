@@ -464,12 +464,12 @@ function getYouTubeThumbnail($videoID, $quality = 'maxresdefault') {
 
     // Thumbnail URL
     $thumbnailUrl = $baseUrl . $videoID . "/" . $quality . ".jpg";
-
+    // return $thumbnailUrl;
     // Check if the thumbnail exists
-    $headers = get_headers($thumbnailUrl, 1);
+    // $headers = get_headers($thumbnailUrl, 1);
 
-    // Return thumbnail URL if valid
-    if (strpos($headers[0], '200')) {
+    // // Return thumbnail URL if valid
+    if (file_exists($thumbnailUrl)) {
         return $thumbnailUrl;
     } else {
         // Fallback to a lower resolution if maxresdefault is not available
