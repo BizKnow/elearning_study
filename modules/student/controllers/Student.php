@@ -200,7 +200,7 @@ class Student extends MY_Controller
                     } else if ($row->file_type == 'youtube') {
                         if ($videoId = getYouTubeId($row->file)) {
                             // echo $videoId;
-                            $this->load->view('panel/youtube-study', ['id' => $videoId]);
+                            $this->load->view('panel/youtube-study', ['id' => $videoId,'title' => $row->title]);
 
                         } else
                             throw new Exception('Invalid File..');

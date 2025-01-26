@@ -26,6 +26,7 @@
                     ->from('study_material as sm')
                     ->join('course as c', 'c.id = sm.course_id AND c.id = ' . $course_id)
                     // ->where('sm.student_id',$student_id)
+                    ->order_by('sm.title','ASC')
                     ->where('sm.file_type', $file_type)
                     ->get();
                 // echo $this->db->last_query();
