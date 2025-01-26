@@ -38,12 +38,12 @@
                         ]);
                         echo '<div class="col-md-4">
                                 <div class="card" data-text="'.strip_tags($row->title).' '.strip_tags($row->description).'">';
-                        // if ($file_type == 'youtube') {
-                        //     $id = getYouTubeId($row->file);
-                        //     $thumb = getYouTubeThumbnail($id);
-                        //     echo '<div class="card-body p-0" style="height:200px;background-image:url(' . $thumb . ');background-size: cover;background-position: center;">
-                        //             </div>';
-                        // }
+                        if ($file_type == 'youtube' && defined('YOUTUBE_THUMB')) {
+                            $id = getYouTubeId($row->file);
+                            $thumb = getYouTubeThumbnail($id);
+                            echo '<div class="card-body p-0" style="height:200px;background-image:url(' . $thumb . ');background-size: cover;background-position: center;">
+                                    </div>';
+                        }
                         echo '<div class="card-body p-2">                             
                                         <h1 class="search-text">' . $row->title . '</h1>
                                         <p class="">' . $row->description . '</p>
