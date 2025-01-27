@@ -35,8 +35,14 @@
                         <label for="" class="form-label required">Select Courses</label>
                         <select data-placeholder="Please Select Courses" class="form-select" name="courses[]"
                             data-control="select2" multiple="multiple">
-                            <option value="1" amount="1200">Hello</option>
-                            <option value="2" amount="1200">Hii</option>
+                            <option></option>
+                            <?php
+                            $courses = $this->SiteModel->courses();
+                            if($courses->num_rows()){
+                                foreach($courses->result() as $course)
+                                echo '<option value="'.$course->id.'">'.$course->course_name.'</option>';
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -66,7 +72,7 @@
                             <th>#</th>
                             <th>Title</th>
                             <th>Amount</th>
-                            <!-- <th>Courses</th> -->
+                            <th>Courses</th>
                             <th>Actions</th>
                         </tr>
                     </thead>

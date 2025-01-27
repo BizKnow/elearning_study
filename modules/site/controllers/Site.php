@@ -31,8 +31,7 @@ class Site extends Site_Controller
                 } catch (Exception $e) {
                 }
             }
-        }
-        else{
+        } else {
             // echo 'YES';
             $this->render('register', [
                 'page_name' => 'Student Registration'
@@ -159,9 +158,9 @@ class Site extends Site_Controller
     {
         $client = new \GuzzleHttp\Client();
         $get = $this->db->select('s.*,sc.amount')
-                        ->from('students as s')
-                        ->join('student_courses as sc','s.id = sc.student_id AND sc.starttime = '.$time)
-                        ->get();
+            ->from('students as s')
+            ->join('student_courses as sc', 's.id = sc.student_id AND sc.starttime = ' . $time)
+            ->get();
         $row = $get->row();
         // pre($row,true);
         try {
@@ -173,8 +172,8 @@ class Site extends Site_Controller
                 'redirectUrl' => base_url('response'),
                 'callbackUrl' => base_url('response'),
                 'paymentInstrument' => [
-                    'type' => 'PAY_PAGE'
-                ],
+                        'type' => 'PAY_PAGE'
+                    ],
                 'mobileNumber' => $row->contact_number
             ];
             // pre($requestData,true);
@@ -184,7 +183,7 @@ class Site extends Site_Controller
             $base = base64_encode($requestJson);
 
             $hasValue = base64_encode($requestJson) . '/pg/v1/pay' . PHONEPAY_SALT;
-            
+
 
             $hashRequest = hash('sha256', $hasValue);
 
@@ -196,10 +195,10 @@ class Site extends Site_Controller
 
                 'body' => json_encode($mRequest),
                 'headers' => [
-                    'Content-Type' => 'application/json',
-                    'accept' => 'application/json',
-                    'X-VERIFY' => $hasFinalRequest
-                ]
+                        'Content-Type' => 'application/json',
+                        'accept' => 'application/json',
+                        'X-VERIFY' => $hasFinalRequest
+                    ]
             ]);
 
             $decodeJson = json_decode($response->getBody()->getContents());
@@ -405,14 +404,16 @@ class Site extends Site_Controller
     }
     function test()
     {
+        $get = $this->db->get_where('combo', ['id' => 2]);
+        
         // echo $this->gen_roll_no();
-        try {
-            $get = $this->student_model->show_remaining_days(3);
+        // try {
+        //     $get = $this->student_model->show_remaining_days(3);
 
-            pre($get);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
+        //     pre($get);
+        // } catch (Exception $e) {
+        //     echo $e->getMessage();
+        // }
         // echo ($this->ki_theme->isDiwali()) ? 'YES' : 'NO';
         // pre($this->ki_theme->get_festival());
         // pre(search_file(FCPATH . UPLOAD, '23322'));

@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { 'data': null },
             { "data": 'title' },
             { "data": 'amount' },
-            // {"data" : 'courses'},
+            {"data" : 'courses'},
             { "data": null },
         ],
         columnDefs: [
@@ -68,6 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             {
+                targets: 3,
+                render:function(data,type,row){
+                    return `<button class="btn btn-xs btn-sm btn-primary view-combo-courses" data-id="${row.id}"><i class="fa fa-eye"></i> View</button>`;
+                }
+            },
+            {
                 targets: -1,
                 render: function (data, type, row) {
                     return deleteBtnRender(1, row.id);
@@ -81,5 +87,17 @@ document.addEventListener('DOMContentLoaded', function () {
             // console.log(e);
             table.DataTable().ajax.reload();
         });
+        $(document).on('click','.view-combo-courses',function(){
+            var id = $(this).attr('data-id');
+            // alert(id);
+            $.AryaAjax({
+                url : 'course/combo-courses',
+                data : {id}
+            }).then((res) => {
+                log(res);
+                var main = mydrawer('List Course(s)')
+                main.find('.body').html(res.html);
+            });
+        })
     })
 })

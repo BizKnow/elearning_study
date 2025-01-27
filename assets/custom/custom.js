@@ -1542,15 +1542,18 @@ $(document).ready(function () {
 
 });
 const mydrawer = (title) => {
-    const drawerElement = document.querySelector("#kt_drawer_view_details_box");
-    const drawer = KTDrawer.getInstance(drawerElement, { overlay: true });
-    drawer.update();
-    drawer.show();
-    const main = $('#kt_drawer_view_details_box');
+    var drawerEl = document.querySelector("#offcanvasExample");
+    var offcanvasElement = new bootstrap.Offcanvas(drawerEl,{
+        backdrop :'static'
+    });
+    // const drawerElement = document.querySelector("#kt_drawer_view_details_box");
+    // const drawer = KTDrawer.getInstance(drawerElement, { overlay: true });
+    // drawer.update();
+    // drawer.show();
+    const main = $('#offcanvasExample');
     main.find('.title').html(title);
-    drawer.on("kt.drawer.after.hidden", function () {
-        // alert(0);
-        // console.log("kt.drawer.after.hidden event is fired");
+    offcanvasElement.show();
+    $(drawerEl).on("hidden.bs.offcanvas", function () {
         main.find('.card-body').html('');
         main.find('.card-footer').remove();
         $('.drawer-overlay').remove();
@@ -1937,6 +1940,29 @@ if (enquiry_data.length) {
         ]
     })
     handleDeleteRows('delete-enquiry');
+}
+const select2Student = (element) => {
+    $(element).select2({
+        templateSelection: optionsAjaxStudents,
+        templateResult: optionsAjaxStudents,
+        ajax: {
+            url: ajax_url + 'student/filter-for-select',
+            type: 'POST',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                // log(data);
+                return data;
+            },
+            error: function (x, v, c) {
+                log(x.responseText, v, c);
+            },
+            cache: true,
+            minimumInputLength: 3, // Set the minimum number of characters before making a request
+            placeholder: 'Search for Students...',
+            escapeMarkup: function (markup) { return markup; } // Allows markup for formatting results
+        }
+    });
 }
 $(document).on('click', '.copy-text-data', function () {
     var button = this;

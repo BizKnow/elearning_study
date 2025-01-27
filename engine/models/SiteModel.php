@@ -15,6 +15,9 @@ class SiteModel extends MY_Model
         }
         return 0;
     }
+    function courses(){
+        return $this->db->where('isDeleted',0)->get('course');
+    }
     function get_city($where = [])
     {
         $this->db->where($where);

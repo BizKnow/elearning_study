@@ -240,7 +240,20 @@ class Student extends Ajax_Controller
                 $this->response('status', $this->db->insert('study_material', $data));
         }
     }
-
+    function filter_for_select()
+    {
+        $this->response($this->post());
+        $query = $this->post('q') ? $this->post('q') : '';
+        $results[] = array(
+            'id' => '',
+            'student_name' => 'No matching records found',
+            'disabled' => true
+        );
+        $get = $this->student_model->search_student_for_select2(['search' => $query]);
+        if ($get->num_rows())
+            $results = $get->result_array();
+        $this->response('results', $results);
+    }
     function list_study_material()
     {
         $this->response('data', $this->student_model->study_materials()->result_array());

@@ -26,7 +26,8 @@ if (isset($student_id) && $student_id) {
                         ]);
                         if($chk->num_rows()){
                             $row = $chk->row();
-                            echo '<label class="text-danger">Already Assigned</label>';
+                            echo '<label class="text-danger">Already Assigned</label>'."&nbsp;&nbsp;";
+                            echo $row->status == 1 ? label('Payment Done',' bg-success') : label('Payment Pending',' bg-warning');
                         }
                         else{
                             echo '<button class="btn btn-primary do-assign" data-student_id="'.$student_id.'" data-course_id="'.$course->id.'">Assign</button>';

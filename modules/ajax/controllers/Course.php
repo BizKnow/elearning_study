@@ -1,8 +1,9 @@
 <?php
 class Course extends Ajax_Controller
 {
-    function add_combo(){
-        if($this->validation('combo')){
+    function add_combo()
+    {
+        if ($this->validation('combo')) {
             // $this->response('data',$_POST);
             $data = [
                 'title' => $_POST['title'],
@@ -10,16 +11,51 @@ class Course extends Ajax_Controller
                 'amount' => $_POST['amount'],
                 'description' => $_POST['description']
             ];
-            $this->db->insert('combo',$data);
-            $this->response('status',true);
+            $this->db->insert('combo', $data);
+            $this->response('status', true);
         }
     }
-    function list_combo(){
-        $this->response('data',$this->db->get('combo')->result_array());
+    function combo_courses()
+    {
+        $get = $this->db->get_where('combo', $this->post());
+        if ($get->num_rows()) {
+            $courses = json_decode($get->row('courses'), true);
+            $courses = $courses == null ? 0 : $courses;
+            $getCourses = $this->db->where_in('id', $courses)->get('course');
+            if ($getCourses->num_rows()) {
+                $html = '<table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Course Name</th>
+                                </tr>
+                            </thead><tbody>';
+                $i = 1;
+                foreach ($getCourses->result() as $row) {
+                    $html .= '<tr>
+                                <td>' . $i++ . '.</td>
+                                <td>' . $row->course_name . '</td>
+                        </tr>';
+                }
+
+                $html .= '</tbody></table>';
+                $this->response([
+                    'status' => true,
+                    'html' => $html
+                ]);
+            } else
+                $this->response('html', alert('Courses are not found', 'danger'));
+        } else
+            $this->response('html', alert('Combo not found', 'danger'));
     }
-    function delete_combo($id){
-        $this->db->where('id',$id);
-        $this->response('status' , $this->db->delete('combo'));
+    function list_combo()
+    {
+        $this->response('data', $this->db->get('combo')->result_array());
+    }
+    function delete_combo($id)
+    {
+        $this->db->where('id', $id);
+        $this->response('status', $this->db->delete('combo'));
     }
     //for course
     function add()
@@ -40,7 +76,7 @@ class Course extends Ajax_Controller
             'fees' => $this->post('fees'),
             'referral_amount' => $this->post('referral_amount')
         ]);
-        $this->response('html','Course Updated Successfully..');
+        $this->response('html', 'Course Updated Successfully..');
         $this->response('status', true);
     }
     function edit_subject()
@@ -49,7 +85,7 @@ class Course extends Ajax_Controller
             'subject_code' => $this->post('subject_code'),
             'subject_name' => $this->post('subject_name')
         ]);
-        $this->response('html','Subject Updated Successfully..');
+        $this->response('html', 'Subject Updated Successfully..');
 
         $this->response('status', true);
     }
@@ -59,7 +95,7 @@ class Course extends Ajax_Controller
         $this->db->where('id', $this->post('id'))->update('course_category', [
             'title' => $this->post('title')
         ]);
-        $this->response('html','Category Updated Successfully..');
+        $this->response('html', 'Category Updated Successfully..');
 
         $this->response('status', true);
     }
@@ -144,7 +180,7 @@ class Course extends Ajax_Controller
             ]);
             $this->response('status', true);
             // $this->response('html', $this->db->last_query());
-        $this->response('html','Updated Categories Successfully..');
+            $this->response('html', 'Updated Categories Successfully..');
 
         }
     }
@@ -175,8 +211,9 @@ class Course extends Ajax_Controller
     {
         $this->response('data', $this->student_model->system_subjects()->result());
     }
-    function list_deleted_subjects(){
-        $this->response('data',$this->student_model->system_subjects(1)->result());
+    function list_deleted_subjects()
+    {
+        $this->response('data', $this->student_model->system_subjects(1)->result());
     }
     function subject_delete()
     {

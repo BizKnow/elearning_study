@@ -26,19 +26,7 @@ $config['academics'] = array(
                     'type' => 'manage_course',
                     'icon' => array('book', 4),
                     'url' => 'course/manage',
-                ),
-                array(
-                    'label' => 'Manage Subject(s)',
-                    'type' => 'manage_subject',
-                    'icon' => array('book-open', 4),
-                    'url' => 'course/manage-subjects'
-                ),
-                array(
-                    'label' => 'Arrange Subjects',
-                    'type' => 'arrange_subject',
-                    'icon' => array('book-open', 4),
-                    'url' => 'course/arrange-subjects'
-                ),
+                )
             )
         ),
         array(
@@ -47,12 +35,6 @@ $config['academics'] = array(
             'icon' => array('package', 4),
             'url' => 'course/combo',
         ),
-        array(
-            'label' => 'Session',
-            'type' => 'session_area',
-            'icon' => array('calendar', 4),
-            'url' => 'academic/session',
-        )
     )
 );
 $config['menu'] = array(
