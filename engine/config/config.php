@@ -527,7 +527,7 @@ $config['rewrite_short_tags'] = FALSE;
 | Comma-separated:	'10.0.1.200,192.168.5.0/24'
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
-$config['proxy_ips'] = ''; 
+$config['proxy_ips'] = '';
 
 $config['modules_locations'] = array(
     FCPATH . 'modules/' => '../../modules/',
@@ -535,6 +535,11 @@ $config['modules_locations'] = array(
 if (defined('ENVIRONMENT') && ENVIRONMENT != 'development') {
     require_once FCPATH . 'vendor/autoload.php';
     $whoops = new Whoops\Run;
-    $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
+    // exit(FCPATH . 'themes/error_500.html');
+    // $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
+    $whoops->pushHandler(new CallbackHandler(function () {
+        // http_response_code(500); // Set the HTTP response status
+        include FCPATH . 'themes/error_500.html'; // Load the 500 error page
+    }));
     $whoops->register();
 }
