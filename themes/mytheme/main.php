@@ -274,7 +274,7 @@
             }
 
             .footer .useful-links ul li {
-                width: 50%;
+                width: 100%;
                 background: url('{theme_url}assets/images/links-arrow-light.png') no-repeat 0 9px;
                 padding: 0 0 0 20px;
             }
