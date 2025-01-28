@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
             { 'data': null },
             { 'data': null },
             { 'data': null },
+            { 'data': null },
             { 'data': null }
         ],
         columnDefs: [
@@ -57,7 +58,29 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 }
             },
             {
-                targets: 2,
+                targets : 2,
+                render: function (data, type, row) {
+                    // alert(row.isDemo)
+                    log(row);
+                    var icon = row.file_type == 'file' ? '<i class="fa fa-file-pdf fs-2 text-danger"></i>' : '<i class="fab fa-youtube fs-2 text-danger"></i>';
+                    return `<div class="d-flex">
+                                <div class="flex-grow-1">
+                                    ${icon}
+                                </div>
+                                ${row.file_type == 'youtube' ? `
+                                <div class="flex-shrink-0">
+                                    <div class="form-check form-switch form-switch-right form-switch-md">
+                                        <label for="input-group-dropdown-showcode-${row.id}" class="form-label text-muted">For Demo</label>
+                                        <input ${row.idDemo == '1' ? 'checked' : ''} class="form-check-input code-switcher change-demo-status" data-id="${row.id}" type="checkbox" id="input-group-dropdown-showcode-${row.id}">
+                                    </div>
+                                </div>` : ``}
+                            </div>
+                    
+                        `; //row.file_type;
+                }
+            },
+            {
+                targets: 3,
                 render: function (data, type, row) {
                     if (row.file_type == 'youtube') {
                         var url = row.file;
@@ -87,6 +110,16 @@ document.addEventListener('DOMContentLoaded', function (e) {
         ]
     }).on('draw', function (r) {
         handleDeleteRows('student/delete-study-material');
+        study_table.find('.change-demo-status').on('change',function(){
+            var id = $(this).data('id');
+            var status = $(this).is(':checked') ? 1 : 0;
+            // alert(checked);
+            $.AryaAjax({
+                url : 'student/study-material-for-demo',
+                data : {id,status},
+                success_message : 'Demo status updated..'
+            });
+        });
         study_table.find('.assign').on('click', function () {
             var rowData = study_table.DataTable().row($(this).closest('tr')).data();
             //    log(rowData);

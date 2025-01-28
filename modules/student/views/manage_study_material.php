@@ -78,6 +78,7 @@
                             <tr>
                                 <th>Course</th>
                                 <th>Title</th>
+                                <th>Type</th>
                                 <th>File</th>
                                 <th>Action</th>
                             </tr>

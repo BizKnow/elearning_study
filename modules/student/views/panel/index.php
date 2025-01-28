@@ -202,7 +202,42 @@ if ($llsit->num_rows()) {
                     </a>';
               }
               echo '
-                  </div>
+                  </div>';
+                $studyMaterialDemo = $this->db->where([
+                  'course_id' => $row->id,
+                  'idDemo' => 1
+                ])->get('study_material');
+                if($studyMaterialDemo->num_rows()){
+                  echo '<div class="card-footer text-center border-danger p-0 mb-0">';
+                  echo '<table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th colspan="2">Demos Video(s)</th>
+                            </tr>
+                            <tr>
+                              <th>Title</th><th>View</th>
+                            </tr>
+                          </thead>
+                          <tbody>';
+                        foreach($studyMaterialDemo->result() as $st){
+                          // $token = ''l
+                          $token = $this->token->encode([
+                            'id' => $st->material_id,
+                            'student_id' => $student_id
+                        ]);
+                          echo '<tr>
+                                  <td><a href="{base_url}student/study-material/' . $token . '" target="_blank">'.$st->title.'</a></td>
+                                  <td>
+                                      <a href="{base_url}student/study-material/' . $token . '" target="_blank" class="btn btn-xs btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                                  </td>
+                                </tr>';
+                        }
+                          echo '</tbody>
+                        </table>';
+                  echo '</div>';
+                }
+
+                  echo '
                 </div>
             </div>';
             }

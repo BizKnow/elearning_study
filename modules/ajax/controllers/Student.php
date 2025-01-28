@@ -254,6 +254,13 @@ class Student extends Ajax_Controller
             $results = $get->result_array();
         $this->response('results', $results);
     }
+    function study_material_for_demo(){
+        $this->db->where([
+            'id' => $this->post("id"),
+            'file_type' => 'youtube'
+        ])->update('study_material',['idDemo' => $this->post('status')]);
+        $this->response('status',true);
+    }
     function list_study_material()
     {
         $this->response('data', $this->student_model->study_materials()->result_array());

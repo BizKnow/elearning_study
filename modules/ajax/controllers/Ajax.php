@@ -11,18 +11,6 @@ class Ajax extends Ajax_Controller
         }
         $this->response($this->post());
     }
-    function register()
-    {
-        $this->db->insert('demo_query', $this->post());
-        try {
-            $this->set_data($this->post());
-            $this->do_email('hyperprowebtech@gmail.com', 'New Demo Checklist', $this->template('email/demo-query'));
-        } catch (Exception $e) {
-
-        }
-        $this->response('status', true);
-        $this->response('html', 'Thankyou..');
-    }
     function deleted()
     {
         $this->response(
@@ -79,24 +67,4 @@ class Ajax extends Ajax_Controller
             $this->response('status', true);
     }
 
-    function centre_wallet_load()
-    {
-        $post = $this->post();
-        $closing_balance = ($post['amount'] + $post['closing_balance']);
-        $data = [
-            'center_id' => $post['centre_id'],
-            'amount' => $post['amount'],
-            'o_balance' => $post['closing_balance'],
-            'c_balance' => $closing_balance,
-            'type' => 'wallet_load',
-            'description' => $post['description'],
-            'added_by' => 'admin',
-            'order_id' => strtolower(generateCouponCode(12)),
-            'status' => 1,
-            'wallet_status' => 'credit'
-        ];
-        $this->db->insert('wallet_transcations', $data);
-        $this->center_model->update_wallet($post['centre_id'], $closing_balance);
-        $this->response('status', true);
-    }
 }

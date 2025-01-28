@@ -40,12 +40,13 @@ class Site extends Site_Controller
     }
     function response()
     {
-        if (isset($_GET['order_id'])) {
-            $this->render('response', [
-                'page_name' => 'Order Response'
-            ]);
-        } else
-            redirect(base_url());
+        pre($_POST);
+        // if (isset($_GET['order_id'])) {
+        //     $this->render('response', [
+        //         'page_name' => 'Order Response'
+        //     ]);
+        // } else
+        //     redirect(base_url());
     }
     function content($content)
     {
