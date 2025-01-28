@@ -102,11 +102,11 @@
                             </a>
                             <a href="mailto:{email}" class="mr-xl-3"><i class="fa fa-envelope mr-xl-2"></i> <span
                                     class="d-none d-xl-inline-block">{email}</span></a>
-                            <a href="{facebook}" class="" target="_blank"><i class="fa fab fa-facebook"></i></a>
+                            <!-- <a href="{facebook}" class="" target="_blank"><i class="fa fab fa-facebook"></i></a>
                             <a href="{twitter}" class="" target="_blank"><i class="fa fab fa-twitter"></i></a>
                             <a href="{youtube}" class=""><i class="fa fab fa-youtube"></i></a>
                             <a href="{instagram}" class=""><i class="fa fab fa-instagram"></i></a>
-                            <a href="{linkedin}" class=""><i class="fa fab fa-linkedin"></i></a>
+                            <a href="{linkedin}" class=""><i class="fa fab fa-linkedin"></i></a> -->
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
                         </div> -->
                 <!-- </div>
                 </div> -->
-                <div class="col-md-6 col-lg-4 col-xl-4">
+                <div class="col-md-6 col-lg-4 col-xl-4" style="display:none">
                     <div class="clearfix footCol">
                         <h4 class="title">Quote</h4>
                         <div class="clearfix txtBox quoteBox-wrap" id="quote-carousel">
