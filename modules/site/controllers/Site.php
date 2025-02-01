@@ -173,8 +173,8 @@ class Site extends Site_Controller
                 'redirectUrl' => base_url('response'),
                 'callbackUrl' => base_url('response'),
                 'paymentInstrument' => [
-                        'type' => 'PAY_PAGE'
-                    ],
+                    'type' => 'PAY_PAGE'
+                ],
                 'mobileNumber' => $row->contact_number
             ];
             // pre($requestData,true);
@@ -196,10 +196,10 @@ class Site extends Site_Controller
 
                 'body' => json_encode($mRequest),
                 'headers' => [
-                        'Content-Type' => 'application/json',
-                        'accept' => 'application/json',
-                        'X-VERIFY' => $hasFinalRequest
-                    ]
+                    'Content-Type' => 'application/json',
+                    'accept' => 'application/json',
+                    'X-VERIFY' => $hasFinalRequest
+                ]
             ]);
 
             $decodeJson = json_decode($response->getBody()->getContents());
@@ -405,8 +405,16 @@ class Site extends Site_Controller
     }
     function test()
     {
-        $get = $this->db->get_where('combo', ['id' => 2]);
-        
+        // $get = $this->db->get_where('combo', ['id' => 2]);
+        $id = 1;
+        $this->db->from('student_courses as sc');
+        $this->db->join('course as c', 'c.id = sc.course_id');
+        $this->db->where('sc.student_id', $id);
+        $get = $this->db->get();
+        echo $get->num_rows() . '<br>';
+        pre($get->result_array());
+        echo $this->db->last_query();
+
         // echo $this->gen_roll_no();
         // try {
         //     $get = $this->student_model->show_remaining_days(3);

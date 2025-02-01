@@ -12,7 +12,15 @@ class V1 extends Api_Controller
                 'course_name',
                 'fees as amount',
                 "CONCAT(duration, ' ', duration_type) AS duration",
-                'referral_amount'
+                'referral_amount',
+                'image',
+                'description',
+                "CASE 
+                    WHEN duration_type = 'year' THEN duration * 365
+                    WHEN duration_type = 'semester' THEN duration * 182
+                    WHEN duration_type = 'month' THEN duration * 30
+                    ELSE NULL
+                END AS total_days"
             ]
         ];
     }
@@ -53,10 +61,72 @@ class V1 extends Api_Controller
     {
         if ($this->isPost()) {
             try {
-                $id = $this->post('course_id');
-                if ($id) {
-
+                $course_id = $this->post('course_id');
+                $id = 1;//$this->student_id();
+                $this->db->select("c.course_name,
+                                    c.fees as course_amount,
+                                    CONCAT(duration, ' ', duration_type) AS course_duration,
+                                    c.image as course_image,
+                                    c.description as course_description,
+                                    sc.enrollment_no,
+                                    FROM_UNIXTIME(sc.starttime) as course_start_time,
+                                    sc.status as purchase_status,
+                                    CASE 
+                                        WHEN c.duration_type = 'year' THEN duration * 365
+                                        WHEN c.duration_type = 'semester' THEN duration * 182
+                                        WHEN c.duration_type = 'month' THEN duration * 30
+                                        ELSE NULL
+                                    END AS total_days,
+                                    CASE 
+                                        WHEN c.duration_type = 'semester' THEN FROM_UNIXTIME(sc.starttime + (c.duration * 182 * 86400))
+                                        WHEN c.duration_type = 'month' THEN FROM_UNIXTIME(sc.starttime + (c.duration * 30 * 86400))
+                                        WHEN c.duration_type = 'year' THEN FROM_UNIXTIME(sc.starttime + (c.duration * 365 * 86400))
+                                        ELSE FROM_UNIXTIME(sc.starttime)
+                                    END AS course_end_time");
+                $this->db->from('student_courses as sc');
+                $this->db->join('course as c', 'c.id = sc.course_id');
+                $this->db->where('sc.student_id', $id);
+                if ($course_id) {
+                    $this->db->where('sc.course_id', $course_id);
                 }
+                $get = $this->db->get();
+                $this->response('data', $get->result_array());
+                $this->response('status', $get->num_rows() > 0);
+                $this->response('count', $get->num_rows());
+
+
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
+    function non_purchase_course()
+    {
+        if ($this->isPost()) {
+            try {
+                $studentId = $this->student_id();
+                $this->db->select("c.course_name,
+                                    c.fees as course_amount,
+                                    CONCAT(duration, ' ', duration_type) AS course_duration,
+                                    c.image as course_image,
+                                    c.description as course_description,
+                                    CASE 
+                                        WHEN c.duration_type = 'year' THEN duration * 365
+                                        WHEN c.duration_type = 'semester' THEN duration * 182
+                                        WHEN c.duration_type = 'month' THEN duration * 30
+                                        ELSE NULL
+                                    END AS total_days");
+                $this->db->from('course as c');
+                $this->db->join(
+                    'student_courses as sc',
+                    'sc.course_id = c.id and sc.status = 1 and sc.student_id = ' . $studentId,
+                    'left'
+                );
+                $this->db->where('sc.course_id IS NULL');
+                $get = $this->db->get();
+                $this->response('data', $get->result_array());
+                $this->response('status', $get->num_rows() > 0);
+                $this->response('count', $get->num_rows());
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
             }
@@ -67,13 +137,14 @@ class V1 extends Api_Controller
         $headers = $this->input->request_headers();//getallheaders();
 
         $received_token = isset($headers['Rainbowtoken']) ? $headers['Rainbowtoken'] : '';
-        if($received_token == '')
+        if ($received_token == '')
             throw new Exception('Missing Rainbowtoken');
         $stored_token = $this->db->where([
             'token' => $received_token,
             'expired' => 0
         ])->get('api_tokens'); // Replace with DB call if needed
         if ($stored_token->num_rows() > 0) {
+            $this->db->set('uses', 'uses+1', FALSE)->where('api_id', $stored_token->row('api_id'))->update('api_tokens');
             return $stored_token->row('student_id');
         } else
             throw new Exception('Token Expired.');

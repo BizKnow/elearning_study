@@ -57,6 +57,14 @@
                                 <input type="number" name="referral_amount" value="0" class="form-control"
                                     placeholder="Enter Referral Amount.">
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="" class="form-label required">Image</label>
+                                <input type="file" name="image" required class="form-control">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="" class="form-label required">Description</label>
+                                <textarea name="description" class="form-control" rows="2" placeholder="Enter Description."></textarea>
+                            </div>
                         </div>
 
                     </div>
@@ -153,5 +161,9 @@
     <div class="form-group ">
         <label class="form-label">Enter Referral Amount</label>
         <input type="number" name="referral_amount" class="form-control" placeholder="Enter Referral Amount" value="{{referral_amount}}">
+    </div>
+    <div class="form-group ">
+        <label class="form-label">Enter Description</label>
+        <textarea name="description" class="form-control" rows="2" placeholder="Enter Description.">{{description}}</textarea>   
     </div>
 </script>

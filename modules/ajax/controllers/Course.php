@@ -64,9 +64,12 @@ class Course extends Ajax_Controller
             'html',
             'Course Added Successfully.'
         );
+        $data = $this->post();
+        if($file = $this->file_up('image'))
+            $data['image'] = $file;
         $this->response(
             'status',
-            $this->db->insert('course', $this->post())
+            $this->db->insert('course', $data)
         );
     }
     function edit()
@@ -74,19 +77,10 @@ class Course extends Ajax_Controller
         $this->db->where('id', $this->post('id'))->update('course', [
             'course_name' => $this->post('course_name'),
             'fees' => $this->post('fees'),
-            'referral_amount' => $this->post('referral_amount')
+            'referral_amount' => $this->post('referral_amount'),
+            'description' => $this->post('description'),
         ]);
         $this->response('html', 'Course Updated Successfully..');
-        $this->response('status', true);
-    }
-    function edit_subject()
-    {
-        $this->db->where('id', $this->post('id'))->update('subjects', [
-            'subject_code' => $this->post('subject_code'),
-            'subject_name' => $this->post('subject_name')
-        ]);
-        $this->response('html', 'Subject Updated Successfully..');
-
         $this->response('status', true);
     }
     function edit_category()

@@ -535,11 +535,6 @@ $config['modules_locations'] = array(
 if (defined('ENVIRONMENT') && ENVIRONMENT != 'development') {
     require_once FCPATH . 'vendor/autoload.php';
     $whoops = new Whoops\Run;
-    // exit(FCPATH . 'themes/error_500.html');
-    // $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
-    $whoops->pushHandler(new CallbackHandler(function () {
-        // http_response_code(500); // Set the HTTP response status
-        include FCPATH . 'themes/error_500.html'; // Load the 500 error page
-    }));
+    $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
     $whoops->register();
 }

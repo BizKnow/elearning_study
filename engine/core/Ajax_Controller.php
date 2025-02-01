@@ -61,7 +61,7 @@ class Ajax_Controller extends MY_Controller
             $this->response = array_merge($this->response, $index);
             return $this;
         }
-        if ($index and $value) {
+        if ($index and $value OR ($this->uri->segment(1) == 'api' && $index)) {
             $this->response[$index] = $value;
             return $this;
         } else
