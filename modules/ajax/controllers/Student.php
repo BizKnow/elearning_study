@@ -47,56 +47,9 @@ class Student extends Ajax_Controller
     function add()
     {
         $owner_id = $this->get_data('owner_id');
-        if ($walletSystem = ((CHECK_PERMISSION('WALLET_SYSTEM') && $this->center_model->isCenter()))) {
-            $deduction_amount = $this->ki_theme->get_wallet_amount('student_admission_fees');
-            $close_balance = $this->ki_theme->wallet_balance();
-            if ($close_balance < 0) {
-                $this->response('html', 'Your Wallet Balance is Low..' . $close_balance);
-                exit;
-            }
-        } elseif ($walletSystem = (CHECK_PERMISSION('WALLET_SYSTEM_COURSE_WISE') && $this->center_model->isCenter())) {
-            $deduction_amount = $this->center_model->get_assign_courses(
-                $this->post('center_id'),
-                ['course_id' => $this->post('course_id')]
-            )->row('course_fee');
-            $close_balance = $this->ki_theme->wallet_balance();
-            $close_balance = $close_balance - $deduction_amount;
-            if ($close_balance < 0 or $close_balance < 0) {
-                $this->response('html', 'Wallet Balance is Low..');
-                exit;
-            }
-        }
-        $cordinateArray = [];
-        if (CHECK_PERMISSION('CO_ORDINATE_SYSTEM') && $this->center_model->isCenter()) {
-            $get = $this->center_model->get_assign_courses($owner_id, ['course_id' => $this->post('course_id')], 'center');
-            if ($get->num_rows()) {
-                $getROw = $get->row();
-                $cordinateArray = [
-                    'user_id' => $getROw->added_by_id,
-                    'commission' => $getROw->commission,
-                    'course_id' => $this->post('course_id'),
-                    'center_id' => $owner_id,
-                    'course_fee' => $getROw->course_fee,
-                    'percentage' => $getROw->percentage
-                ];
-                $courseFees = $getROw->course_fee;
-                $close_balance = $this->ki_theme->wallet_balance();
-                $close_balance = $close_balance - $courseFees;
-                if ($close_balance < 0) {
-                    $this->response('html', 'Wallet Balance is Low..' . $courseFees);
-                    exit;
-                }
-            } else {
-                $this->response('html', 'Course not Found.');
-                exit;
-            }
-        }
+        
 
         $data = $this->post();
-        if (isset($data['referral_id'])) {
-            $referral_id = $data['referral_id'];
-            unset($data['referral_id']);
-        }
 
         $data['status'] = 0;
         $data['added_by'] = isset($data['added_by']) ? $data['added_by'] : 'admin';
@@ -132,36 +85,6 @@ class Student extends Ajax_Controller
         if ($this->form_validation->run()) {
             $this->db->insert('students', $data);
             $student_id = $this->db->insert_id();
-            if ($walletSystem) {
-                $data = [
-                    'center_id' => $this->center_model->loginId(),
-                    'amount' => $deduction_amount,
-                    'o_balance' => ($close_balance + $deduction_amount),
-                    'c_balance' => $close_balance,
-                    'type' => 'admission',
-                    'description' => 'Student Addmission',
-                    'type_id' => $student_id,
-                    'added_by' => 'center',
-                    'order_id' => strtolower(generateCouponCode(12)),
-                    'status' => 1,
-                    'wallet_status' => 'debit'
-                ];
-                $this->db->insert('wallet_transcations', $data);
-                $this->response('res', $this->db->insert_id());
-                $this->center_model->update_wallet($data['center_id'], $close_balance);
-            }
-            if (CHECK_PERMISSION('CO_ORDINATE_SYSTEM') && $this->center_model->isCenter()) {
-                $cordinateArray['type_id'] = $student_id;
-                $this->db->insert('commissions', $cordinateArray);
-            }
-            if (CHECK_PERMISSION('REFERRAL_ADMISSION') && $this->center_model->isAdmin() && isset($_POST['referral_id'])) {
-                $this->db->insert('referral_coupons', [
-                    'student_id' => $student_id,
-                    'coupon_code' => generateCouponCode(),
-                    'coupon_by' => $referral_id,
-                    'amount' => 500
-                ]);
-            }
             $this->response(
                 'status',
                 true

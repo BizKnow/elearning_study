@@ -57,6 +57,40 @@ class V1 extends Api_Controller
             }
         }
     }
+    function add_student_course()
+    {
+        if ($this->isPost()) {
+            $student_id = $this->student_id();
+            if ($this->validation(__FUNCTION__)) {
+                $course_id = $this->post('course_id');
+                $referral_id = $this->post('referral_id', 0);
+                $enrollment_no = $this->gen_roll_no();
+                $this->db->insert('students_courses', [
+                    'student_id' => $student_id,
+                    'course_id' => $course_id,
+                    'enrollment_no' => $enrollment_no,
+                    'referral_id' => $referral_id,
+                    'added_via' => 'api',
+                    'payment_id' => $this->post('payment_id'),
+                    'status' => $this->post('payment_status'),
+                    'amount' => $this->post('amount')
+                ]);
+                if ($referral_id && $this->post('payment_status')) {
+                    $amount = $this->db->select('referral_amount')->where('id', $course_id)->get('course')->row('referral_amount');
+                    $this->increase_refer_amount($referral_id, $amount);
+                }
+                $this->response('enrollment_no', $enrollment_no);
+                $this->response('message', 'Student course added successfully.');
+                $this->response('status', true);
+            }
+        }
+    }
+
+    function increase_refer_amount($referral_id, $amount)
+    {
+        $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $referral_id);
+        $this->db->update('students');
+    }
     function student_course()
     {
         if ($this->isPost()) {
