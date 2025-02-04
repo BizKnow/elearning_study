@@ -139,6 +139,7 @@ class V1 extends Api_Controller
             $studentId = $this->student_id();
             $course_id = $this->post('course_id');
             $materialId = $this->post('material_id',0);
+            $isDemo = $this->post('isDemo',0);
             if ($course_id) {
                 $this->db->select('sm.material_id, sm.file,sm.file_type as type, sm.idDemo as isDemo,sm.title,sm.description');
                 $this->db->from('study_material as sm');
@@ -150,6 +151,8 @@ class V1 extends Api_Controller
                     $this->db->where('sm.file_type', $this->post('type'));
                 if($materialId)
                     $this->db->where('sm.material_id',$this->post('material_id'));
+                if($isDemo)
+                    $this->db->where('sm.idDemo',$isDemo);
                 $get = $this->db->get();
                 // $this->response('data', $get->result_array());
                 $data = [];
@@ -180,7 +183,7 @@ class V1 extends Api_Controller
                                     c.course_name,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
-                                    c.image as course_image,
+                                    CONCAT('".base_url('assets/file/')."',c.image) as course_image,
                                     c.description as course_description,
                                     CASE 
                                         WHEN c.duration_type = 'year' THEN duration * 365
