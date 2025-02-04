@@ -142,8 +142,9 @@ class V1 extends Api_Controller
             if ($course_id) {
                 $this->db->select('sm.material_id, sm.file,sm.file_type as type, sm.idDemo as isDemo,sm.title,sm.description');
                 $this->db->from('study_material as sm');
-                $this->db->join('course as c', 'c.id = sm.course_id');
+                $this->db->join('student_courses as s', 's.course_id = sm.course_id');
                 $this->db->where('sm.course_id', $course_id);
+                $this->db->where('s.student_id', $studentId);
                 // $this->db->where('sm.idDemo', 0);
                 if ($this->post('type'))
                     $this->db->where('sm.file_type', $this->post('type'));
