@@ -97,7 +97,8 @@ class V1 extends Api_Controller
             try {
                 $course_id = $this->post('course_id');
                 $id = $this->student_id();
-                $this->db->select("c.course_name,
+                $this->db->select("c.id as course_id,
+                                    c.course_name,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
                                     c.image as course_image,
@@ -127,22 +128,55 @@ class V1 extends Api_Controller
                 $this->response('data', $get->result_array());
                 $this->response('status', $get->num_rows() > 0);
                 $this->response('count', $get->num_rows());
-
-
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
             }
         }
     }
-    function study_material(){
-        
+    function study_material()
+    {
+        if ($this->isPost()) {
+            $studentId = $this->student_id();
+            $course_id = $this->post('course_id');
+            $materialId = $this->post('material_id',0);
+            if ($course_id) {
+                $this->db->select('sm.material_id, sm.file,sm.file_type as type, sm.idDemo as isDemo,sm.title,sm.description');
+                $this->db->from('study_material as sm');
+                $this->db->join('course as c', 'c.id = sm.course_id');
+                $this->db->where('sm.course_id', $course_id);
+                // $this->db->where('sm.idDemo', 0);
+                if ($this->post('type'))
+                    $this->db->where('sm.file_type', $this->post('type'));
+                if($materialId)
+                    $this->db->where('sm.material_id',$this->post('material_id'));
+                $get = $this->db->get();
+                // $this->response('data', $get->result_array());
+                $data = [];
+                if ($get->num_rows()) {
+                    foreach ($get->result_array() as $study) {
+                        if ($study['type'] == 'youtube'){
+                            $study['videoId'] = getYouTubeId($study['file']);
+                            $study['youtube_url'] = $study['file'];
+                            unset($study['file']);
+                        }
+                        if ($study['type'] == 'file')
+                            $study['url'] = base_url('assets/file/study-mat/' . $study['file']);
+                        $data[] = $study;
+                    }
+
+                }
+                $this->response('data', $data);
+            } else
+                $this->response('error', 'Missing Course ID ..');
+        }
     }
     function non_purchase_course()
     {
         if ($this->isPost()) {
             try {
                 $studentId = $this->student_id();
-                $this->db->select("c.course_name,
+                $this->db->select("c.id as course_id,
+                                    c.course_name,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
                                     c.image as course_image,
@@ -161,7 +195,27 @@ class V1 extends Api_Controller
                 );
                 $this->db->where('sc.course_id IS NULL');
                 $get = $this->db->get();
-                $this->response('data', $get->result_array());
+                $data = [];
+                if ($get->num_rows()) {
+                    foreach ($get->result_array() as $row) {
+                        $getVideos = $this->db
+                            ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
+                            ->where('sm.idDemo', 1)
+                            ->where('sm.course_id', $row['course_id'])
+                            ->get('study_material as sm');
+                        $row['demo_videos'] = [];
+                        if ($getVideos->num_rows()) {
+                            $videData = [];
+                            foreach ($getVideos->result_array() as $video) {
+                                $video['videoId'] = getYouTubeId($video['youtube_url']);
+                                $videData[] = $video;
+                            }
+                            $row['demo_videos'] = $videData;
+                        }
+                        $data[] = $row;
+                    }
+                }
+                $this->response('data', $data);
                 $this->response('status', $get->num_rows() > 0);
                 $this->response('count', $get->num_rows());
             } catch (Exception $e) {
