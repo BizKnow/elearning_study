@@ -96,7 +96,7 @@ class V1 extends Api_Controller
         if ($this->isPost()) {
             try {
                 $course_id = $this->post('course_id');
-                $id = 1;//$this->student_id();
+                $id = $this->student_id();
                 $this->db->select("c.course_name,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
@@ -133,6 +133,9 @@ class V1 extends Api_Controller
                 $this->response('message', $e->getMessage());
             }
         }
+    }
+    function study_material(){
+        
     }
     function non_purchase_course()
     {
