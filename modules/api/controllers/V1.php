@@ -64,7 +64,7 @@ class V1 extends Api_Controller
                         }
                         $data[] = $row;
                     }
-                
+
                     $this->response('data', $data);
                     $this->response('status', $course->num_rows() > 0);
                     $this->response('count', $course->num_rows());
@@ -298,6 +298,29 @@ class V1 extends Api_Controller
             'token' => $token
         ]);
         return $token;
+    }
+    function update_password()
+    {
+        if ($this->isPost()) {
+            try {
+                if ($this->validation('update_password')) {
+                    $student_id = $this->student_id();
+                    $password = $this->input->post('password');
+                    $get = $this->db->select('name,email,contact_number as mobile')->where('id', $student_id)->get('students');
+                    if ($get->num_rows() > 0) {
+                        $this->db->where('id', $student_id)->update('students', [
+                            'password' => sha1($password)
+                        ]);
+                        $this->response('token',$this->generate_token($student_id));
+                        $this->response('status',true);
+                        $this->response('details',$get->result_array());
+                        $this->response('message', 'Password updated successfully.');
+                    }
+                }
+            } catch (Exception $r) {
+                $this->response('message', $r->getMessage());
+            }
+        }
     }
     function student_registration()
     {
