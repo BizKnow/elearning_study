@@ -46,7 +46,26 @@ class V1 extends Api_Controller
                 $student_id = $this->student_id();
                 $course = $this->select(__FUNCTION__)->get('course');
                 if ($course->num_rows() > 0) {
-                    $this->response('data', $course->result_array());
+                    $data = [];
+                    foreach ($course->result_array() as $row) {
+                        $getVideos = $this->db
+                            ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
+                            ->where('sm.idDemo', 1)
+                            ->where('sm.course_id', $row['id'])
+                            ->get('study_material as sm');
+                        $row['demo_videos'] = [];
+                        if ($getVideos->num_rows()) {
+                            $videData = [];
+                            foreach ($getVideos->result_array() as $video) {
+                                $video['videoId'] = getYouTubeId($video['youtube_url']);
+                                $videData[] = $video;
+                            }
+                            $row['demo_videos'] = $videData;
+                        }
+                        $data[] = $row;
+                    }
+                
+                    $this->response('data', $data);
                     $this->response('status', $course->num_rows() > 0);
                     $this->response('count', $course->num_rows());
                 } else {
@@ -136,43 +155,49 @@ class V1 extends Api_Controller
     function study_material()
     {
         if ($this->isPost()) {
-            $studentId = $this->student_id();
-            $course_id = $this->post('course_id');
-            $materialId = $this->post('material_id',0);
-            $isDemo = $this->post('isDemo',0);
-            if ($course_id) {
-                $this->db->select('sm.material_id, sm.file,sm.file_type as type, sm.idDemo as isDemo,sm.title,sm.description');
-                $this->db->from('study_material as sm');
-                $this->db->join('student_courses as s', 's.course_id = sm.course_id');
-                $this->db->where('sm.course_id', $course_id);
-                $this->db->where('s.student_id', $studentId);
-                // $this->db->where('sm.idDemo', 0);
-                if ($this->post('type'))
-                    $this->db->where('sm.file_type', $this->post('type'));
-                if($materialId)
-                    $this->db->where('sm.material_id',$this->post('material_id'));
-                if($isDemo)
-                    $this->db->where('sm.idDemo',$isDemo);
-                $get = $this->db->get();
-                // $this->response('data', $get->result_array());
-                $data = [];
-                if ($get->num_rows()) {
-                    foreach ($get->result_array() as $study) {
-                        if ($study['type'] == 'youtube'){
-                            $study['videoId'] = getYouTubeId($study['file']);
-                            $study['youtube_url'] = $study['file'];
-                            unset($study['file']);
+            try {
+                $studentId = $this->student_id();
+                $course_id = $this->post('course_id');
+                $materialId = $this->post('material_id', 0);
+                $isDemo = $this->post('isDemo', 0);
+                if ($course_id) {
+                    $this->db->select('sm.material_id, sm.file,sm.file_type as type, sm.idDemo as isDemo,sm.title,sm.description');
+                    $this->db->from('study_material as sm');
+                    $this->db->join('student_courses as s', 's.course_id = sm.course_id');
+                    $this->db->where('sm.course_id', $course_id);
+                    $this->db->where('s.student_id', $studentId);
+                    // $this->db->where('sm.idDemo', 0);
+                    if ($this->post('type'))
+                        $this->db->where('sm.file_type', $this->post('type'));
+                    if ($materialId)
+                        $this->db->where('sm.material_id', $this->post('material_id'));
+                    if ($isDemo)
+                        $this->db->where('sm.idDemo', $isDemo);
+                    $get = $this->db->get();
+                    // $this->response('data', $get->result_array());
+                    $data = [];
+                    if ($get->num_rows()) {
+                        foreach ($get->result_array() as $study) {
+                            if ($study['type'] == 'youtube') {
+                                $study['videoId'] = getYouTubeId($study['file']);
+                                $study['youtube_url'] = $study['file'];
+                                unset($study['file']);
+                            }
+                            if ($study['type'] == 'file')
+                                $study['url'] = base_url('assets/file/study-mat/' . $study['file']);
+                            $data[] = $study;
                         }
-                        if ($study['type'] == 'file')
-                            $study['url'] = base_url('assets/file/study-mat/' . $study['file']);
-                        $data[] = $study;
-                    }
 
-                }
-                $this->response('data', $data);
-            } else
-                $this->response('error', 'Missing Course ID ..');
+                    }
+                    $this->response('data', $data);
+
+                } else
+                    $this->response('error', 'Missing Course ID ..');
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
         }
+
     }
     function non_purchase_course()
     {
@@ -183,7 +208,7 @@ class V1 extends Api_Controller
                                     c.course_name,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
-                                    CONCAT('".base_url('assets/file/')."',c.image) as course_image,
+                                    CONCAT('" . base_url('assets/file/') . "',c.image) as course_image,
                                     c.description as course_description,
                                     CASE 
                                         WHEN c.duration_type = 'year' THEN duration * 365
