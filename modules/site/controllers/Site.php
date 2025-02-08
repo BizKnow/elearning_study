@@ -11,6 +11,7 @@ class Site extends Site_Controller
         parent::__construct();
         $this->salt = defined('PHONEPAY_SALT') ? PHONEPAY_SALT : '';
         $this->marchantId = defined('PHONEPAY_MID') ? PHONEPAY_MID : '';
+        $this->load->library('common/PhonePe');
     }
     function register()
     {
@@ -162,9 +163,28 @@ class Site extends Site_Controller
             ->from('students as s')
             ->join('student_courses as sc', 's.id = sc.student_id AND sc.starttime = ' . $time)
             ->get();
-        $row = $get->row();
+
         // pre($row,true);
         try {
+            if (!$get->num_rows())
+                throw new Exception('Invalid Order id..');
+            $row = $get->row();
+
+            $amount = $row->amount * 100;
+            $decodeJson = $this->phonepe->initiatePayment($time, $amount, base_url('response'), $row->contact_number);
+            // pre($decodeJson,true);
+            if (isset($decodeJson['error'])) {
+                $newTIme = time();
+                $this->db->where('starttime',$time)->update('student_courses',['starttime' => $newTIme]);
+                redirect('site/payment/'.$newTIme);
+            } else {
+                // pre($decodeJson);
+                if ($decodeJson['success']) {
+                    $paymentUrl = $decodeJson['data']['instrumentResponse']['redirectInfo']['url'];
+                    header("Location: " . $paymentUrl);
+                }
+            }
+            /*
             $requestData = [
                 'merchantId' => PHONEPAY_MID,// $this->marchantId,
                 'merchantTransactionId' => $time,
@@ -210,52 +230,18 @@ class Site extends Site_Controller
             } else {
                 pre($decodeJson);
             }
+            */
         } catch (Exception $r) {
             echo $r->getMessage();
         }
     }
+    function checkStatus($orderId){
+        pre($this->phonepe->checkPaymentStatus($orderId));
+    }
     function program()
     {
-        $amount = $saveAmount = 1578;
-
-        $array = [1000, 500, 100, 50, 10, 5, 2, 1];
-        $total = 0;
-        $notes = [];
-        foreach ($array as $num) {
-            $myNote = intval($amount / $num);
-            $total += $myNote;
-            $amount = $amount % $num;
-            $notes[$num] = $myNote;
-        }
-        echo 'My Rupee : ' . $saveAmount . '<br>';
-        echo $total . '<br>';
-        // pre($notes);
-        $str = '';
-        foreach ($notes as $note => $count) {
-            // echo "<h3>$count Note of $note.</h3>";
-            $str .= str_repeat('+' . $note, $count);
-
-        }
-        echo '<h1 style="color:red">' . trim($str, '+') . '=' . $saveAmount . '</h1>';
-
-        // $nohun = intval($amount / 100); // 
-        // $amount = $amount % 100;
-        // // echo $amount;
-        // $nofifty = intval($amount / 50);
-        // $amount = $amount % 50;
-
-        // $noten = intval($amount / 10);
-        // $amount = $amount % 10;
-
-        // $nofive = intval($amount / 5);
-        // $amount = $amount % 5;
-
-        // $notwo = intval($amount / 2);
-        // $amount = $amount % 2;
-
-        // $noone = intval($amount / 1);
-        // $amount = $amount % 1;
-        // echo $nohun + $nofifty + $noten + $nofive + $notwo + $noone;
+        $this->load->library('common/PhonePeAuth');
+        pre($this->phonepeauth->getAuthToken());
     }
     public function index()
     {
