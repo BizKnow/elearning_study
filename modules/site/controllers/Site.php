@@ -192,7 +192,7 @@ class Site extends Site_Controller
             // exit($hasFinalRequest);
             $mRequest['request'] = $base;
             // pre($mRequest,true);
-            $response = $client->request('POST', 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', [
+            $response = $client->request('POST', 'https://api.phonepe.com/apis/hermes/pg/v1/pay', [
 
                 'body' => json_encode($mRequest),
                 'headers' => [
