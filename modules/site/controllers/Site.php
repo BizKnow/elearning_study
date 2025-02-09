@@ -41,6 +41,38 @@ class Site extends Site_Controller
     }
     function response()
     {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // 📌 ✅ Server-to-Server Response (PhonePe Webhook)
+            $postData = file_get_contents("php://input");
+            $response = json_decode($postData, true);
+            pre($response,true);
+            if (!empty($response)) {
+                log_message('error', "PhonePe Callback Data: " . print_r($response, true));
+    
+                // ✅ Payment Status Update in Database
+                if ($response['code'] == 'PAYMENT_SUCCESS') {
+                    $transactionId = $response['data']['transactionId'];
+                    $merchantTransactionId = $response['data']['merchantTransactionId'];
+    
+                    // Update Order Status in Database
+                    $this->db->where('order_id', $merchantTransactionId);
+                    $this->db->update('orders', ['payment_status' => 'Completed', 'transaction_id' => $transactionId]);
+                }
+            }
+        } else {
+            // 📌 ✅ User Redirect Handling
+            $status = $this->input->get('status');
+            $orderId = $this->input->get('order_id');
+            pre($_GET);
+            pre($_POST);
+            exit;
+            if ($status === "PAYMENT_SUCCESS") {
+                redirect(base_url('payment_success?order_id=' . $orderId));
+            } else {
+                redirect(base_url('payment_failed?order_id=' . $orderId));
+            }
+        }
+        /*
         $json_data = file_get_contents('php://input'); // Get JSON from request
         $response = json_decode($json_data, true);
 
@@ -62,18 +94,12 @@ class Site extends Site_Controller
         $this->db->where('starttime', $merchantTransactionId); // ✅ Order/Transaction match karein
         $this->db->update('student_courses', [
             'payment_id' => $transactionId, // ✅ PhonePe ka Transaction ID store karein
-            'status' => 1, // SUCCESS / FAILED / PENDING
+            'status' => $status == 'SUCCESS' ? 1 : 0, // SUCCESS / FAILED / PENDING
         ]);
-        $this->session->set_flashdata('success','Payment Done..');
+        if($status == 'SUCCESS')
+            $this->session->set_flashdata('success','Payment Done..');
         redirect('student');
-
-        // pre($_POST);
-        // if (isset($_GET['order_id'])) {
-        //     $this->render('response', [
-        //         'page_name' => 'Order Response'
-        //     ]);
-        // } else
-        //     redirect(base_url());
+        */
     }
     function content($content)
     {

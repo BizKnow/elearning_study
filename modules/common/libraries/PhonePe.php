@@ -53,6 +53,7 @@ class PhonePe {
             "redirectUrl" => $callbackUrl,
             "callbackUrl" => $callbackUrl,
             "mobileNumber" => $mobile,
+            "redirectMode" => 'POST',
             "paymentInstrument" => [
                 "type" => "PAY_PAGE"
             ]
