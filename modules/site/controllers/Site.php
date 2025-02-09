@@ -41,7 +41,33 @@ class Site extends Site_Controller
     }
     function response()
     {
-        pre($_POST);
+        $json_data = file_get_contents('php://input'); // Get JSON from request
+        $response = json_decode($json_data, true);
+
+        log_message('error', 'PhonePe Response: ' . print_r($response, true));
+
+        if (!$response || !isset($response['data']['merchantTransactionId'])) {
+            echo "Invalid response";
+            return;
+        }
+
+        // Extract required fields
+        $merchantTransactionId = $response['data']['merchantTransactionId'];  // ✅ Yeh database me search karenge
+        $transactionId = $response['data']['transactionId'];  // ✅ Yeh store karenge
+        $status = $response['data']['status'];
+        $amount = $response['data']['amount'] / 100; // Convert paise to rupees
+        $paymentTime = date('Y-m-d H:i:s', time()); // Current timestamp
+
+        // Database me update karein
+        $this->db->where('starttime', $merchantTransactionId); // ✅ Order/Transaction match karein
+        $this->db->update('student_courses', [
+            'payment_id' => $transactionId, // ✅ PhonePe ka Transaction ID store karein
+            'status' => 1, // SUCCESS / FAILED / PENDING
+        ]);
+        $this->session->set_flashdata('success','Payment Done..');
+        redirect('student');
+
+        // pre($_POST);
         // if (isset($_GET['order_id'])) {
         //     $this->render('response', [
         //         'page_name' => 'Order Response'
@@ -171,12 +197,12 @@ class Site extends Site_Controller
             $row = $get->row();
 
             $amount = $row->amount * 100;
-            $decodeJson = $this->phonepe->initiatePayment($time, $amount, base_url('response'), $row->contact_number);
+            $decodeJson = $this->phonepe->initiatePayment($time, $amount, base_url('response'), $row->contact_number, $row->id);
             // pre($decodeJson,true);
             if (isset($decodeJson['error'])) {
                 $newTIme = time();
-                $this->db->where('starttime',$time)->update('student_courses',['starttime' => $newTIme]);
-                redirect('site/payment/'.$newTIme);
+                $this->db->where('starttime', $time)->update('student_courses', ['starttime' => $newTIme]);
+                redirect('site/payment/' . $newTIme);
             } else {
                 // pre($decodeJson);
                 if ($decodeJson['success']) {
@@ -235,7 +261,8 @@ class Site extends Site_Controller
             echo $r->getMessage();
         }
     }
-    function checkStatus($orderId){
+    function checkStatus($orderId)
+    {
         pre($this->phonepe->checkPaymentStatus($orderId));
     }
     function program()

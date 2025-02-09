@@ -44,11 +44,11 @@ class PhonePe {
     }
 
     // 🔹 Initiate Payment
-    public function initiatePayment($orderId, $amount, $callbackUrl, $mobile = null) {
+    public function initiatePayment($orderId, $amount, $callbackUrl, $mobile = null,$user_id = 'USER123') {
         $payload = [
             "merchantId" => $this->merchantId,
             "merchantTransactionId" => $orderId,
-            "merchantUserId" => "USER123",
+            "merchantUserId" => $user_id,
             "amount" => $amount, // Amount in paise
             "redirectUrl" => $callbackUrl,
             "callbackUrl" => $callbackUrl,
