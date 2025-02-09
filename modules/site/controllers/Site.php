@@ -41,37 +41,24 @@ class Site extends Site_Controller
     }
     function response()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // 📌 ✅ Server-to-Server Response (PhonePe Webhook)
-            $postData = file_get_contents("php://input");
-            $response = json_decode($postData, true);
-            pre($response,true);
-            if (!empty($response)) {
-                log_message('error', "PhonePe Callback Data: " . print_r($response, true));
-    
-                // ✅ Payment Status Update in Database
-                if ($response['code'] == 'PAYMENT_SUCCESS') {
-                    $transactionId = $response['data']['transactionId'];
-                    $merchantTransactionId = $response['data']['merchantTransactionId'];
-    
-                    // Update Order Status in Database
-                    $this->db->where('order_id', $merchantTransactionId);
-                    $this->db->update('orders', ['payment_status' => 'Completed', 'transaction_id' => $transactionId]);
-                }
+        if(isset($_POST['code'])){
+            if($_POST['code'] == 'PAYMENT_SUCCESS'){
+                $orderId = $_POST['transactionId'];
+
+                $this->db->where('starttime',$orderId)->update('student_courses',[
+                    'payment_id' => $_POST['providerReferenceId'],
+                    'status' => 1
+                ]);
+                $this->session->set_flashdata('success','Payment Done..');
+                redirect('student');
             }
-        } else {
-            // 📌 ✅ User Redirect Handling
-            $status = $this->input->get('status');
-            $orderId = $this->input->get('order_id');
-            pre($_GET);
-            pre($_POST);
-            exit;
-            if ($status === "PAYMENT_SUCCESS") {
-                redirect(base_url('payment_success?order_id=' . $orderId));
-            } else {
-                redirect(base_url('payment_failed?order_id=' . $orderId));
+            else{
+                $this->session->set_flashdata('error','Payment Failed..');
+                redirect('student');
             }
         }
+        else
+            echo 'Invalid response';
         /*
         $json_data = file_get_contents('php://input'); // Get JSON from request
         $response = json_decode($json_data, true);
