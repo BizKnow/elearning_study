@@ -69,7 +69,7 @@ class V1 extends Api_Controller
                     $this->response('status', $course->num_rows() > 0);
                     $this->response('count', $course->num_rows());
                 } else {
-                    $this->response('error', 'Courses are not found.');
+                    $this->response('message', 'Courses are not found.');
                 }
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
@@ -94,8 +94,13 @@ class V1 extends Api_Controller
                     'status' => $this->post('payment_status'),
                     'amount' => $this->post('amount')
                 ]);
+                $lastId = $this->db->insert_id();
                 if ($referral_id && $this->post('payment_status')) {
                     $amount = $this->db->select('referral_amount')->where('id', $course_id)->get('course')->row('referral_amount');
+                    $this->db->insert('refferal_amount',[
+                        'parent_id' => $lastId,
+                        'amount' => $amount
+                    ]);
                     $this->increase_refer_amount($referral_id, $amount);
                 }
                 $this->response('enrollment_no', $enrollment_no);
@@ -192,7 +197,7 @@ class V1 extends Api_Controller
                     $this->response('data', $data);
 
                 } else
-                    $this->response('error', 'Missing Course ID ..');
+                    $this->response('message', 'Missing Course ID ..');
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
             }
@@ -376,12 +381,12 @@ class V1 extends Api_Controller
                             $this->response('token', $token);
                             $this->response('status', true);
                         } else
-                            $this->response('error', 'Wrong Password.');
+                            $this->response('message', 'Wrong Password.');
                     } else {
-                        $this->response('error', 'Student Account is In-active.');
+                        $this->response('message', 'Student Account is In-active.');
                     }
                 } else {
-                    $this->response('error', 'Wrong Mobile Number or Password.');
+                    $this->response('message', 'Wrong Mobile Number or Password.');
                 }
             }
         }

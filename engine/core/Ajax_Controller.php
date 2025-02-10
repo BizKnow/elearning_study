@@ -37,6 +37,7 @@ class Ajax_Controller extends MY_Controller
         if ($this->form_validation->run($index) === FALSE) {
             $this->response('html', $this->errors());
             $this->response('error', $this->errors());
+            $this->response('message', $this->errors());
             $this->response('errors', $this->form_validation->error_array());
             return false;
         }
