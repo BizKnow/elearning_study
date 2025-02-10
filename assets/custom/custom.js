@@ -2274,7 +2274,6 @@ const list_students = (admission_status = 0, center_id = 0) => {
         'ajax': {
             'url': ajax_url + 'student/list',
             'data': {
-                admission_status: admission_status,
                 center_id: center_id
             },
             'type': 'POST',
