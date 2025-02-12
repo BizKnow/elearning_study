@@ -41,23 +41,46 @@ class Site extends Site_Controller
     }
     function response()
     {
-        if(isset($_POST['code'])){
-            if($_POST['code'] == 'PAYMENT_SUCCESS'){
+        if (isset($_POST['code'])) {
+            if ($_POST['code'] == 'PAYMENT_SUCCESS') {
                 $orderId = $_POST['transactionId'];
-
-                $this->db->where('starttime',$orderId)->update('student_courses',[
+                $get = $this->db->where('starttime', $orderId)->limit(1)->get('student_courses');
+                if ($get->num_rows()) {
+                    $row = $get->row();
+                    if (!$this->session->has_userdata('student_login')) {
+                        $this->session->set_userdata([
+                            'student_login' => true,
+                            'student_id' => $get->row('student_id')
+                        ]);
+                    }
+                    if ($get->row('referral_id')) {
+                        // echo $row->course_id;
+                        if ($row->combo_id)
+                            $refer = $this->db->where('id', $row->combo_id)->get('combo');
+                        else
+                            $refer = $this->db->where('id', $row->course_id)->get('course');
+                        $amount = $refer->row('referral_amount');
+                        if ($amount) {
+                            $this->db->insert('refferal_amount', [
+                                'parent_id' => $get->row('id'),
+                                'amount' => $amount
+                            ]);
+                            $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $row->referral_id);
+                            $this->db->update('students');
+                        }
+                    }
+                }
+                $this->db->where('starttime', $orderId)->update('student_courses', [
                     'payment_id' => $_POST['providerReferenceId'],
                     'status' => 1
                 ]);
-                $this->session->set_flashdata('success','Payment Done..');
-                redirect('student');
+                $this->session->set_flashdata('success', 'Payment Done..');
+                redirect('student/dashboard');
+            } else {
+                $this->session->set_flashdata('error', 'Payment Failed..');
+                redirect('student/dashboard');
             }
-            else{
-                $this->session->set_flashdata('error','Payment Failed..');
-                redirect('student');
-            }
-        }
-        else
+        } else
             echo 'Invalid response';
         /*
         $json_data = file_get_contents('php://input'); // Get JSON from request
@@ -431,16 +454,32 @@ class Site extends Site_Controller
     }
     function test()
     {
-        echo mask_email('ajf67@gmail.com');
-        exit;
-        $this->set_data([
-            'NEW_PASSWORD' => substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6),
-            'USERNAME' => 'Admin',
-            'APP_DOWNLOAD_URL' => 'https://play.google.com/store/apps/details?id=com.rainbow.eduzone',
-            'MOBILE_NUMBER' => '8533898539',
-            'LOGIN_URL' => 'https://appedu.rainboweduzone.com/student-login'
-        ]);
-        $html = $this->template('email/new-password');
-        echo $this->do_email('ajaykumararya963983@gmail.com','Password Reset',$html);
+        $orderId = '1739032673';
+        $get = $this->db->where('starttime', $orderId)->limit(1)->get('student_courses');
+        if ($get->num_rows()) {
+            $row = $get->row();
+            if (!$this->session->has_userdata('student_login')) {
+                $this->session->set_userdata([
+                    'student_login' => true,
+                    'student_id' => $get->row('student_id')
+                ]);
+            }
+            if ($get->row('referral_id')) {
+                // echo $row->course_id;
+                if ($row->combo_id)
+                    $refer = $this->db->where('id', $row->combo_id)->get('combo');
+                else
+                    $refer = $this->db->where('id', $row->course_id)->get('course');
+                $amount = $refer->row('referral_amount');
+                if ($amount) {
+                    $this->db->insert('refferal_amount', [
+                        'parent_id' => $get->row('id'),
+                        'amount' => $amount
+                    ]);
+                    $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $row->referral_id);
+                    $this->db->update('students');
+                }
+            }
+        }
     }
 }
