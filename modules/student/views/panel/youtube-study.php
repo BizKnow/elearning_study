@@ -82,9 +82,8 @@
 
 <body>
     <div id="wrapper">
-        <div id="myPlayer" style="background: #000; height: 600px; width: 100%; position: relative; "></div>
-        <div id="customElement" class="player"
-            data-property="{showYTLogo:false,videoURL:'<?= $id ?>',containment:'#myPlayer', showControls:true,mute:false, autoPlay:false, loop:false, unmute:true, startAt:0, opacity:1, addRaster:true, quality:'large'}">
+    <div id="ES" class="player"
+            data-property="{showYTLogo:false,videoURL:'<?= $id ?>',containment:'self',optimizeDisplay:false, showControls:true,mute:false, autoPlay:false, loop:false, unmute:true, startAt:0, opacity:1,ratio:'4/3',addRaster:true}">
 
         </div>
         <div style="padding: 20px; text-align: center">
