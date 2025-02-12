@@ -2343,8 +2343,8 @@ const list_students = (admission_status = 0, center_id = 0) => {
             {
                 targets: 5,
                 render: function (data, type, row) {
-                    return `<label class="label label-danger">${data}</label>
-                        <label class="label label-info text-capitalize">Via <b> &nbsp;${row.added_by}</b></label>`;
+                    return `<label class="label label-danger">${data ?? 'Online'}</label>
+                        <label class="label label-info text-capitalize">Via <b> &nbsp;${row.added_by ?? 'APP'}</b></label>`;
                 }
             },
             {

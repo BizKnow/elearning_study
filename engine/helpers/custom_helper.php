@@ -458,7 +458,8 @@ function getYouTubeId($url)
         return false; // Not a valid YouTube URL
     }
 }
-function getYouTubeThumbnail($videoID, $quality = 'maxresdefault') {
+function getYouTubeThumbnail($videoID, $quality = 'maxresdefault')
+{
     // YouTube thumbnail base URL
     $baseUrl = "https://img.youtube.com/vi/";
 
@@ -507,4 +508,26 @@ function calculate_course_days($duration_value, $duration_type)
             $total_days = 0;
     }
     return $total_days;
+}
+function mask_email($email)
+{
+    $parts = explode("@", $email);
+    $username = $parts[0];
+    $domain = $parts[1];
+
+    // Agar username 5 ya usse kam ho, to poora dikhayenge
+    if (strlen($username) <= 5) {
+        $masked_username = $username;
+    } else {
+        // Masking: First 3 and Last 2 characters visible, rest '*'
+        $masked_username = substr($username, 0, 3) . str_repeat('*', strlen($username) - 5) . substr($username, -2);
+    }
+    return $masked_username . "@" . $domain;
+}
+function isValidEmail($email)
+{
+    $pattern = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+
+    return preg_match($pattern, $email);
+
 }

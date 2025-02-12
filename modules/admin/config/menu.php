@@ -85,31 +85,16 @@ $config['cms_setting'] = array(
     'condition' => OnlyForAdmin(),
     'menu' => array(
         array(
-            'label' => 'Manage Role User',
-            'icon' => array('people', 5),
-            'type' => 'manage_role_user',
-            'condition' => CHECK_PERMISSION('ROLE_SYSTEM'),
-            'submenu' => array(
-                array(
-                    'label' => 'Role Category',
-                    'type' => 'manage_role_category',
-                    'icon' => array('chart', 2),
-                    'url' => 'admin/manage-role-category',
-                ),
-                array(
-                    'label' => 'Manage User',
-                    'type' => 'manage_user',
-                    'icon' => array('people', 5),
-                    'url' => 'admin/manage-role-account'
-                )
-
-            )
-        ),
-        array(
             'label' => 'Setting',
             'type' => 'cms_setting',
             'icon' => array('settings', 4),
             'url' => 'cms/setting'
+        ),
+        array(
+            'label' => 'Support Info',
+            'type' => 'support_info',
+            'icon' => array('target', 4),
+            'url' => 'cms/support_info'
         ),
         array(
             'label' => 'Gallery Image',

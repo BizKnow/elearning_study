@@ -8,6 +8,9 @@ class Cms extends MY_Controller
         );
         $this->view('add-page');
     }
+    function support_info(){
+        $this->view('support-info');
+    }
     function list_pages(){
         $this->view('list-pages');
     }

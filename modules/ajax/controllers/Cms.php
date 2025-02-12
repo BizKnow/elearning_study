@@ -16,6 +16,23 @@ class Cms extends Ajax_Controller
         }
         $this->response('status', true);
     }
+    function add_support_data(){
+        $data = [
+            'type' => $this->post('type'),
+            'title' => $this->post('title'),
+            'value' => $this->post('value'),
+        ];
+        $this->db->insert('supports',$data);
+        $this->response('status',true);
+    }
+    function get_support_data(){
+        $this->response('data',$this->db->get('supports')->result_array());
+    }
+    function delete_support_data($id){
+        $this->db->where('id',$id);
+        $this->db->delete('supports');
+        $this->response('status',true);
+    }
     function delete_page()
     {
         if ($id = $this->post('id')) {

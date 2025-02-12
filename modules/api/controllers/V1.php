@@ -89,7 +89,7 @@ class V1 extends Api_Controller
                     'course_id' => $course_id,
                     'enrollment_no' => $enrollment_no,
                     'referral_id' => $referral_id,
-                    'added_via' => 'api',
+                    'added_via' => 'app',
                     'payment_id' => $this->post('payment_id'),
                     'status' => $this->post('payment_status'),
                     'amount' => $this->post('amount')
@@ -97,7 +97,7 @@ class V1 extends Api_Controller
                 $lastId = $this->db->insert_id();
                 if ($referral_id && $this->post('payment_status')) {
                     $amount = $this->db->select('referral_amount')->where('id', $course_id)->get('course')->row('referral_amount');
-                    $this->db->insert('refferal_amount',[
+                    $this->db->insert('refferal_amount', [
                         'parent_id' => $lastId,
                         'amount' => $amount
                     ]);
@@ -109,7 +109,67 @@ class V1 extends Api_Controller
             }
         }
     }
+    function supports()
+    {
+        if ($this->isGet()) {
+            try {
+                $get = $this->db->select("title,value,type,CASE 
+                            WHEN type = 'mobile' THEN CONCAT('tel:',value)
+                            WHEN type = 'email' THEN CONCAT('mailto:',value)
+                            ELSE value
+                            END AS url")
+                    ->get('supports');
+                $this->response('data', $get->result_array());
+                $this->response('status', $get->num_rows() > 0);
+                $this->response('count', $get->num_rows());
 
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
+    function reset_password()
+    {
+        if ($this->isPost()) {
+            if ($this->validation('reset_password')) {
+                $mobile_or_email = $this->post('mobile_or_email');
+                try {
+                    $get = $this->db->where('email', $mobile_or_email)
+                        ->or_where('contact_number', $mobile_or_email)
+                        ->get('students');
+                    if (!$get->num_rows())
+                        throw new Exception("$mobile_or_email does not exists..");
+                    $row = $get->row();
+                    if (empty($row->email))
+                        throw new Exception('Email does not exists on this account');
+                    if (!isValidEmail($row->email))
+                        throw new Exception($row->email . ' is not a valid email, please contact your administrator. ');
+                    $pass = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6);
+                    $this->db->where('id', $row->id)->update('students', [
+                        'password' => sha1($pass)
+                    ]);
+                    $this->set_data([
+                        'NEW_PASSWORD' => $pass,
+                        'USERNAME' => $row->name,
+                        'APP_DOWNLOAD_URL' => 'https://play.google.com/store/apps/details?id=com.rainbow.eduzone',
+                        'MOBILE_NUMBER' => $row->contact_number,
+                        'LOGIN_URL' => 'https://appedu.rainboweduzone.com/student-login'
+                    ]);
+                    $html = $this->template('email/new-password');
+                    $sent = $this->do_email($row->email, 'Password Reset', $html);
+                    if ($sent) {
+                        $this->response('message', 'New password sent to your email ' . mask_email($row->email) . '.');
+                    } else {
+                        $this->response('message', 'Failed to send email.');
+                        $this->response('error_details', $this->email->print_debugger());
+                    }
+
+                } catch (Exception $e) {
+                    $this->response('message', $e->getMessage());
+                }
+            }
+        }
+    }
     function increase_refer_amount($referral_id, $amount)
     {
         $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $referral_id);
@@ -316,9 +376,9 @@ class V1 extends Api_Controller
                         $this->db->where('id', $student_id)->update('students', [
                             'password' => sha1($password)
                         ]);
-                        $this->response('token',$this->generate_token($student_id));
-                        $this->response('status',true);
-                        $this->response('details',$get->result_array());
+                        $this->response('token', $this->generate_token($student_id));
+                        $this->response('status', true);
+                        $this->response('details', $get->result_array());
                         $this->response('message', 'Password updated successfully.');
                     }
                 }
@@ -336,7 +396,9 @@ class V1 extends Api_Controller
                     'email' => $this->post('email'),
                     'contact_number' => $this->post('mobile'),
                     'password' => sha1($this->post('password')),
-                    'status' => 1
+                    'status' => 1,
+                    'added_by' => 'APP',
+                    'admission_type' => 'Online'
                 ];
                 $this->db->insert('students', $data);
                 $student_id = $this->db->insert_id();
