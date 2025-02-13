@@ -345,7 +345,7 @@
                 <div class="navbar-nav flex-row order-md-last d-md-none">
                     <div class="nav-item d-md-flex me-3">
                         <div class="btn-list">
-                            <a href="{base_url}student/wallet" class="btn btn-6" target="_blank" rel="noreferrer">
+                            <a href="{base_url}student/wallet" class="btn btn-6" rel="noreferrer">
                                 Wallet
                                 <?= $wallet = $this->db->select('wallet')->where('id', $this->session->userdata('student_id'))->get('students')->row('wallet') ?>&nbsp;
                                 {inr}
@@ -424,7 +424,7 @@
                 <div class="navbar-nav flex-row order-md-last">
                     <div class="nav-item d-md-flex me-3">
                         <div class="btn-list">
-                            <a href="{base_url}student/wallet" class="btn btn-6" target="_blank" rel="noreferrer">
+                            <a href="{base_url}student/wallet" class="btn btn-6" rel="noreferrer">
                                 Wallet <?= $wallet ?>&nbsp; {inr}
                             </a>
                         </div>

@@ -90,23 +90,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
         dt.on('draw', function (e) {
             table.EditForm('course/edit', 'Edit Course');
             const handle = handleDeleteRows(delete_url);
-            $('.course-setting').on('click', function () {
-                var rowData = table.DataTable().row($(this).closest('tr')).data();
-                // console.log(rowData.course_id);
-                if (rowData.hasOwnProperty('course_id') && rowData.hasOwnProperty('parent_id')) {
-                    $.AryaAjax({
-                        url: 'course/setting_form',
-                        data: { id: rowData.course_id },
-                        loading_message: 'Loading Edit Form...'
-                    }).then((response) => {
-                        // console.log(response);
-                        showResponseError(response);
-                        if (response.status) {
-                            myModel('Change Setting', response.html, true);
-                        }
-                    });
-                }
-            });
 
             handle.done(function (e) {
                 // console.log(e);

@@ -60,6 +60,16 @@ class Site extends Site_Controller
                         else
                             $refer = $this->db->where('id', $row->course_id)->get('course');
                         $amount = $refer->row('referral_amount');
+                        $cashback_amount = $refer->row('cashback_amount');
+                        if ($cashback_amount) {
+                            $this->db->insert('refferal_amount', [
+                                'parent_id' => $get->row('id'),
+                                'type' => 'cashback',
+                                'amount' => $cashback_amount
+                            ]);
+                            $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $row->student_id);
+                            $this->db->update('students');
+                        }
                         if ($amount) {
                             $this->db->insert('refferal_amount', [
                                 'parent_id' => $get->row('id'),
@@ -454,32 +464,7 @@ class Site extends Site_Controller
     }
     function test()
     {
-        $orderId = '1739032673';
-        $get = $this->db->where('starttime', $orderId)->limit(1)->get('student_courses');
-        if ($get->num_rows()) {
-            $row = $get->row();
-            if (!$this->session->has_userdata('student_login')) {
-                $this->session->set_userdata([
-                    'student_login' => true,
-                    'student_id' => $get->row('student_id')
-                ]);
-            }
-            if ($get->row('referral_id')) {
-                // echo $row->course_id;
-                if ($row->combo_id)
-                    $refer = $this->db->where('id', $row->combo_id)->get('combo');
-                else
-                    $refer = $this->db->where('id', $row->course_id)->get('course');
-                $amount = $refer->row('referral_amount');
-                if ($amount) {
-                    $this->db->insert('refferal_amount', [
-                        'parent_id' => $get->row('id'),
-                        'amount' => $amount
-                    ]);
-                    $this->db->set('wallet', 'wallet+' . $amount, FALSE)->where('id', $row->referral_id);
-                    $this->db->update('students');
-                }
-            }
-        }
+        // $r = $this->db->set('wallet', 'wallet+100', FALSE)->where('id', 1);
+        
     }
 }

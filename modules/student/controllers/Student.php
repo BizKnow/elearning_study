@@ -8,8 +8,22 @@ class Student extends MY_Controller
         else
             redirect('student/dashboard');
     }
-    function wallet(){
-        $this->student_view('wallet',['isValid' => true]);
+    function wallet()
+    {
+        $this->student_view('wallet', ['isValid' => true]);
+    }
+    function withdrawal_request()
+    {        
+        if ($this->uri->segment(3, 0)) {
+            $this->ki_theme->breadcrumb_action_html(
+                $this->ki_theme->set_class('btn btn-primary')->add_action('List All Request(s)', ('student/withdrawal-request'))
+            );
+        }
+        $this->view('withdrawal-request', ['isValid' => true]);
+    }
+    function withdrawal_amount()
+    {
+        $this->student_view('withdrawal-amount', ['isValid' => true]);
     }
     function purchase_combo()
     {
@@ -36,8 +50,9 @@ class Student extends MY_Controller
 
         // $this->student_view('profile');
     }
-    function help(){
-        $this->student_view('help',['isValid' => true]);
+    function help()
+    {
+        $this->student_view('help', ['isValid' => true]);
     }
     function sign_out()
     {
@@ -45,11 +60,12 @@ class Student extends MY_Controller
         $this->session->unset_userdata('student_id');
         redirect('student');
     }
-
+    
     function pending_list()
     {
         $this->view('all', ['title' => 'Pending']);
     }
+
     function approve_list()
     {
         $this->view('all', ['title' => 'Approved']);
@@ -170,20 +186,20 @@ class Student extends MY_Controller
     {
         $this->view('list-by-session');
     }
-    function course_study_material(){
-        if($view = $this->uri->segment(3,0)){
+    function course_study_material()
+    {
+        if ($view = $this->uri->segment(3, 0)) {
             // echo $view;
-            try{
+            try {
                 $this->token->decode($view);
                 // pre($this->token->data(),true);
-                $this->student_view('course-study-material',[
+                $this->student_view('course-study-material', [
                     'isValid' => true,
                     'course_id' => $this->token->data('course_id'),
                     'student_id' => $this->token->data('student_id'),
                     'file_type' => $this->token->data('file_type'),
                 ]);
-            }
-            catch(Exception $e){
+            } catch (Exception $e) {
                 echo $e->getMessage();
             }
         }
@@ -209,7 +225,7 @@ class Student extends MY_Controller
                     } else if ($row->file_type == 'youtube') {
                         if ($videoId = getYouTubeId($row->file)) {
                             // echo $videoId;
-                            $this->load->view('panel/youtube-study', ['id' => $videoId,'title' => $row->title]);
+                            $this->load->view('panel/youtube-study', ['id' => $videoId, 'title' => $row->title]);
 
                         } else
                             throw new Exception('Invalid File..');

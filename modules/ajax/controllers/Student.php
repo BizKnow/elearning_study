@@ -1,6 +1,85 @@
 <?php
 class Student extends Ajax_Controller
 {
+    //for student
+    function withdrawal_amount()
+    {
+        $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
+        if ($this->validation()) {
+            $amountLimit = ES('withdrawal_amount_limit', 0);
+            $amount = $this->post('amount');
+            try {
+                $studentWallet = $this->student_model->get_student_via_id($this->student_model->studentId())->row('wallet') ?? 0;
+                if(!$studentWallet)
+                    throw new Exception('you have no money in your wallet');
+                if ($studentWallet < $amount) 
+                    throw new Exception("You have only $studentWallet rupees in your wallet.");
+                if ($amountLimit <= $amount) {
+                    // $this->response('error',"$amountLimit,$amount");
+                    $studentId = $this->student_model->studentId();
+                    $student = $this->student_model->get_student_via_id($studentId)->row();
+                    $data = [
+                        'student_id' => $studentId,
+                        'amount' => $amount
+                    ];
+                    $this->db->insert('withdrawal_requests', $data);
+                    $this->set_data([
+                        'STUDENT_NAME' => $student->student_name,
+                        'MOBILE_NUMBER' => $student->contact_number,
+                        'AMOUNT' => $amount,
+                        'DATE' => date('d-m-Y'),
+                        'ADMIN_LINK' => base_url('student/withdrawal-request/' . $this->token->encode(['id' => $this->db->insert_id()]))
+                    ]);
+                    $this->do_email('ajaykumararya963983@gmail.com', 'Withdrawal Request', $this->template('email/withdrawal-request'));
+                    $this->response('status', true);
+                } else
+                    throw new Exception("You cannot withdraw less than Rs $amountLimit.");
+            } catch (Exception $e) {
+                $this->response('error', $e->getMessage());
+            }
+        }
+    }
+    //for admin
+    function withdrawal_request_accept()
+    {
+        try {
+            $token = $this->post('token');
+            $id = $this->token->decode($token)['id'];
+            $fetch = $this->db->where('id', $id)->get('withdrawal_requests');
+            if (!$fetch->num_rows())
+                throw new Exception('Invalid Token..');
+            $row = $fetch->row();
+            $student = $this->student_model->get_student_via_id($row->student_id);
+            if (!$student->num_rows())
+                throw new Exception('Student Not Found on this token..');
+            $student = $student->row();
+
+
+
+            $data = ['status' => $this->post('withdrawal_status')];
+            if ($this->post('withdrawal_status') != '0') {
+                if ($this->post('withdrawal_status') == '1') {
+                    if (empty(trim($this->post('transcation_id'))))
+                        throw new Exception('Transcation is empty, please enter a valid transcation id.');
+                    $this->db->set('wallet', 'wallet-' . $row->amount, FALSE)->where('id', $row->student_id);
+                    $this->db->update('students');
+                    $data['payment_id'] = $this->post('transcation_id');
+                } else {
+                    if (empty(trim($this->post('reason'))))
+                        throw new Exception('Enter a valid reson for reject this request.');
+                    $this->db->set('wallet', 'wallet+' . $row->amount, FALSE)->where('id', $row->student_id);
+                    $this->db->update('students');
+                    $data['reason'] = $this->post('reason');
+
+                }
+
+            }
+            $this->db->where('id', $row->id)->update('withdrawal_requests', $data);
+            $this->response('status', true);
+        } catch (Exception $e) {
+            $this->response('error', $e->getMessage());
+        }
+    }
     function edit_form()
     {
         $this->response('form', 'Welcome');
@@ -47,7 +126,7 @@ class Student extends Ajax_Controller
     function add()
     {
         $owner_id = $this->get_data('owner_id');
-        
+
 
         $data = $this->post();
 
@@ -131,16 +210,16 @@ class Student extends Ajax_Controller
         $list = $this->student_model->get_all_student($this->post());
         $this->response('data', $list);
     }
-    function update_bank(){
+    function update_bank()
+    {
         $student_id = $this->input->post('student_id');
         $data = $this->post();
-        $check = $this->db->where('student_id',$student_id)->get('student_banks');
-        $this->response('status',true);
-        if($check->num_rows()){
-            $this->db->where('student_id',$student_id)->update('student_banks',$data);
-        }
-        else{
-            $this->db->insert('student_banks',$data);
+        $check = $this->db->where('student_id', $student_id)->get('student_banks');
+        $this->response('status', true);
+        if ($check->num_rows()) {
+            $this->db->where('student_id', $student_id)->update('student_banks', $data);
+        } else {
+            $this->db->insert('student_banks', $data);
         }
     }
     function upload_study_material()
@@ -189,12 +268,13 @@ class Student extends Ajax_Controller
             $results = $get->result_array();
         $this->response('results', $results);
     }
-    function study_material_for_demo(){
+    function study_material_for_demo()
+    {
         $this->db->where([
             'id' => $this->post("id"),
             'file_type' => 'youtube'
-        ])->update('study_material',['idDemo' => $this->post('status')]);
-        $this->response('status',true);
+        ])->update('study_material', ['idDemo' => $this->post('status')]);
+        $this->response('status', true);
     }
     function list_study_material()
     {

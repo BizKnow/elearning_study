@@ -78,6 +78,7 @@ class Course extends Ajax_Controller
             'course_name' => $this->post('course_name'),
             'fees' => $this->post('fees'),
             'referral_amount' => $this->post('referral_amount'),
+            'cashback_amount' => $this->post('cashback_amount'),
             'description' => $this->post('description'),
         ]);
         $this->response('html', 'Course Updated Successfully..');

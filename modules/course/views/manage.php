@@ -57,7 +57,12 @@
                                 <input type="number" name="referral_amount" value="0" class="form-control"
                                     placeholder="Enter Referral Amount.">
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3 ">
+                                <label class="form-label required">Enter Cashback Amount</label>
+                                <input type="number" name="cashback_amount" value="0" class="form-control"
+                                    placeholder="Enter Cashback Amount.">
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label for="" class="form-label required">Image</label>
                                 <input type="file" name="image" required class="form-control">
                             </div>
@@ -161,6 +166,10 @@
     <div class="form-group ">
         <label class="form-label">Enter Referral Amount</label>
         <input type="number" name="referral_amount" class="form-control" placeholder="Enter Referral Amount" value="{{referral_amount}}">
+    </div>
+    <div class="form-group ">
+        <label class="form-label">Enter Cashback Amount</label>
+        <input type="number" name="cashback_amount" class="form-control" placeholder="Enter Cashback Amount" value="{{cashback_amount}}">
     </div>
     <div class="form-group ">
         <label class="form-label">Enter Description</label>
