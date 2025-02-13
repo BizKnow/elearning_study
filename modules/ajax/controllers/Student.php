@@ -30,7 +30,7 @@ class Student extends Ajax_Controller
                         'DATE' => date('d-m-Y'),
                         'ADMIN_LINK' => base_url('student/withdrawal-request/' . $this->token->encode(['id' => $this->db->insert_id()]))
                     ]);
-                    $this->do_email('ajaykumararya963983@gmail.com', 'Withdrawal Request', $this->template('email/withdrawal-request'));
+                    $this->do_email('Rainboweduzone.fzd@gmail.com', 'Withdrawal Request', $this->template('email/withdrawal-request'));
                     $this->response('status', true);
                 } else
                     throw new Exception("You cannot withdraw less than Rs $amountLimit.");
