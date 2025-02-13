@@ -58,7 +58,8 @@ class MY_Controller extends MX_Controller
             'theme_url' => theme_url(),
             'document_path' => base_url() . defined('DOCUMENT_PATH') ? DOCUMENT_PATH : 'assets',
             'admission_button' => $this->ki_theme->save_button('Admission Now', ' fa fa-plus'),
-            'assets' => base_url('assets/file/')
+            'assets' => base_url('assets/file/'),
+            'meta_title' => 'Rainbow Eduzone'
         ];
         $this->ki_theme->set_config_item('newicon', img(base_url('themes/newicon.gif')));
         $this->set_data('basic_header_link', $this->parse('site/common-header', [], true));

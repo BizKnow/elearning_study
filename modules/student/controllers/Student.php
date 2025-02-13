@@ -6,7 +6,10 @@ class Student extends MY_Controller
         if ($this->student_model->isStudent())
             $this->student_view('index', ['isValid' => true]);
         else
-            redirect('student/profile');
+            redirect('student/dashboard');
+    }
+    function wallet(){
+        $this->student_view('wallet',['isValid' => true]);
     }
     function purchase_combo()
     {
@@ -28,8 +31,13 @@ class Student extends MY_Controller
     }
     function dashboard()
     {
-        redirect('student/profile');
+        // redirect('student/profile');
+        $this->student_view('index', ['isValid' => true]);
+
         // $this->student_view('profile');
+    }
+    function help(){
+        $this->student_view('help',['isValid' => true]);
     }
     function sign_out()
     {
@@ -77,6 +85,7 @@ class Student extends MY_Controller
         $tabs = [
             'overview' => ['title' => 'Account Overview', 'icon' => array('user', 2), 'url' => ''],
             'setting' => ['title' => 'Update', 'icon' => array('pencil', 3), 'url' => 'setting'],
+            'bank' => ['title' => 'Bank Details (KYC)', 'icon' => array('bank', 3), 'url' => 'bank'],
             // 'fee-record' => ['title' => 'Account Fees Record', 'icon' => array('two-credit-cart', 3), 'url' => 'fee-record'],
             'change-password' => ['title' => 'Account Change Password', 'icon' => array('key', 2), 'url' => 'change-password']
         ];

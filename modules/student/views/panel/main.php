@@ -33,6 +33,81 @@
         .btn-primary:hover {
             background-color: #363672 !important;
         }
+        @media (max-width: 768px) {
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                background: #182433;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+                border-top: 4px groove #f76707
+            }
+
+            /* ✅ Navigation Button */
+            .nav-item {
+                flex: 1;
+                text-align: center;
+                color: white;
+                text-decoration: none;
+                font-size: 14px;
+                padding: 12px 0;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+
+            .nav-item i {
+                display: block;
+                font-size: 22px;
+                margin-bottom: 3px;
+                transition: all 0.3s ease;
+            }
+
+            /* ✅ Active Menu Effect - Slightly Lifted */
+            .nav-item.active {
+                transform: translateY(-29px);
+                color: #f76707;
+                border-radius: 20%;
+                background: #182433;
+                border-top: 4px groove #f76707
+            }
+
+            .nav-item.active::before {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 40px;
+                height: 4px;
+                background: #f76707;
+                border-radius: 5px;
+            }
+
+            /* ✅ Hover Effect */
+            .nav-item:hover {
+                color: #f76707;
+            }
+
+            .nav-item:hover i {
+                transform: scale(1.1);
+            }
+        }
+
+        /* ✅ Responsive */
+        @media (max-width: 500px) {
+            .nav-item {
+                font-size: 12px;
+            }
+
+            .nav-item i {
+                font-size: 18px;
+            }
+        }
     </style>
     <style>
         @import url('https://rsms.me/inter/inter.css');
@@ -264,6 +339,36 @@
                         <!-- <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image"> -->
                     </a>
                 </h1>
+                <div class="navbar-nav flex-row order-md-last d-md-none">
+                    <div class="nav-item d-md-flex me-3">
+                        <div class="btn-list">
+                            <a href="{base_url}student/wallet" class="btn btn-6" target="_blank" rel="noreferrer">
+                                Wallet
+                                <?= $wallet = $this->db->select('wallet')->where('id', $this->session->userdata('student_id'))->get('students')->row('wallet') ?>&nbsp;
+                                {inr}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+                            aria-label="Open user menu">
+                            <span class="avatar avatar-sm"
+                                style="background-image: url({base_url}upload/{image})"></span>
+                            <div class="d-none d-xl-block ps-2">
+                                <div>{student_name}</div>
+                                <div class="mt-1 small text-muted">Student</div>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <!-- <a href="#" class="dropdown-item">Status</a>
+                            <a href="./profile.html" class="dropdown-item">Profile</a>
+                            <a href="#" class="dropdown-item">Feedback</a>
+                            <div class="dropdown-divider"></div> -->
+                            <a href="{base_url}student/profile" class="dropdown-item">Profile</a>
+                            <a href="{base_url}student/sign_out" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="collapse navbar-collapse" id="sidebar-menu">
                     <ul class="navbar-nav pt-lg-3">
                         <li class="<?= $this->router->fetch_method() == 'index' ? 'active' : '' ?> nav-item"><a
@@ -307,13 +412,20 @@
                 </div>
             </div>
         </aside>
-        <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none sticky-top">
+        <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none">
             <div class="container-xl">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
                     aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-nav flex-row order-md-last">
+                    <div class="nav-item d-md-flex me-3">
+                        <div class="btn-list">
+                            <a href="{base_url}student/wallet" class="btn btn-6" target="_blank" rel="noreferrer">
+                                Wallet <?= $wallet ?>&nbsp; {inr}
+                            </a>
+                        </div>
+                    </div>
                     <div class="d-none d-md-flex">
                         <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -394,9 +506,23 @@
 
                     if ($successMessage = $this->session->flashdata('error'))
                         echo alert($successMessage, 'danger mb-2');
+                    $class = strtolower($this->router->fetch_method());
                     ?>
                     {page_output}
                 </div>
+            </div>
+            <div class="bottom-nav d-md-none">
+                <a href="{base_url}student/dashboard" class="nav-item <?= $class == 'dashboard' ? 'active' : '' ?>"><i
+                        class="fas fa-book"></i> Course(s)</a>
+                <a href="{base_url}student/wallet" class="nav-item <?= $class == 'wallet' ? 'active' : '' ?>"><i
+                        class="fas fa-wallet"></i> Wallet</a>
+                <a href="{base_url}student/profile" class="nav-item <?= $class == 'profile' ? 'active' : '' ?>"><i
+                        class="fas fa-user "></i> Profile</a>
+                <a href="{base_url}student/refer-to-earn"
+                    class="nav-item <?= $class == 'refer_to_earn' ? 'active' : '' ?>"><i class="fas fa-inr"></i> Refer To
+                    Earn</a>
+                <a href="{base_url}student/help" class="nav-item  <?= $class == 'help' ? 'active' : '' ?>"><i
+                        class="fas fa-question-circle"></i> Help</a>
             </div>
             <footer class="footer footer-transparent d-print-none">
                 <div class="container-xl">
