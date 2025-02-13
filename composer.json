@@ -24,10 +24,5 @@
     "allow-plugins": {
       "composer/installers": true
     }
-  },
-  "autoload": {
-    "classmap": [
-      "engine/third_party"
-    ]
   }
 }
