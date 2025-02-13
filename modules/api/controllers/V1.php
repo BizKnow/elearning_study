@@ -54,6 +54,11 @@ class V1 extends Api_Controller
                             ->where('sm.course_id', $row['id'])
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
+                        $row['is_subscribe'] = $this->db->where([
+                            'student_id' => $student_id,
+                            'course_id' => $row['id'],
+                            'status' => 1
+                        ])->get('student_courses')->num_rows() ? 1 : 0;
                         if ($getVideos->num_rows()) {
                             $videData = [];
                             foreach ($getVideos->result_array() as $video) {

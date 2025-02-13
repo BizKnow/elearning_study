@@ -24,57 +24,55 @@
             </div>
             <div class="card-body">
                 <?php
-                $list = $this->db->where('student_id', $this->student_model->studentId())->order_by('updatetime','DESC')->get('withdrawal_requests');
+                $list = $this->db->where('student_id', $this->student_model->studentId())->order_by('updatetime', 'DESC')->get('withdrawal_requests');
                 if ($list->num_rows()) {
                     ?>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#.</th>
-                                <th>Date</th>
-                                <td>Order ID</td>
-                                <th>Amount</th>
-                                <th>Update Time</th>
-                                <th>Request Status</th>
-                                <th>Transcation/Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $i = 1;
-                            foreach($list->result() as $row){
-                                echo '<tr>
-                                        <td>'.$i++.'.</td>
-                                        <td>'.date('d-m-Y',strtotime($row->timestamp)).'</td>
-                                        <td>ORD'.strtotime($row->timestamp).'</td>
-                                        <td>'.$row->amount.' {inr}</td>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#.</th>
+                                    <th>Date</th>
+                                    <td>Order ID</td>
+                                    <th>Amount</th>
+                                    <th>Update Time</th>
+                                    <th>Request Status</th>
+                                    <th>Transcation/Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 1;
+                                foreach ($list->result() as $row) {
+                                    echo '<tr>
+                                        <td>' . $i++ . '.</td>
+                                        <td>' . date('d-m-Y', strtotime($row->timestamp)) . '</td>
+                                        <td>ORD' . strtotime($row->timestamp) . '</td>
+                                        <td>' . $row->amount . ' {inr}</td>
                                         <td>';
-                                        if($row->timestamp != $row->updatetime){
-                                            echo date('d-m-Y',strtotime($row->updatetime));
-                                        }
-                                        else
-                                            echo label('Pending..',' bg-warning');
-                                        
-                                        echo '</td>';
-                                        if($row->status == '1'){
-                                            echo '<td>'.label('Accept',' bg-success').'</td>';
-                                            echo '<td class="text-success">'.$row->payment_id.'</td>';
-                                        }
-                                        else if($row->status == '2'){
-                                            echo '<td>'.label('Reject',' bg-danger').'</td>';
-                                            echo '<td class="text-danger">'.$row->reason.'</td>';
-                                        }
-                                        else
-                                        {
-                                            echo '<td>'.label('Pending..',' bg-warning').'</td>';
-                                            echo '<td class="text-warning">Pending..</td>';
+                                    if ($row->timestamp != $row->updatetime) {
+                                        echo date('d-m-Y', strtotime($row->updatetime));
+                                    } else
+                                        echo label('Pending..', ' bg-warning');
+
+                                    echo '</td>';
+                                    if ($row->status == '1') {
+                                        echo '<td>' . label('Accept', ' bg-success') . '</td>';
+                                        echo '<td class="text-success">' . $row->payment_id . '</td>';
+                                    } else if ($row->status == '2') {
+                                        echo '<td>' . label('Reject', ' bg-danger') . '</td>';
+                                        echo '<td class="text-danger">' . $row->reason . '</td>';
+                                    } else {
+                                        echo '<td>' . label('Pending..', ' bg-warning') . '</td>';
+                                        echo '<td class="text-warning">Pending..</td>';
                                     }
-                                        
-                                echo '</tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+
+                                    echo '</tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                     <?php
                 } else
                     echo alert('Data not found...', 'danger');

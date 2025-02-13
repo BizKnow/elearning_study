@@ -4,8 +4,8 @@ class Student extends Ajax_Controller
     //for student
     function withdrawal_amount()
     {
-        $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
-        if ($this->validation()) {
+        // $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
+        if ($this->validation('withdrawal_amount')) {
             $amountLimit = ES('withdrawal_amount_limit', 0);
             $amount = $this->post('amount');
             try {

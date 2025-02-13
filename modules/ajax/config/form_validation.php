@@ -1,5 +1,12 @@
 <?php
 $config = array(
+    'withdrawal_amount' => array(
+        array(
+            'label' => 'Amount',
+            'field' => 'amount',
+            'rules' => 'required|integer'
+        )
+    ),
     'student/add' => array(
         array(
             'field' => 'email_id',
