@@ -26,7 +26,17 @@ document.addEventListener('DOMContentLoaded', function (d) {
             window.location.href = url;
         // location.href = ;
     })
+    $(document).on('submit','.submit-bank',function(res){
+        res.preventDefault();
+        $.AryaAjax({
+            url : 'student/update-bank',
+            data : new FormData(this),
+            page_reload : true,
+            success_message : 'Bank Details Updated Successfully..'
+        });
+    })
     if (update_profile) {
+        /*
         var validation = MyFormValidation(update_profile);
         validation.addField('name', {
             validators: {
@@ -110,13 +120,14 @@ document.addEventListener('DOMContentLoaded', function (d) {
                 }
             }
         });
+        */
         $(document).on('submit', '.save-student-data', function (r) {
             r.preventDefault();
             $.AryaAjax({
                 url: 'website/update-stuednt-basic-details',
                 data: new FormData(this),
                 success_message: 'Profile Data Updated Successfully..',
-                validation: validation
+                // validation: validation
             }).then((d) => {
                 if (d.status) {
                     $.each(d.student_data, function (i, v) {
@@ -335,10 +346,10 @@ document.addEventListener('DOMContentLoaded', function (d) {
         });
     });
 
-    course_box.select2({
-        placeholder: "Select a Course",
-        templateSelection: optionFormatSecond,
-        templateResult: optionFormatSecond
-        ,
-    });
+    // course_box.select2({
+    //     placeholder: "Select a Course",
+    //     templateSelection: optionFormatSecond,
+    //     templateResult: optionFormatSecond
+    //     ,
+    // });
 })

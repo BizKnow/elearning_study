@@ -146,9 +146,9 @@ class Site extends Site_Controller
                         $list = $this->db->where('id', $data['combo_id'])->get('combo');
                         if ($list->num_rows() > 0) {
                             $combo = $list->row();
-                            if ($referral_id) {
-                                $this->db->set('wallet', 'wallet + ' . $combo->referral_amount, FALSE)->where('id', $referral_id)->update('students');
-                            }
+                            // if ($referral_id) {
+                            //     $this->db->set('wallet', 'wallet + ' . $combo->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                            // }
                             // pre($combo);
                             $courses = json_decode($combo->courses, true);
                             if (sizeof($courses) > 0) {
@@ -193,9 +193,9 @@ class Site extends Site_Controller
                         if ($getCourse->num_rows() > 0) {
                             $course = $getCourse->row();
                             // pre($course, true);
-                            if ($referral_id) {
-                                $this->db->set('wallet', 'wallet + ' . $course->referral_amount, FALSE)->where('id', $referral_id)->update('students');
-                            }
+                            // if ($referral_id) {
+                            //     $this->db->set('wallet', 'wallet + ' . $course->referral_amount, FALSE)->where('id', $referral_id)->update('students');
+                            // }
                             $this->db->insert('student_courses', [
                                 'student_id' => $data['student_id'],
                                 'course_id' => $course->id,

@@ -2143,7 +2143,11 @@ $(document).on('change', '[name="avatar"]', function (e) {
         }).then((res) => {
             // log(res);
             if (res.status) {
-                mySwal('Successful', 'Profile Image Uploaded Successfully..');
+                mySwal('Successful', 'Profile Image Uploaded Successfully..',true,'ok').then(res => {
+                    if(res.isConfirmed)
+                        location.reload();
+                });
+                
             }
             showResponseError(res);
         });

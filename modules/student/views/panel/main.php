@@ -33,6 +33,9 @@
         .btn-primary:hover {
             background-color: #363672 !important;
         }
+        .avatar{
+            background-size:100% 100%
+        }
         @media (max-width: 768px) {
             .bottom-nav {
                 position: fixed;
@@ -49,7 +52,7 @@
             }
 
             /* ✅ Navigation Button */
-            .nav-item {
+            .bottom-nav .nav-item {
                 flex: 1;
                 text-align: center;
                 color: white;
@@ -60,7 +63,7 @@
                 transition: all 0.3s ease;
             }
 
-            .nav-item i {
+            .bottom-nav .nav-item i {
                 display: block;
                 font-size: 22px;
                 margin-bottom: 3px;
@@ -68,7 +71,7 @@
             }
 
             /* ✅ Active Menu Effect - Slightly Lifted */
-            .nav-item.active {
+            .bottom-nav .nav-item.active {
                 transform: translateY(-29px);
                 color: #f76707;
                 border-radius: 20%;
@@ -76,7 +79,7 @@
                 border-top: 4px groove #f76707
             }
 
-            .nav-item.active::before {
+            .bottom-nav .nav-item.active::before {
                 content: '';
                 position: absolute;
                 bottom: -5px;
@@ -89,22 +92,22 @@
             }
 
             /* ✅ Hover Effect */
-            .nav-item:hover {
+            .bottom-nav .nav-item:hover {
                 color: #f76707;
             }
 
-            .nav-item:hover i {
+            .bottom-nav .nav-item:hover i {
                 transform: scale(1.1);
             }
         }
 
         /* ✅ Responsive */
         @media (max-width: 500px) {
-            .nav-item {
+            .bottom-nav .nav-item {
                 font-size: 12px;
             }
 
-            .nav-item i {
+            .bottom-nav .nav-item i {
                 font-size: 18px;
             }
         }
@@ -334,8 +337,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <h1 class="navbar-brand navbar-brand-autodark">
-                    <a href="">
-                        Student Panel
+                    <a href="{base_url}student/dashboard">
+                        {student_name}
                         <!-- <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image"> -->
                     </a>
                 </h1>
