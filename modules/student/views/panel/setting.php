@@ -16,20 +16,6 @@
                             <input type="text" name="name" value="{student_name}" class="form-control"
                                 placeholder="Enter Student Name">
                         </div>
-
-                        <div class="form-group mb-4 col-lg-6 col-xs-12 col-sm-12">
-                            <label class="form-label required">Contact Number</label>
-                            <div class="input-group">
-                                <input type="text" name="contact_number" class="form-control"
-                                    placeholder="Whatsapp Number" autocomplete="off" value="{contact_number}">
-                            </div>
-                        </div>
-                        <div class="form-group mb-4 col-lg-12 col-xs-12 col-sm-12">
-                            <label class="form-label required">E-Mail ID</label>
-                            <input type="email" name="email" class="form-control" placeholder="Enter E-Mail ID"
-                                value="{email}">
-                        </div>
-
                     </div>
                 </div>
             </div>
