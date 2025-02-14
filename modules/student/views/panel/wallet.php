@@ -48,7 +48,6 @@
                                     } else {
                                         $refer = $this->db->where('id', $row->course_id)->get('course');
                                         $sub = label('Course');
-
                                     }
                                     if ($refer->num_rows()) {
                                         $course = $refer->row('course_name');
