@@ -2,6 +2,114 @@
 // 9996763445
 class Website extends Ajax_Controller
 {
+    function forgot_password()
+    {
+        // $this->load->model('user_model');
+        $mobile_or_email = $this->post('mobile_or_email');
+        try {
+            $get = $this->db->where('email', $mobile_or_email)
+                ->or_where('contact_number', $mobile_or_email)
+                ->get('students');
+            if (!$get->num_rows())
+                throw new Exception("$mobile_or_email does not exists..");
+            $row = $get->row();
+            if (empty($row->email))
+                throw new Exception('Email does not exists on this account');
+            if (!isValidEmail($row->email))
+                throw new Exception($row->email . ' is not a valid email, please contact your administrator. ');
+            $pass = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6);
+            $this->db->where('id', $row->id)->update('students', [
+                'password' => sha1($pass)
+            ]);
+            $this->set_data([
+                'NEW_PASSWORD' => $pass,
+                'USERNAME' => $row->name,
+                'APP_DOWNLOAD_URL' => 'https://play.google.com/store/apps/details?id=com.rainbow.eduzone',
+                'MOBILE_NUMBER' => $row->contact_number,
+                'LOGIN_URL' => 'https://appedu.rainboweduzone.com/student-login'
+            ]);
+            $html = $this->template('email/new-password');
+            $sent = $this->do_email($row->email, 'Password Reset', $html);
+            if ($sent) {
+                $this->response('message', 'New password sent to your email ' . mask_email($row->email) . '.');
+            } else {
+                $this->response('message', 'Failed to send email.');
+                $this->response('error_details', $this->email->print_debugger());
+            }
+
+        } catch (Exception $e) {
+            $this->response('message', $e->getMessage());
+        }
+    }
+    function verify_login_otp()
+    {
+        $student_id = $this->post("student_id");
+        $otp = $this->post("otp");
+        try {
+            if (empty(trim($student_id)))
+                throw new Exception('Something went wrong.');
+            if (empty(trim($otp)))
+                throw new Exception('Please Enter a valid OTP');
+            $chk = $this->db->where([
+                'student_id' => $student_id,
+                'otp' => $otp
+            ])->get('login_otp');
+            if ($chk->num_rows()) {
+                $row = $chk->row();
+                if ($row->expired or $row->time < time())
+                    throw new Exception('OTP expired');
+                $session_id = session_id();
+                $this->db->where('id', $student_id)->update('students', ['session_id' => $session_id]);
+                $this->session->set_userdata([
+                    'student_id' => $student_id,
+                    'student_login' => true,
+                    'session_id' => $session_id
+                ]);
+                $this->response([
+                    'status' => true,
+                    'message' => 'Login Successfully..'
+                ]);
+            } else
+                throw new Exception('Invalid OTP');
+        } catch (Exception $e) {
+            $this->response('message', $e->getMessage());
+        }
+    }
+    function login_with_email_otp()
+    {
+        if ($this->validation('student_login_form')) {
+            $mobile = $this->input->post('mobile');
+            $password = $this->input->post('password');
+            $check = $this->db->where('contact_number', $mobile)->get('students');
+            if ($check->num_rows()) {
+                $row = $check->row();
+                $encryptPass = sha1($password);
+                if ($encryptPass == $row->password) {
+                    $otp = mt_rand(111111, 999999);
+                    $this->set_data([
+                        'USER' => $row->name,
+                        'OTP' => $otp
+                    ]);
+                    $this->db->where('student_id', $row->id)->update('login_otp', ['expired' => 1]);
+                    $this->db->insert('login_otp', [
+                        'student_id' => $row->id,
+                        'time' => time() + (60 * 2),
+                        'otp' => $otp
+                    ]);
+                    $this->do_email($row->email, 'Login Verification', $this->template('email/login-otp'));
+                    $this->response([
+                        'status' => true,
+                        'student_id' => $row->id,
+                        'message' => 'Enter the OTP sent to your email ' . mask_email($row->email) . ', OTP is for 2 minutes only.',
+                    ]);
+                } else {
+                    $this->response('message', 'Entered Wrong Password.');
+                }
+            } else {
+                $this->response('message', 'This mobile number is not exists..');
+            }
+        }
+    }
     function withdrawal_amount()
     {
         // $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
@@ -10,13 +118,13 @@ class Website extends Ajax_Controller
             $amount = $this->post('amount');
             try {
                 $studentId = $this->student_model->studentId();
-                $bank = $this->db->where('student_id',$studentId)->get('student_banks')->num_rows();
-                if(!$bank)
+                $bank = $this->db->where('student_id', $studentId)->get('student_banks')->num_rows();
+                if (!$bank)
                     throw new Exception('Please Update your KYC..');
                 $studentWallet = $this->student_model->get_student_via_id($studentId)->row('wallet') ?? 0;
-                if(!$studentWallet)
+                if (!$studentWallet)
                     throw new Exception('you have no money in your wallet');
-                if ($studentWallet < $amount) 
+                if ($studentWallet < $amount)
                     throw new Exception("You have only $studentWallet rupees in your wallet.");
                 if ($amountLimit <= $amount) {
                     // $this->response('error',"$amountLimit,$amount");
@@ -642,27 +750,6 @@ class Website extends Ajax_Controller
                 // $this->response(['status' => 'success']);
             }
         }
-    }
-    function verify_login_otp()
-    {
-        if ($this->session->has_userdata('login_otp')) {
-            if ($this->post('otp') == $this->session->userdata('login_otp')) {
-                $get = $this->student_model->get_student([
-                    'contact_number' => $this->post('phoneNumber')
-                ]);
-                if ($get->num_rows()) {
-                    $row = $get->row();
-                    // $this->session->set_userdata('student_id',$row->id);
-                    $this->session->unset_userdata('login_otp');
-                    $this->session->set_userdata([
-                        'student_login' => true,
-                        'student_id' => $row->student_id
-                    ]);
-                    $this->response(['status' => 'success']);
-                }
-            }
-        }
-        // $this->response($this->session->userdata());
     }
     function delete_notification()
     {

@@ -42,7 +42,7 @@ class MY_Controller extends MX_Controller
             } else
                 throw new Exception('Your Theme Config File Is Empty.');
         }
-        $adminCard = /*$this->center_model->isAdminOrCenter() ? '' : */'border-2 border-primary';
+        $adminCard = /*$this->center_model->isAdminOrCenter() ? '' : */ 'border-2 border-primary';
         $this->public_data = [
             'base_url' => base_url(),
             'wallet_message' => '',
@@ -256,15 +256,37 @@ class MY_Controller extends MX_Controller
     }
     function student_view($view, $data = [])
     {
-        if ($this->student_model->isStudent()) {
-            $this->set_data($this->student_model->get_student_via_id($this->student_model->studentId())->row_array());
-            // $data['menu_item'] = $this->ki_theme->get_student_menu();
-            $this->set_data($data);
-            $this->set_data('breadcrumb', $this->ki_theme->get_breadcrumb());
-            $this->__common_view('panel/' . $view, $data);
-            $this->parse('student/panel/main', $this->public_data);
-        } else
-            $this->parse('student/panel/login');
+        // pre($this->session->userdata(),true);
+        try {
+            if ($this->session->has_userdata('student_login')) {
+                $studentId = $this->session->userdata('student_id');
+                $student = $this->db->select('session_id')->where('id', $studentId)->get('students');
+                if ($student->num_rows()) {
+                    $row = $student->row();
+                    if ($row->session_id != $this->session->userdata('session_id')) {
+                        $this->session->sess_destroy();
+                        $this->session->set_flashdata('error', alert('Session expired. Logged in from another device.', 'danger'));
+                        throw new Exception('Session expired. Logged in from another device.');
+                    }
+                }
+            }
+            if ($this->student_model->isStudent()) {
+                $this->set_data($this->student_model->get_student_via_id($this->student_model->studentId())->row_array());
+                // $data['menu_item'] = $this->ki_theme->get_student_menu();
+                $this->set_data($data);
+                $this->set_data('breadcrumb', $this->ki_theme->get_breadcrumb());
+                $this->__common_view('panel/' . $view, $data);
+                $this->parse('student/panel/main', $this->public_data);
+            } else {
+                $this->parse('site/student-login-mobile');
+            }
+        } catch (Exception $r) {
+            $this->parse('site/student-login-mobile',[
+                'error' => $r->getMessage()
+            ]);
+        }
+        // $this->parse('student/panel/login');
+
     }
 
     function __common_view($view, $data = [])

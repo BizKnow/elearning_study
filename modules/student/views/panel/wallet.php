@@ -37,6 +37,7 @@
                                 <?php
                                 $i = 1;
                                 foreach ($get->result() as $row) {
+                                    $mobile = maskMobileNumber1($row->contact_number);
                                     // $amount = 0;
                                     $type = label(ucfirst($row->type), ' bg-primary');
                                     $course = '';
@@ -60,7 +61,7 @@
                                     if ($row->student_id == $studentId) {
                                         echo 'You';
                                     } else
-                                        echo $row->name . '&nbsp;(' . $row->contact_number . ')';
+                                        echo $row->name . '&nbsp;(' . $mobile . ')';
 
                                     echo '</td>
                                         <td>' . $course . '&nbsp; ' . $sub . '</td>

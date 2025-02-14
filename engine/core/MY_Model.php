@@ -44,7 +44,8 @@ class MY_Model extends CI_Model
     // {
     //     return $this->login_type == $type;
     // }
-    function isCoordinator(){
+    function isCoordinator()
+    {
         return (CHECK_PERMISSION('CO_ORDINATE_SYSTEM') && $this->login_type == 'co_ordinator');
     }
     function isCenter()
@@ -53,10 +54,11 @@ class MY_Model extends CI_Model
     }
     function isAdminOrCenter()
     {
-        return $this->isAdmin() or $this->isCenter() ;
+        return $this->isAdmin() or $this->isCenter();
     }
     function isStudent()
     {
+        
         return $this->session->has_userdata('student_login') === TRUE;
     }
     function studentId()

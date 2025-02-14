@@ -333,6 +333,12 @@ function generateCouponCode($length = 8)
 
     return $couponCode;
 }
+function maskMobileNumber1($mobile) {
+    if (strlen($mobile) < 4) {
+        return "Invalid Mobile Number";
+    }
+    return substr($mobile, 0, 2) . str_repeat('*', strlen($mobile) - 4) . substr($mobile, -2);
+}
 function generate_otp()
 {
     $secret = '8533'; // replace with a secret key

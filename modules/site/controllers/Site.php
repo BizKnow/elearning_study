@@ -319,10 +319,16 @@ class Site extends Site_Controller
     public function index()
     {
         if ($this->isOK) {
-            $this->render(
-                'schema',
-                $this->container()
-            );
+            $this->load->library('user_agent');
+            if (base_url('student-login') == $this->pageData['link'] && $this->agent->is_mobile()) {
+                // pre($this->pageData, true);
+                redirect('student');
+            } else {
+                $this->render(
+                    'schema',
+                    $this->container()
+                );
+            }
         } else
             $this->error_404();
     }
@@ -332,7 +338,8 @@ class Site extends Site_Controller
             'name' => 'Ajay Kumar Arya',
             'mobile' => '456789'
         ]);
-        echo $this->do_email('ajaykumararya963983@gmail.com', 'New Demo Checklist', $this->template('email/demo-query'));
+        echo $this->do_email('ajaykumararya963983@gmail.com', 'New Demo Checklist', 'ajay');
+        echo $this->email->print_debugger();
     }
 
     function container()
@@ -464,7 +471,14 @@ class Site extends Site_Controller
     }
     function test()
     {
+        // echo session_id();
         // $r = $this->db->set('wallet', 'wallet+100', FALSE)->where('id', 1);
+        $this->set_data([
+            'USER' => 'AJAY',
+            'OTP' => mt_rand(111111,999999)
+        ]);
+        echo $this->do_email('ajaykumararya963983@gmail.com', 'Login Verification', $this->template('email/login-otp'));
+        echo $this->email->print_debugger();
         
     }
 }
