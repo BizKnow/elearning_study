@@ -85,7 +85,7 @@
                 <h5 class="form-title fw-bold mb-4">Reset your password</h5>
                 <form id="forgot-password">
                     <label for="forgot-email" class="form-label">Enter your Email or Mobile</label>
-                    <input type="text" class="form-control" id="forgot-email" name="email_or_mobile">
+                    <input type="text" class="form-control" id="forgot-email" name="mobile_or_email">
                     <button type="submit" class="btn btn-primary">Reset Password</button>
                 </form>
                 <div class="bottom-links">
