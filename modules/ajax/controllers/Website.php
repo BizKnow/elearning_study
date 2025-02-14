@@ -420,12 +420,16 @@ class Website extends Ajax_Controller
             $data['image'] = $this->file_up('image');
             $data['password'] = sha1($data['password']);
             $data['status'] = 1;
+            $data['session_id'] = session_id();
             $chk = $this->db->insert('students', $data);
+            $this->set_data($this->post());
+            $this->do_email($this->post('email'),'Registration Successful',$this->template('email/new-registration'));
             $this->response('status', $chk);
             $this->response('url', base_url('checkout'));
             $this->session->set_userdata([
                 'student_login' => true,
-                'student_id' => $this->db->insert_id()
+                'student_id' => $this->db->insert_id(),
+                'session_id' => $data['session_id']
             ]);
         }
     }

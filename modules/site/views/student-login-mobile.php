@@ -58,18 +58,18 @@
             <div class="register-form">
                 <h4 class="welcome-text mt-3">Welcome!</h3>
                     <h5 class="form-title fw-bold mb-4">Register to continue</h5>
-                    <form>
-                        <div class="">
+                    <form id="register">
+                        <!-- <div class="">
                             <label for="referrel_id" class="form-label">Referrel Id</label>
                             <input type="text" class="form-control" id="referrel_id" name="referrel_id">
-                        </div>
+                        </div> -->
                         <div class="">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name">
                         </div>
                         <div class="mb-3">
                             <label for="mobile" class="form-label">Mobile. No</label>
-                            <input type="text" maxlength="10" class="form-control" id="mobile" name="mobile">
+                            <input type="text" maxlength="10" class="form-control" id="mobile" name="contact_number">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
@@ -120,15 +120,43 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('[name="mobile"]').on("input", function () {
+            $('#register').submit(function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Loading..',
+                    text: 'Please wait while we submit your data.',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: '<?= base_url('ajax/website/student_admission') ?>',
+                    type: 'POST',
+                    data: $('#register').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        Swal.close();
+                        if (data.status == 1) {
+                            Swal.fire('Success!', data.message, 'success').then(() => {
+                                location.href = '<?=base_url('student')?>';
+                            });
+                        } else {
+                            Swal.fire('Error!', data.message, 'error');
+                        }
+                    }
+                });
+
+            })
+            $('[name="mobile"],[name="contact_number"]').on("input", function () {
                 var value = $(this).val();
-                
+
                 // Allow only numbers
-                $(this).val(value.replace(/\D/g, ''));  
+                $(this).val(value.replace(/\D/g, ''));
 
                 // Check if length is greater than 10
                 if (value.length > 10) {
-                    $(this).val(value.substring(0, 10));  
+                    $(this).val(value.substring(0, 10));
                 }
             });
             $('.register-link').click(function (e) {

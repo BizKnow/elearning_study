@@ -7,6 +7,7 @@ $config = array(
             'rules' => 'required|integer'
         )
     ),
+    
     'student/add' => array(
         array(
             'field' => 'email_id',
@@ -41,90 +42,6 @@ $config = array(
         //     ]
         // ),
 
-    ),
-    'add_co_ordinator' => array(
-        array(
-            'field' => 'email',
-            'label' => 'Email',
-            'rules' => 'required|is_unique[centers.email]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        ),
-        array(
-            'field' => 'contact_number',
-            'label' => 'Contact Number',
-            'rules' => 'required|is_unique[centers.contact_number]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        ),
-        array(
-            'field' => 'password',
-            'label' => 'Password',
-            'rules' => 'required',
-        ),
-        array(
-            'field' => 'name',
-            'label' => 'Name',
-            'rules' => 'required',
-        )
-    ),
-    'add_center' => array(
-        array(
-            'field' => 'email_id',
-            'label' => 'Email',
-            'rules' => 'is_unique[centers.email]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        ),
-        array(
-            'field' => 'contact_number',
-            'label' => 'Contact Number',
-            'rules' => 'is_unique[centers.contact_number]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        ),
-        array(
-            'field' => 'username',
-            'label' => 'Username',
-            'rules' => 'is_unique[centers.username]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        )
-    ),
-    'academic/add_batch' => array(
-        array(
-            'field' => 'batch_name',
-            'label' => 'Batch Name',
-            'rules' => 'is_unique[batch.batch_name]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        )
-    ),
-    'academic/add_session' => array(
-        array(
-            'field' => 'title',
-            'label' => 'Session Title',
-            'rules' => 'is_unique[session.title]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        )
-    ),
-    'academic/add_occupation' => array(
-        array(
-            'field' => 'title',
-            'label' => 'Occupation',
-            'rules' => 'is_unique[occupation.title]',
-            'errors' => [
-                'is_unique' => 'This %s is already exists.'
-            ]
-        )
     ),
     'course/add_category' => array(
         array(
@@ -367,10 +284,7 @@ $config = array(
         array(
             'field' => 'password',
             'label' => 'Password',
-            'rules' => 'required|min_length[8]|regex_match[/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/]',
-            'errors' => array(
-                'regex_match' => 'The %s must contain at least one letter, one number, and one special character.'
-            )
+            'rules' => 'required|min_length[8]'
         ),
         array(
             'field' => 'confirm_password',
