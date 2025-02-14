@@ -2,43 +2,6 @@
 class Student extends Ajax_Controller
 {
     //for student
-    function withdrawal_amount()
-    {
-        // $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
-        if ($this->validation('withdrawal_amount')) {
-            $amountLimit = ES('withdrawal_amount_limit', 0);
-            $amount = $this->post('amount');
-            try {
-                $studentWallet = $this->student_model->get_student_via_id($this->student_model->studentId())->row('wallet') ?? 0;
-                if(!$studentWallet)
-                    throw new Exception('you have no money in your wallet');
-                if ($studentWallet < $amount) 
-                    throw new Exception("You have only $studentWallet rupees in your wallet.");
-                if ($amountLimit <= $amount) {
-                    // $this->response('error',"$amountLimit,$amount");
-                    $studentId = $this->student_model->studentId();
-                    $student = $this->student_model->get_student_via_id($studentId)->row();
-                    $data = [
-                        'student_id' => $studentId,
-                        'amount' => $amount
-                    ];
-                    $this->db->insert('withdrawal_requests', $data);
-                    $this->set_data([
-                        'STUDENT_NAME' => $student->student_name,
-                        'MOBILE_NUMBER' => $student->contact_number,
-                        'AMOUNT' => $amount,
-                        'DATE' => date('d-m-Y'),
-                        'ADMIN_LINK' => base_url('student/withdrawal-request/' . $this->token->encode(['id' => $this->db->insert_id()]))
-                    ]);
-                    $this->do_email('Rainboweduzone.fzd@gmail.com', 'Withdrawal Request', $this->template('email/withdrawal-request'));
-                    $this->response('status', true);
-                } else
-                    throw new Exception("You cannot withdraw less than Rs $amountLimit.");
-            } catch (Exception $e) {
-                $this->response('error', $e->getMessage());
-            }
-        }
-    }
     //for admin
     function withdrawal_request_accept()
     {

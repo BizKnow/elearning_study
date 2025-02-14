@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded',function(){
     $(form).on('submit',function(r){
         r.preventDefault();
         $.AryaAjax({
-            url : 'student/withdrawal-amount',
+            url : 'website/withdrawal-amount',
             data : new FormData(this),
         }).then((res) => {
             log(res)
