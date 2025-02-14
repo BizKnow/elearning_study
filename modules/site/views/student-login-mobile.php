@@ -34,7 +34,7 @@
                     <form id="loginForm">
                         <div class="">
                             <label for="mobile" class="form-label">Mobile. No</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile">
+                            <input type="text" class="form-control" maxlength="10" id="mobile" name="mobile">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
@@ -43,7 +43,7 @@
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                     <div class="bottom-links d-flex flex-column">
-                        <a href="#" class="register-link">Register</a>
+                        <a href="#" class="register-link mt-3">Register</a>
                         <a href="#" class="my-2 forgot-link">Forgot Password?</a>
                         <div class="footer-links d-flex justify-content-center gap-3">
                             <a href="https://rainboweduzone.com/policy">Privacy Policy</a>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="mobile" class="form-label">Mobile. No</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile">
+                            <input type="text" maxlength="10" class="form-control" id="mobile" name="mobile">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
@@ -82,7 +82,7 @@
                         <button type="submit" class="btn btn-primary">Register</button>
                     </form>
                     <div class="bottom-links">
-                        <a href="#" class="login-link">Back to Login</a>
+                        <a href="#" class="login-link mt-3">Back to Login</a>
                     </div>
             </div>
 
@@ -96,7 +96,7 @@
                     <button type="submit" class="btn btn-primary">Reset Password</button>
                 </form>
                 <div class="bottom-links">
-                    <a href="#" class="login-link">Back to Login</a>
+                    <a href="#" class="login-link mt-3">Back to Login</a>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                     <button type="submit" class="btn btn-primary">Verify OTP</button>
                 </form>
                 <div class="bottom-links">
-                    <a href="#" class="login-link">Back to Login</a>
+                    <a href="#" class="login-link mt-3">Back to Login</a>
                 </div>
             </div>
         </div>
@@ -120,6 +120,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('[name="mobile"]').on("input", function () {
+                var value = $(this).val();
+                
+                // Allow only numbers
+                $(this).val(value.replace(/\D/g, ''));  
+
+                // Check if length is greater than 10
+                if (value.length > 10) {
+                    $(this).val(value.substring(0, 10));  
+                }
+            });
             $('.register-link').click(function (e) {
                 e.preventDefault();
                 $('.forms-wrapper').addClass('show-register').removeClass('show-forgot show-otp');
