@@ -31,6 +31,7 @@ class Website extends Ajax_Controller
             $html = $this->template('email/new-password');
             $sent = $this->do_email($row->email, 'Password Reset', $html);
             if ($sent) {
+                $this->response('status',true);
                 $this->response('message', 'New password sent to your email ' . mask_email($row->email) . '.');
             } else {
                 $this->response('message', 'Failed to send email.');
