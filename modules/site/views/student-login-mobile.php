@@ -8,6 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url() ?>assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        a {
+            color: #ff6f00;
+            text-decoration: underline;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
