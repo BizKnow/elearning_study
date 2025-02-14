@@ -13,7 +13,7 @@
 <body>
     <div class="form-container">
         <div class="logo-container d-flex justify-content-center align-items-center">
-            <img src="<?= base_url() ?>assets/2.jpg" alt="Colours of Success Logo" class="img-fluid">
+            <img src="<?= base_url() ?>upload/smll-logo.png" alt="Colours of Success Logo" class="img-fluid">
         </div>
         <div class="forms-wrapper">
             <!-- Login Form -->
