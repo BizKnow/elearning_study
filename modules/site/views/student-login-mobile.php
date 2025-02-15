@@ -14,6 +14,19 @@
             text-decoration: underline;
             text-align: center;
         }
+        div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
+            background-color: #ff6f00!important
+        }
+        <?php
+        $this->load->library('user_agent');
+        if($this->agent->is_mobile()){
+            ?>
+            .body{
+                background-color: white!important;
+            }
+            <?php
+        }
+        ?>
     </style>
 </head>
 
