@@ -21,7 +21,7 @@
         $this->load->library('user_agent');
         if($this->agent->is_mobile()){
             ?>
-            .body{
+            body{
                 background-color: white!important;
             }
             <?php
