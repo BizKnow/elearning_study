@@ -88,7 +88,7 @@ class Website extends Ajax_Controller
                         } else
                             throw new Exception('Selected course not found..');
                     }
-
+                    $student = $this->db->where('id',$data['student_id'])->get('students');
                     $myData = [
                         'key' => RAZORPAY_KEY_ID,
                         'amount' => $razordata['amount'] * 100,
@@ -96,9 +96,9 @@ class Website extends Ajax_Controller
                         'description' => 'Computer Institute',
                         'image' => logo(),
                         'prefill' => [
-                            'name' => $this->get_data('owner_name'),
-                            'email' => $this->get_data('owner_email'),
-                            'contact' => $this->get_data('owner_phone')
+                            'name' => $student->name,
+                            'email' => $student->email,
+                            'contact' => $student->contact_number
                         ],
                         'notes' => [
                             'merchant_order_id' => $time,
