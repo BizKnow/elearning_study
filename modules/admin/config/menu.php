@@ -56,7 +56,7 @@ $config['menu'] = array(
                     'type' => 'student_admission',
                     'icon' => array('plus', 3),
                     'url' => 'student/admission',
-                ),                
+                ),
                 array(
                     'label' => 'Assign Course',
                     'type' => 'student_assign_course',
@@ -76,6 +76,12 @@ $config['menu'] = array(
                     'url' => 'student/manage-study-material'
                 )
             )
+        ),
+        array(
+            'label' => 'Withdrawal Request(s)',
+            'type' => 'withdrawal-request',
+            'icon' => array('wallet', 4),
+            'url' => 'student/withdrawal-request'
         )
     )
 );

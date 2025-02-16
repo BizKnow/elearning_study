@@ -20,6 +20,41 @@ if ($token) {
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
+                                <?php
+                                $bank = $this->db->where('student_id', $row->student_id)->get('student_banks');
+                                if ($bank->num_rows()) {
+                                    $bankROw = $bank->row();
+                                    ?>
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped border-primary border-2">
+                                            <thead class="bg-primary text-white">
+                                                <tr>
+                                                    <th class="text-center text-white" colspan="4">Bank Details / UPI</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th>Bank Name</th>
+                                                    <td><?=$bankROw->bank_name?></td>
+                                                    <th>Account Number</th>
+                                                    <td><?=$bankROw->account_number?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>IFSC Code</th>
+                                                    <td><?=$bankROw->ifsc_code?></td>
+                                                    <th>Holder Name</th>
+                                                    <td><?=$bankROw->holder_name?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="2">Unified Payments Interface (UPI)</th>
+                                                    <td colspan="2"><?=$bankROw->upi?></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
                                 <div class="col-md-6">
                                     <table class="table table-bordered table-striped">
                                         <tr>
@@ -67,11 +102,12 @@ if ($token) {
                                             class="form-control">
                                     </div>
 
+                                    <div class="form-group text-end mt-3">
+                                        <button class="btn btn-primary"><i class="fa fa-save"></i>&nbsp; Update</button>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            {save_button}
                         </div>
                     </div>
                 </form>

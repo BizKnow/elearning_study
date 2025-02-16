@@ -231,7 +231,7 @@ class Site extends Site_Controller
     function payment($time)
     {
         $client = new \GuzzleHttp\Client();
-        $get = $this->db->select('s.*,sc.amount')
+        $get = $this->db->select('s.name,s.email,sc.amount,sc.combo_id,sc.course_id,sc.status as payment_status')
             ->from('students as s')
             ->join('student_courses as sc', 's.id = sc.student_id AND sc.starttime = ' . $time)
             ->get();
@@ -239,19 +239,30 @@ class Site extends Site_Controller
         // pre($row,true);
         try {
             if (!$get->num_rows())
-                throw new Exception('Invalid Order id..');
+                throw new Exception('This link is not available..');
             $row = $get->row();
-
+            if($row->payment_status == 1)
+                throw new Exception('This Payment Already Done.');
             $amount = $row->amount * 100;
             $decodeJson = $this->phonepe->initiatePayment($time, $amount, base_url('response'), $row->contact_number, $row->id);
             // pre($decodeJson,true);
+            $this->set_data([
+                'USER_NAME' => $row->name,
+                'purchase_item' => $row->combo_id ? 'Course Combo' : 'Course',
+                'purchase_item_title' => $row->combo_id ? $this->db->get_where('',['id'=>$row->combo_id])->row('title') : $this->db->get_where('course',['id'=>$row->course_id])->row('course_name')
+            ]);
             if (isset($decodeJson['error'])) {
                 $newTIme = time();
+                $this->set_data('PAYMENT_LINK',base_url('site/payment/'.$newTIme));
+
+                $this->do_email($row->email,'Payment Link',$this->template('email/payment-link'));
                 $this->db->where('starttime', $time)->update('student_courses', ['starttime' => $newTIme]);
                 redirect('site/payment/' . $newTIme);
             } else {
                 // pre($decodeJson);
                 if ($decodeJson['success']) {
+                    $this->set_data('PAYMENT_LINK',base_url('site/payment/'.$time));
+                    $this->do_email($row->email,'Payment Link',$this->template('email/payment-link'));
                     $paymentUrl = $decodeJson['data']['instrumentResponse']['redirectInfo']['url'];
                     header("Location: " . $paymentUrl);
                 }
@@ -473,12 +484,14 @@ class Site extends Site_Controller
     {
         // echo session_id();
         // $r = $this->db->set('wallet', 'wallet+100', FALSE)->where('id', 1);
-        $this->set_data([
-            'USER' => 'AJAY',
-            'OTP' => mt_rand(111111,999999)
-        ]);
-        echo $this->do_email('ajaykumararya963983@gmail.com', 'Login Verification', $this->template('email/login-otp'));
-        echo $this->email->print_debugger();
+        // $this->set_data([
+        //     'USER_NAME' => 'AJAY',
+        //     'purchase_itme' => 'Course',
+        //     'purchase_item_title' => 'ADCA',
+        //     'PAYMENT_LINK' => base_url('')
+        // ]);
+        // echo $this->do_email('ajaykumararya963983@gmail.com', 'Login Verification', $this->template('email/payment-link'));
+        // echo $this->email->print_debugger();
         
     }
 }
