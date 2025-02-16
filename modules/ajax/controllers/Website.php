@@ -2,6 +2,121 @@
 // 9996763445
 class Website extends Ajax_Controller
 {
+    function update_course_payment()
+    {
+        $post = $this->post();
+
+        $razorpay_payment_id = $post['razorpay_payment_id'];
+        $razorpay_order_id = $post['razorpay_order_id'];
+        $razorpay_signature = $post['razorpay_signature'];
+        $merchant_order_id = $post['merchant_order_id'];
+        $this->load->module('razorpay');
+
+        try {
+
+            $get = $this->db->where(['starttime' => $merchant_order_id, 'status' => 1])->get('student_courses');
+            if ($get->num_rows()) {
+                throw new Exception('Payment has already been updated');
+            }
+
+            $verifyPayment = $this->razorpay->verifyPayment($razorpay_payment_id, $razorpay_order_id, $razorpay_signature);
+            if ($verifyPayment) {
+                $status = $this->razorpay->fetchOrderStatus($razorpay_order_id);
+                if ($status) {
+                    $this->db->where(['starttime' => $merchant_order_id])
+                            ->update('student_courses',[
+                                'status' => 1,
+                                'payment_id' => $razorpay_payment_id
+                            ]);
+                    $this->response('status', true);
+                }
+
+            }
+        } catch (Exception $e) {
+            $this->response('status', false);
+            $this->response('error', $e->getMessage());
+        }
+    }
+    function student_course_payment()
+    {
+        $server_token = $this->session->userdata('referral_token');
+        $token = $this->post('token');
+        try {
+            if ($server_token == $token) {
+                $data = $this->ki_theme->referral_data($token);
+                $referral_id = $data['referral_id'] ?? 0;
+                $time = time();
+                $razordata = [
+                    'receipt' => uniqid('RAINBOW'),
+                    'currency' => 'INR',
+                    'notes' => [
+                        'student_id' => $this->student_model->studentId(),
+                        'token' => $token
+                    ]
+                ];
+                $this->load->module('razorpay');
+                // pre($data);
+                if (isset($data['course_id'])) {
+                    $check = $this->db->get_where('student_courses', [
+                        'student_id' => $data['student_id'],
+                        'course_id' => $data['course_id']
+                    ]);
+                    if ($check->num_rows() > 0) {
+                        $row = $check->row();
+                        if ($row->status == 1)
+                            throw new Exception('This Course already Purchased');
+                        $order_id = $row->order_id;
+                        $razordata['amount'] = $row->amount * 100;
+                        $time = $row->starttime;
+                    } else {
+                        $getCourse = $this->db->get_where('course', ['id' => $data['course_id']]);
+                        if ($getCourse->num_rows() > 0) {
+                            $course = $getCourse->row();
+                            $razordata['amount'] = $course->fees * 100;
+                            $order_id = $this->razorpay->create_order($razordata);
+                            $this->db->insert('student_courses', [
+                                'student_id' => $data['student_id'],
+                                'course_id' => $course->id,
+                                'starttime' => $time,
+                                // 'status' => 1,
+                                'order_id' => $order_id,
+                                'enrollment_no' => $this->gen_roll_no(),
+                                'added_via' => 'web',
+                                'referral_id' => $data['referral_id'],
+                                'amount' => $course->fees
+                            ]);
+                        } else
+                            throw new Exception('Selected course not found..');
+                    }
+
+                    $myData = [
+                        'key' => RAZORPAY_KEY_ID,
+                        'amount' => $razordata['amount'] * 100,
+                        'name' => ES('title'),
+                        'description' => 'Computer Institute',
+                        'image' => logo(),
+                        'prefill' => [
+                            'name' => $this->get_data('owner_name'),
+                            'email' => $this->get_data('owner_email'),
+                            'contact' => $this->get_data('owner_phone')
+                        ],
+                        'notes' => [
+                            'merchant_order_id' => $time,
+                            'student_id' => $this->student_model->studentId()
+                        ],
+                        'order_id' => $order_id
+                    ];
+                    $this->response('status', true);
+                    $this->response('amount',$razordata['amount']);
+                    $this->response('option', $myData);
+                    $this->response('rdata', $razordata);
+                }
+            }
+
+        } catch (Exception $e) {
+            $this->response('error', $e->getMessage());
+        }
+    }
     function forgot_password()
     {
         // $this->load->model('user_model');

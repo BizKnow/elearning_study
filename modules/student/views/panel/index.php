@@ -194,13 +194,13 @@ if ($llsit->num_rows()) {
                 'status' => 0
               ])->get('student_courses');
               // echo $this->db->last_query();
-              if ($checkPayment->num_rows()) {
-                  echo '<a class="btn btn-warning" href="{base_url}site/payment/'.$checkPayment->row('starttime').'">Try Again.</a>';
-              } else {
+              // if ($checkPayment->num_rows()) {
+              //     echo '<a class="btn btn-warning" href="{base_url}site/payment/'.$checkPayment->row('starttime').'">Try Again.</a>';
+              // } else {
                 echo '<a target="_blank" href="{base_url}register?token=' . $token . '" class="btn btn-danger">
                       Purchase Now
                     </a>';
-              }
+              // }
               echo '
                   </div>';
                 $studyMaterialDemo = $this->db->where([

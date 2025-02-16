@@ -29,12 +29,12 @@ $config['academics'] = array(
                 )
             )
         ),
-        array(
-            'label' => 'Course Combo',
-            'type' => 'course_combo',
-            'icon' => array('package', 4),
-            'url' => 'course/combo',
-        ),
+        // array(
+        //     'label' => 'Course Combo',
+        //     'type' => 'course_combo',
+        //     'icon' => array('package', 4),
+        //     'url' => 'course/combo',
+        // ),
     )
 );
 $config['menu'] = array(
