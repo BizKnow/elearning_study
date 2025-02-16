@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function (d) {
     $(document).on('submit','.submit-bank',function(res){
         res.preventDefault();
         $.AryaAjax({
-            url : 'student/update-bank',
+            url : 'website/update-bank',
             data : new FormData(this),
             page_reload : true,
             success_message : 'Bank Details Updated Successfully..'

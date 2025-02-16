@@ -31,7 +31,7 @@ class Website extends Ajax_Controller
             $html = $this->template('email/new-password');
             $sent = $this->do_email($row->email, 'Password Reset', $html);
             if ($sent) {
-                $this->response('status',true);
+                $this->response('status', true);
                 $this->response('message', 'New password sent to your email ' . mask_email($row->email) . '.');
             } else {
                 $this->response('message', 'Failed to send email.');
@@ -423,7 +423,7 @@ class Website extends Ajax_Controller
             $data['session_id'] = session_id();
             $chk = $this->db->insert('students', $data);
             $this->set_data($this->post());
-            $this->do_email($this->post('email'),'Registration Successful',$this->template('email/new-registration'));
+            $this->do_email($this->post('email'), 'Registration Successful', $this->template('email/new-registration'));
             $this->response('status', $chk);
             $this->response('url', base_url('checkout'));
             $this->session->set_userdata([
@@ -467,6 +467,18 @@ class Website extends Ajax_Controller
             'status',
             $this->db->where('id', $this->post('id'))->update('contact_us_action', ['admin_message' => $this->post('value')])
         );
+    }
+    function update_bank()
+    {
+        $student_id = $this->input->post('student_id');
+        $data = $this->post();
+        $check = $this->db->where('student_id', $student_id)->get('student_banks');
+        $this->response('status', true);
+        if ($check->num_rows()) {
+            $this->db->where('student_id', $student_id)->update('student_banks', $data);
+        } else {
+            $this->db->insert('student_banks', $data);
+        }
     }
     function add_center()
     {

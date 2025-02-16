@@ -173,18 +173,7 @@ class Student extends Ajax_Controller
         $list = $this->student_model->get_all_student($this->post());
         $this->response('data', $list);
     }
-    function update_bank()
-    {
-        $student_id = $this->input->post('student_id');
-        $data = $this->post();
-        $check = $this->db->where('student_id', $student_id)->get('student_banks');
-        $this->response('status', true);
-        if ($check->num_rows()) {
-            $this->db->where('student_id', $student_id)->update('student_banks', $data);
-        } else {
-            $this->db->insert('student_banks', $data);
-        }
-    }
+    
     function upload_study_material()
     {
         // $this->ki_theme->set_default_vars('max_upload_size', 10485760); // 10MB

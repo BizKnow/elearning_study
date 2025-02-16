@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded',function(){
         }).then((res) => {
             log(res)
             if(res.status){
-
+                SwalSuccess('Request Submit Successfully..',false,'OK').then((res) => {
+                    if(res.isConfirmed){
+                        location.reload();
+                    }
+                });
             }
             showResponseError(res);
         });
