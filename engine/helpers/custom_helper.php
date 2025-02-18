@@ -333,6 +333,27 @@ function generateCouponCode($length = 8)
 
     return $couponCode;
 }
+function encode_ids($id1, $id2) {
+    $string = $id1 . "|" . $id2; // IDs ko concatenate karna
+    return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($string));
+}
+function decode_ids($encoded_string) {
+    $decoded = base64_decode(str_replace(['-', '_'], ['+', '/'], $encoded_string), true);
+    
+    // Check if base64 decoding failed
+    if ($decoded === false) {
+        return false; // Invalid string
+    }
+
+    $ids = explode("|", $decoded);
+
+    // Check if we got exactly 2 IDs and they are numeric
+    if (count($ids) == 2 && is_numeric($ids[0]) && is_numeric($ids[1])) {
+        return $ids;
+    }
+
+    return false; // Invalid format
+}
 function maskMobileNumber1($mobile) {
     if (strlen($mobile) < 4) {
         return "Invalid Mobile Number";

@@ -24,6 +24,67 @@ class V1 extends Api_Controller
             ]
         ];
     }
+    function razorpay()
+    {
+        $this->response('status', defined('RAZORPAY_KEY_ID') && defined('RAZORPAY_KEY_SECRET'));
+        if (defined('RAZORPAY_KEY_ID'))
+            $this->response('RAZORPAY_KEY_ID', RAZORPAY_KEY_ID);
+        if (defined('RAZORPAY_KEY_SECRET'))
+            $this->response('RAZORPAY_KEY_SECRET', RAZORPAY_KEY_SECRET);
+    }
+    function razorpay_create_order()
+    {
+
+    }
+    function update_student_name()
+    {
+        if ($this->isPost()) {
+            $student_id = $this->student_id();
+            $name = $this->post('name');
+            $this->db->where('id', $student_id);
+            $this->db->update('students', ['name' => $name]);
+            $this->response('status', true);
+            $this->response('message', 'Student name updated successfully.');
+        }
+    }
+    function update_student_profile()
+    {
+        if ($this->isPost()) {
+            $student_id = $this->student_id();
+            if (!empty($_FILES['image']['name'])) {
+                $config['upload_path'] = './upload/';
+                $config['allowed_types'] = 'jpg|jpeg|png|gif';
+                $config['max_size'] = 2048; // 2MB तक की फ़ाइल
+                $config['file_name'] = time() . '_' . $_FILES['image']['name'];
+
+                $this->load->library('upload', $config);
+
+                if ($this->upload->do_upload('image')) {
+                    $uploadData = $this->upload->data();
+                    $fileURL = base_url('uploads/' . $uploadData['file_name']);
+                    $this->db->where('id', $student_id);
+                    $this->db->update('students', ['image' => $uploadData['file_name']]);
+                    $response = [
+                        'status' => true,
+                        'message' => 'Image uploaded successfully',
+                        'file_url' => $fileURL
+                    ];
+                } else {
+                    $response = [
+                        'status' => false,
+                        'message' => $this->upload->display_errors()
+                    ];
+                }
+            } else {
+                $response = [
+                    'status' => false,
+                    'message' => 'No file uploaded'
+                ];
+            }
+            $this->response($response);
+        }
+
+    }
     private function select($type)
     {
         if (isset($this->select[$type])) {
@@ -48,6 +109,7 @@ class V1 extends Api_Controller
                 if ($course->num_rows() > 0) {
                     $data = [];
                     foreach ($course->result_array() as $row) {
+                        $row['referral_code'] = encode_ids($row['id'],$student_id);
                         $getVideos = $this->db
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)

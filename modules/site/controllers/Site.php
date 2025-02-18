@@ -482,6 +482,8 @@ class Site extends Site_Controller
     }
     function test()
     {
+        // echo encode_ids(1,2);
+        pre(decode_ids('N3wx'));
         // echo session_id();
         // $r = $this->db->set('wallet', 'wallet+100', FALSE)->where('id', 1);
         // $this->set_data([
