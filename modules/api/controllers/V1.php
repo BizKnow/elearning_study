@@ -32,10 +32,11 @@ class V1 extends Api_Controller
         if (defined('RAZORPAY_KEY_SECRET'))
             $this->response('RAZORPAY_KEY_SECRET', RAZORPAY_KEY_SECRET);
     }
-    function razorpay_order(){
+    function razorpay_order()
+    {
         $this->load->module('razorpay');
         $order_id = $this->post('order_id');
-        $this->response('orders',$this->razorpay->fetchOrder($order_id));
+        $this->response('orders', $this->razorpay->fetchOrder($order_id));
     }
     function razorpay_create_order()
     {
@@ -59,7 +60,7 @@ class V1 extends Api_Controller
                         'course_id' => $course_id
                     ]
                 ];
-                $order = $this->razorpay->create_order($razordata,'all');
+                $order = $this->razorpay->create_order($razordata, 'all');
                 $this->response('status', true);
                 $this->response('message', 'Successfully.');
                 $this->response('order_id', $order['id']);
@@ -123,6 +124,41 @@ class V1 extends Api_Controller
             $this->response($response);
         }
 
+    }
+    function wallet_record()
+    {
+        if ($this->isPost()) {
+            try {
+                $student_id = $this->student_id();
+                $get = $this->db->select("FROM_UNIXTIME(sc.starttime) as course_start_time,
+                ra.type,
+                ra.amount as purchase_amount,
+                sc.enrollment_no,
+                sc.referral_id,
+                sc.course_id,
+                CASE 
+                    WHEN ra.type = 'cashback' THEN 'You' 
+                    ELSE s.name 
+                END as name,
+                CASE 
+                    WHEN ra.type = 'cashback' THEN '' 
+                    ELSE s.contact_number 
+                END as contact_number")
+                    ->from('refferal_amount as ra')
+                    ->join('student_courses as sc', 'sc.id = ra.parent_id AND sc.status = 1')
+                    ->join('students as s', 's.id = sc.student_id')
+                    ->where("(sc.referral_id = $student_id AND ra.type = 'referral') OR (sc.student_id = $student_id AND ra.type = 'cashback' )")
+                    ->order_by('sc.starttime', 'DESC')
+                    ->get();
+                if (!$get->num_rows())
+                    throw new Exception('Record not found...');
+                $this->response('status', true);
+                $this->response('data', $get->result_array());
+                $this->response('count', $get->num_rows());
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
     }
     private function select($type)
     {
