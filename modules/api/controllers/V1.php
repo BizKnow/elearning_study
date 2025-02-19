@@ -36,7 +36,7 @@ class V1 extends Api_Controller
     {
 
     }
-    function update_student_name()
+    function update_student_details()
     {
         if ($this->isPost()) {
             $student_id = $this->student_id();
