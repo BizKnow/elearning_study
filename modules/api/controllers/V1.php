@@ -32,9 +32,48 @@ class V1 extends Api_Controller
         if (defined('RAZORPAY_KEY_SECRET'))
             $this->response('RAZORPAY_KEY_SECRET', RAZORPAY_KEY_SECRET);
     }
+    function razorpay_order(){
+        $this->load->module('razorpay');
+        $order_id = $this->post('order_id');
+        $this->response('orders',$this->razorpay->fetchOrder($order_id));
+    }
     function razorpay_create_order()
     {
+        if ($this->isPost()) {
+            try {
+                $student_id = $this->student_id();
+                $course_id = $this->post('course_id');
+                $get = $this->db->get_where('course', ['id' => $course_id]);
+                if (!$get->num_rows())
+                    throw new Exception('Invalid course id');
+                $row = $get->row();
+                $amount = 1;//$row->fee;
+                $currency = 'INR';
+                $this->load->module('razorpay');
+                $razordata = [
+                    'amount' => $amount * 100,
+                    'receipt' => uniqid('RAINBOW'),
+                    'currency' => 'INR',
+                    'notes' => [
+                        'student_id' => $student_id,
+                        'course_id' => $course_id
+                    ]
+                ];
+                $order = $this->razorpay->create_order($razordata,'all');
+                $this->response('status', true);
+                $this->response('message', 'Successfully.');
+                $this->response('order_id', $order['id']);
+                $this->response('orders_data', $razordata);
+                // $this->response('orders', $order);
+                $this->response('keys', [
+                    'key' => RAZORPAY_KEY_ID,
+                    'secret' => RAZORPAY_KEY_SECRET
+                ]);
 
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
     }
     function update_student_details()
     {
@@ -109,7 +148,7 @@ class V1 extends Api_Controller
                 if ($course->num_rows() > 0) {
                     $data = [];
                     foreach ($course->result_array() as $row) {
-                        $row['referral_code'] = encode_ids($row['id'],$student_id);
+                        $row['referral_code'] = encode_ids($row['id'], $student_id);
                         $getVideos = $this->db
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)

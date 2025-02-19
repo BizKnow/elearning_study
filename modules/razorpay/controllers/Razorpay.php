@@ -5,6 +5,7 @@ class Razorpay extends MY_Controller
 {
     private $itsME = false;
     private $api;
+    private $order_response = [];
     function __construct()
     {
         parent::__construct();
@@ -12,11 +13,15 @@ class Razorpay extends MY_Controller
 
         $this->api = new Api(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET);
     }
-
-    function create_order($data = [])
+    function order_response()
+    {
+        return $this->order_response;
+    }
+    function create_order($data = [],$return = 'id')
     {
         $g = $this->api->order->create($data);
-        return $g['id'];
+        // $this->order_response = $g;
+        return $return == 'all' ? $g : $g[$return];
         // $g = $this->api->order->create(array('receipt' => '123', 'amount' => 100, 'currency' => 'INR', 'notes' => array('key1' => 'value3', 'key2' => 'value2')));
         // return ($g['id']);
     }
@@ -43,9 +48,13 @@ class Razorpay extends MY_Controller
     }
     function fetchOrder($order_id, $field = 'all')
     {
-        $get = $this->api->order->fetch($order_id);
-        // throw new Exception($get->status);
-        return $get->{$field};
+        try {
+            $get = $this->api->order->fetch($order_id);
+            // throw new Exception($get->status);
+            return $get->{$field};
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
     function fetchOrderStatus($order_id)
     {
@@ -55,7 +64,7 @@ class Razorpay extends MY_Controller
             case 'authorized':
                 throw new Exception('The payment has been authorized but not yet captured.');
             case 'attempted':
-                throw new Exception('The payment has been '.($get->attempts > 1 ? $get->attempts .' times ' :'').' attempted, But not Completed');
+                throw new Exception('The payment has been ' . ($get->attempts > 1 ? $get->attempts . ' times ' : '') . ' attempted, But not Completed');
             case 'created':
                 throw new Exception('The order has been created, but no payment has been made.');
             case 'paid':
