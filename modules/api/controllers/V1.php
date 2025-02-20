@@ -48,7 +48,7 @@ class V1 extends Api_Controller
                 if (!$get->num_rows())
                     throw new Exception('Invalid course id');
                 $row = $get->row();
-                $amount = 1;//$row->fee;
+                $amount = $row->fee;
                 $currency = 'INR';
                 $this->load->module('razorpay');
                 $razordata = [
