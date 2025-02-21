@@ -495,7 +495,7 @@ class V1 extends Api_Controller
     {
         if ($this->isPost()) {
             try {
-                $student_id = $this->post('student_id');
+                $student_id = $this->student_id();
                 $bank_name = $this->post('bank_name');
                 $account_number = $this->post('account_number');
                 $bank_ifsc = $this->post('bank_ifsc');
