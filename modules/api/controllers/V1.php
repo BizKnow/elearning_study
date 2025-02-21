@@ -625,6 +625,30 @@ class V1 extends Api_Controller
             }
         }
     }
+    function login_token()
+    {
+        if ($this->isPost()) {
+            $this->form_validation->set_rules('mobile', 'Mobile', 'required');
+            if ($this->validation()) {
+                $mobileNo = $this->post('mobile');
+                $get = $this->student_model->get_student_mobile($mobileNo);
+                if ($get->num_rows()) {
+                    $row = $get->row();
+                    $token = $this->generate_token($row->student_id);
+
+                    $this->response('details', [
+                        'name' => $row->student_name,
+                        'email' => $row->email,
+                        'mobile' => $row->contact_number,
+                    ]);
+                    $this->response('token', $token);
+                    $this->response('status', true);
+                }
+                else
+                    $this->response('message','Mobile no not found.');
+            }
+        }
+    }
     function student_login()
     {
         if ($this->isPost()) {
