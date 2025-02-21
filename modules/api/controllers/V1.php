@@ -484,7 +484,7 @@ class V1 extends Api_Controller
                 $student = $this->db->select([
                     'id as student_id',
                     'name',
-                    'father_name',
+                    "CONCAT('" . base_url('assets/file/') . "',image) as profile",
                     'contact_number as mobile',
                     'email'
                 ])->get_where('students', ['id' => $id]);
