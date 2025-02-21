@@ -476,6 +476,71 @@ class V1 extends Api_Controller
         } else
             throw new Exception('Token Expired.');
     }
+    function get_firebase_token()
+    {
+        if ($this->isPost()) {
+            try {
+                $mobile = $this->post('mobile');
+                $get = $this->db->where('contact_number', $mobile)->get('students');
+                if (!$get->num_rows())
+                    throw new Exception('This Mobile number not exists..');
+                $this->response('status', true);
+                $this->response('firebase_token', $get->row('firebase_token'));
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
+    function bank_kyc()
+    {
+        if ($this->isPost()) {
+            try {
+                $student_id = $this->post('student_id');
+                $bank_name = $this->post('bank_name');
+                $account_number = $this->post('account_number');
+                $bank_ifsc = $this->post('bank_ifsc');
+                $holder_name = $this->post('holder_name');
+                $upi = $this->post("upi");
+                $data = [
+                    'bank_name' => $bank_name,
+                    'account_number' => $account_number,
+                    'ifsc_code' => $bank_ifsc,
+                    'holder_name' => $holder_name,
+                    'upi' => $upi
+                ];
+                $bank = $this->db->where('student_id', $student_id)->get('student_banks');
+                if ($bank->num_rows()) {
+                    throw new Exception('You can update your bank details only once.');
+                } else {
+                    $this->db->insert('student_banks', $data);
+                    $this->response('status', true);
+                    $this->response('message', 'Bank details updated successfully..');
+                }
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
+    function update_firebase_token()
+    {
+        if ($this->isPost()) {
+            try {
+                $mobile = $this->post('mobile');
+                $firebaseToken = $this->post('firebase_token');
+                $get = $this->db->where('contact_number', $mobile)->get('students');
+                if (!$get->num_rows())
+                    throw new Exception('This Mobile number not exists..');
+                $this->response('status', true);
+                $this->db->where('id', $get->row('id'))->update('students', [
+                    'firebase_token' => $firebaseToken
+                ]);
+                $this->response('firebase_token', $firebaseToken);
+                $this->response('message', 'Token Updated Successfully..');
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
     function get_student()
     {
         if ($this->isPost()) {
@@ -487,7 +552,8 @@ class V1 extends Api_Controller
                         'name',
                         "CONCAT('" . base_url('assets/file/') . "',image) as profile",
                         'contact_number as mobile',
-                        'email'
+                        'email',
+                        'firebase_token'
                     ])->get_where('students', ['id' => $id]);
                     $this->response('status', true);
                     $this->response('student', $student->row());
