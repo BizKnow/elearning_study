@@ -16,6 +16,17 @@
                             <input type="text" name="name" value="{student_name}" class="form-control"
                                 placeholder="Enter Student Name">
                         </div>
+                        <?php
+                        if ($this->student_model->isAdmin()) {
+                            ?>
+                            <div class="form-group mb-4 col-lg-6 col-xs-12 col-sm-12">
+                                <label class="form-label required required">Student Email</label>
+                                <input type="email" name="email" value="{email}" class="form-control"
+                                    placeholder="Enter Student Email">
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

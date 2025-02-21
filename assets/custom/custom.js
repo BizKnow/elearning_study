@@ -2275,6 +2275,7 @@ const list_students = (admission_status = 0, center_id = 0) => {
     var my__table = $(document).find('#list-students');
     var dt = my__table.DataTable({
         searching: true,
+        "order": [[1, "desc"]],
         'ajax': {
             'url': ajax_url + 'student/list',
             'data': {
@@ -2308,6 +2309,7 @@ const list_students = (admission_status = 0, center_id = 0) => {
         'columns': [
             // Specify your column configurations
             { 'data': null },
+            { 'data': 'timestamp' },
             { 'data': 'student_name' },
             { 'data': 'contact_number' },
             { 'data': 'email' },
@@ -2316,36 +2318,51 @@ const list_students = (admission_status = 0, center_id = 0) => {
             { 'data': null }
             // Add more columns as needed
         ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var table = $('#list-students').DataTable();
+            var pageInfo = table.page.info();
+            var serialNumber = pageInfo.start + iDisplayIndex + 1;
+            $('td:eq(0)', nRow).html(serialNumber);
+        },
         'columnDefs': [
+            { "orderable": false, "targets": 0 },
+            // {
+            //     targets: 0,
+            //     render: function (data,type,row,meta) {
+            //         log(meta)
+            //         return `${meta.row + 1}.`;
+            //         // return `<div class="d-flex align-items-center flex-wrap">
+            //         //             <div class="f fw-bold me-5 copy-text-data">${data}</div>
+            //         //         </div>`;
+            //     }
+            // },
             {
-                targets: 0,
-                render: function (data,type,row,meta) {
-                    return `${meta.row + 1}.`;
-                    // return `<div class="d-flex align-items-center flex-wrap">
-                    //             <div class="f fw-bold me-5 copy-text-data">${data}</div>
-                    //         </div>`;
-                }
+                targets : 1,
+                render: function (data, type, row) {
+                    log(row);
+                    return moment(data).format('DD-MM-YYYY');
+                    }
             },
             {
-                targets : 4,
+                targets : 5,
                 render : function(data){
                     return `<button class="btn btn-info"><i class="fa fa-eye"></i></button>`;
                 }
             },
             {
-                targets: 1,
+                targets: 2,
                 render: function (data, type, row) {
                     return `${data}`;// <a href="javascript:;" class="student-details eye-btn"><i class="text-success fa fa-eye"></i></a>`;
                 }
             },
             {
-                targets: 2,
+                targets: 3,
                 render: function (data, type, row) {
                     return `<label class="label label-info">${data}</label>`;
                 }
             },
             {
-                targets: 5,
+                targets: 6,
                 render: function (data, type, row) {
                     return `<label class="label label-danger">${data ?? 'Online'}</label>
                         <label class="label label-info text-capitalize">Via <b> &nbsp;${row.added_by ?? 'APP'}</b></label>`;

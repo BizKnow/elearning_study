@@ -16,6 +16,7 @@
                                 <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
 
                                     <th>#</th>
+                                    <th>Date</th>
                                     <th>Name</th>
                                     <th>Contact</th>
                                     <th>Email</th>

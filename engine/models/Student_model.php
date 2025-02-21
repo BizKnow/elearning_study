@@ -29,6 +29,7 @@ class Student_model extends MY_Model
                 s.family_id,
                 s.password,
                 s.wallet,
+                s.timestamp,
                 s.adhar_front as student_aadhar,
                 s.upload_docs as student_docs'
             )   /*   
@@ -183,6 +184,7 @@ class Student_model extends MY_Model
                     $this->db->where('s.session_id', $condition['session_id']);
                     unset($condition['session_id']);
                 }
+                $this->db->order_by('s.id','DESC');
                 $this->myWhere('s', $condition);
                 break;
             case 'course':
