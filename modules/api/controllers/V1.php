@@ -478,22 +478,24 @@ class V1 extends Api_Controller
     }
     function get_student()
     {
-        try {
-            $id = $this->student_id();
-            if ($id) {
-                $student = $this->db->select([
-                    'id as student_id',
-                    'name',
-                    "CONCAT('" . base_url('assets/file/') . "',image) as profile",
-                    'contact_number as mobile',
-                    'email'
-                ])->get_where('students', ['id' => $id]);
-                $this->response('status', true);
-                $this->response('student', $student->row());
-            } else
-                $this->response('message', 'Missing parameters.');
-        } catch (Exception $e) {
-            $this->response('message', $e->getMessage());
+        if ($this->isPost()) {
+            try {
+                $id = $this->student_id();
+                if ($id) {
+                    $student = $this->db->select([
+                        'id as student_id',
+                        'name',
+                        "CONCAT('" . base_url('assets/file/') . "',image) as profile",
+                        'contact_number as mobile',
+                        'email'
+                    ])->get_where('students', ['id' => $id]);
+                    $this->response('status', true);
+                    $this->response('student', $student->row());
+                } else
+                    $this->response('message', 'Missing parameters.');
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
         }
     }
     private function generate_token($student_id)
