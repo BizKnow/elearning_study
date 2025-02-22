@@ -30,6 +30,84 @@ class V1 extends Api_Controller
             ]
         ];
     }
+    function withdrawal_request()
+    {
+        if ($this->isPost()) {
+            $this->form_validation->set_rules('amount', 'Withdrawal Amount', 'required');
+            if ($this->validation()) {
+                $amountLimit = ES('withdrawal_amount_limit', 0);
+                $amount = $this->post('amount');
+                try {
+                    $studentId = $this->student_id();
+                    $bank = $this->db->where('student_id', $studentId)->get('student_banks')->num_rows();
+                    if (!$bank)
+                        throw new Exception('Please Update your KYC..');
+                    $studentWallet = $this->student_model->get_student_via_id($studentId)->row('wallet') ?? 0;
+                    if (!$studentWallet)
+                        throw new Exception('you have no money in your wallet');
+                    if ($studentWallet < $amount)
+                        throw new Exception("You have only $studentWallet rupees in your wallet.");
+                    if ($amountLimit <= $amount) {
+                        // $this->response('error',"$amountLimit,$amount");
+                        $student = $this->student_model->get_student_via_id($studentId)->row();
+                        $data = [
+                            'student_id' => $studentId,
+                            'amount' => $amount
+                        ];
+                        $this->db->insert('withdrawal_requests', $data);
+                        $this->set_data([
+                            'STUDENT_NAME' => $student->student_name,
+                            'MOBILE_NUMBER' => $student->contact_number,
+                            'AMOUNT' => $amount,
+                            'DATE' => date('d-m-Y'),
+                            'ADMIN_LINK' => base_url('student/withdrawal-request/' . $this->token->encode(['id' => $this->db->insert_id()]))
+                        ]);
+                        $this->do_email('Rainboweduzone.fzd@gmail.com', 'Withdrawal Request', $this->template('email/withdrawal-request'));
+                        $this->response('status', true);
+                    } else
+                        throw new Exception("You cannot withdraw less than Rs $amountLimit.");
+                } catch (Exception $e) {
+                    $this->response('message', $e->getMessage());
+                }
+            }
+        }
+    }
+    function withdrawal_request_list()
+    {
+        if ($this->isPost()) {
+            try {
+                $student_id = $this->student_id();
+                $list = $this->db->where('student_id', $student_id)->order_by('updatetime', 'DESC')->get('withdrawal_requests');
+                $data = [];
+                foreach ($list->result() as $row) {
+                    $status = 'pending';
+                    $payment_id = null;
+                    $reason = null;
+                    if ($row->status == '1') {
+                        $status = 'accept';
+                        $payment_id = $row->payment_id;
+                    } else if ($row->status == '2') {
+                        $status = 'reject';
+                        $reason = $row->reason;
+                    }
+                    $data[] = [
+                        'date' => date('d-m-Y', strtotime($row->timestamp)),
+                        'order_id' => 'ORD' . strtotime($row->timestamp),
+                        'amount' => $row->amount,
+                        'update_time' => ($row->timestamp != $row->updatetime) ? date('d-m-Y', strtotime($row->updatetime)) : 'Pending..',
+                        'status' => $status,
+                        'payment_id' => $payment_id,
+                        'reason' => $reason
+                    ];
+                }
+                $this->response('status', true);
+                $this->response('count', $list->num_rows());
+                $this->response('data', $data);
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
     private function get_referral_code($course_id, $student_id)
     {
         $chk = $this->db->where([
@@ -49,6 +127,35 @@ class V1 extends Api_Controller
                 $referral_code = $this->input->post('referral_code');
                 $course_id = $this->post('course_id');
                 // $check = $this->db->
+                $check = $this->db->where([
+                    'course_id' => $course_id,
+                    'code' => $referral_code,
+                    'status' => 1
+                ])->where('student_id!=', $student_id)->get('student_referral_code');
+                if ($check->num_rows()) {
+                    $row = $check->row();
+                    $this->response([
+                        'status' => true,
+                        'course_id' => $course_id,
+                        'referral_id' => $row->student_id,
+                        'cashback_amount' => $this->db->select('cashback_amount')->where('id', $course_id)->get('course')->row('cashback_amount')
+                    ]);
+                } else {
+                    $decode = decode_ids($referral_code);
+                    if ($decode) {
+                        $de_course_id = $decode[0];
+                        $de_student_id = $decode[1];
+                        if ($course_id != $de_course_id or $de_student_id == $student_id)
+                            throw new Exception('Referral code invalid.');
+                        $this->response([
+                            'status' => true,
+                            'course_id' => $de_course_id,
+                            'referral_id' => $de_student_id,
+                            'cashback_amount' => $this->db->select('cashback_amount')->where('id', $de_course_id)->get('course')->row('cashback_amount')
+                        ]);
+                    } else
+                        throw new Exception('Referral code invalid.');
+                }
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
             }
