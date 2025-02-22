@@ -4,6 +4,12 @@ class V1 extends Api_Controller
     private $select;
     function __construct()
     {
+        /*
+        verify referral code with token or course_id
+        withdrawal request with token or fields
+        withdrawal request list(s) with token
+
+        */
         parent::__construct();
         $this->response = ['status' => false];
         $this->select = [
@@ -23,6 +29,30 @@ class V1 extends Api_Controller
                 END AS total_days"
             ]
         ];
+    }
+    private function get_referral_code($course_id, $student_id)
+    {
+        $chk = $this->db->where([
+            'course_id' => $course_id,
+            'student_id' => $student_id,
+            'status' => 1
+        ])->get('student_referral_code');
+        if ($chk->num_rows())
+            return $chk->row('code');
+        return encode_ids($course_id, $student_id);
+    }
+    function verify_referral_code()
+    {
+        if ($this->isPost()) {
+            try {
+                $student_id = $this->student_id();
+                $referral_code = $this->input->post('referral_code');
+                $course_id = $this->post('course_id');
+                // $check = $this->db->
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
     }
     function razorpay()
     {
@@ -184,7 +214,7 @@ class V1 extends Api_Controller
                 if ($course->num_rows() > 0) {
                     $data = [];
                     foreach ($course->result_array() as $row) {
-                        $row['referral_code'] = encode_ids($row['id'], $student_id);
+                        $row['referral_code'] = $this->get_referral_code($row['id'], $student_id);
                         $getVideos = $this->db
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)
@@ -488,7 +518,7 @@ class V1 extends Api_Controller
                 $this->response('firebase_token', $get->row('firebase_token'));
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
-                $this->response('firebase_token',null);
+                $this->response('firebase_token', null);
             }
         }
     }
@@ -644,9 +674,8 @@ class V1 extends Api_Controller
                     ]);
                     $this->response('token', $token);
                     $this->response('status', true);
-                }
-                else
-                    $this->response('message','Mobile no not found.');
+                } else
+                    $this->response('message', 'Mobile no not found.');
             }
         }
     }
