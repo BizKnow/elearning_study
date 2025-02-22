@@ -488,6 +488,7 @@ class V1 extends Api_Controller
                 $this->response('firebase_token', $get->row('firebase_token'));
             } catch (Exception $e) {
                 $this->response('message', $e->getMessage());
+                $this->response('firebase_token',null);
             }
         }
     }
