@@ -19,6 +19,7 @@ class V1 extends Api_Controller
                 'fees as amount',
                 "CONCAT(duration, ' ', duration_type) AS duration",
                 'referral_amount',
+                'mrp',
                 'image',
                 "CONCAT('" . base_url('assets/file/') . "',image) as course_image",
                 'description',
@@ -553,6 +554,7 @@ class V1 extends Api_Controller
                 $studentId = $this->student_id();
                 $this->db->select("c.id as course_id,
                                     c.course_name,
+                                    c.mrp,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
                                     CONCAT('" . base_url('assets/file/') . "',c.image) as course_image,
