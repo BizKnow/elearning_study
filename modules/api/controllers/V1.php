@@ -412,17 +412,44 @@ class V1 extends Api_Controller
             }
         }
     }
-    function whatsapp_no(){
-        if ($this->isGet()){
-            $whatsapp = ES('recorded_video_send_on',0);
-            if($whatsapp){
+    function whatsapp_no()
+    {
+        if ($this->isGet()) {
+            $whatsapp = ES('recorded_video_send_on', 0);
+            if ($whatsapp) {
                 $this->response([
                     'status' => true,
                     'whatsapp_no' => $whatsapp
                 ]);
+            } else
+                $this->response('message', 'Whatsapp no is not found..');
+        }
+    }
+    function pages()
+    {
+        if ($this->isGet()) {
+            // $get = $this->db->where('isMenu',1)->get('his_pages');
+            try {
+                $this->db->select('hp.page_name,hp.link as slug,hpc.content as html')
+                    ->from('his_pages as hp')
+                    ->join('his_page_content as hpc', 'hpc.page_id = hp.id AND hp.isMenu = 0');
+                $message = 'Pages data not found.';
+                if ($this->uri->segment(4, 0)) {
+                    $this->db->where('hp.link', $this->uri->segment(4, 0));
+                    $message = $this->uri->segment(4, 0) . ' page is not found';
+                }
+                $get = $this->db->get();
+                if ($get->num_rows()) {
+                    $this->response([
+                        'status' => true,
+                        'data' => $get->result_array()
+                    ]);
+                } else {
+                    throw new Exception($message);
+                }
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
             }
-            else
-                $this->response('message','Whatsapp no is not found..');
         }
     }
     function supports()
