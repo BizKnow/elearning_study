@@ -363,7 +363,7 @@ class V1 extends Api_Controller
                 $course_id = $this->post('course_id');
                 $referral_id = $this->post('referral_id', 0);
                 $enrollment_no = $this->gen_roll_no();
-                $this->db->insert('students_courses', [
+                $this->db->insert('student_courses', [
                     'student_id' => $student_id,
                     'course_id' => $course_id,
                     'enrollment_no' => $enrollment_no,
@@ -374,7 +374,7 @@ class V1 extends Api_Controller
                     'amount' => $this->post('amount')
                 ]);
                 $lastId = $this->db->insert_id();
-                $query = $this->db->last_query();
+                // $query = $this->db->last_query();
                 if ($referral_id && $this->post('payment_status')) {
                     $amount = $this->db->select('referral_amount')->where('id', $course_id)->get('course')->row('referral_amount');
                     $this->db->insert('refferal_amount', [
