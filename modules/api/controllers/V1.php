@@ -367,6 +367,7 @@ class V1 extends Api_Controller
                     'student_id' => $student_id,
                     'course_id' => $course_id,
                     'enrollment_no' => $enrollment_no,
+                    'starttime' => time(),
                     'referral_id' => $referral_id,
                     'added_via' => 'app',
                     'payment_id' => $this->post('payment_id'),
@@ -383,7 +384,6 @@ class V1 extends Api_Controller
                     ]);
                     $this->increase_refer_amount($referral_id, $amount);
                 }
-                $this->response('query',$query);
                 $this->response('enrollment_no', $enrollment_no);
                 $this->response('message', 'Student course added successfully.');
                 $this->response('status', true);
