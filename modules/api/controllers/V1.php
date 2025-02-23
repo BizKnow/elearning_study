@@ -579,6 +579,7 @@ class V1 extends Api_Controller
                             ->where('sm.course_id', $row['course_id'])
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
+                        $row['referral_code'] = $this->get_referral_code($row['course_id'],$studentId);
                         if ($getVideos->num_rows()) {
                             $videData = [];
                             foreach ($getVideos->result_array() as $video) {
