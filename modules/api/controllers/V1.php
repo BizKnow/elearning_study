@@ -432,13 +432,13 @@ class V1 extends Api_Controller
             try {
                 $this->db->select('hp.page_name,hp.link as slug,hpc.content as html')
                     ->from('his_pages as hp')
-                    ->join('his_page_content as hpc', 'hpc.page_id = hp.id AND hp.isMenu = 0');
+                    ->join('his_page_content as hpc', 'hpc.page_id = hp.id AND hp.isMenu = 0 AND hp.status = 1');
                 $message = 'Pages data not found.';
                 if ($this->uri->segment(4, 0)) {
                     $this->db->where('hp.link', $this->uri->segment(4, 0));
                     $message = $this->uri->segment(4, 0) . ' page is not found';
                 }
-                $get = $this->db->get();
+                $get = $this->db->order_by('hp.id','DESC')->get();
                 if ($get->num_rows()) {
                     $this->response([
                         'status' => true,
