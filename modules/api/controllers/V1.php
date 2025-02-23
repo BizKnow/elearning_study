@@ -20,6 +20,7 @@ class V1 extends Api_Controller
                 "CONCAT(duration, ' ', duration_type) AS duration",
                 'referral_amount',
                 'image',
+                "CONCAT('" . base_url('assets/file/') . "',c.image) as course_image",
                 'description',
                 "CASE 
                     WHEN duration_type = 'year' THEN duration * 365
