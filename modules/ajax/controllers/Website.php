@@ -2,6 +2,29 @@
 // 9996763445
 class Website extends Ajax_Controller
 {
+    function delete_ref()
+    {
+        $id = $this->input->post('id');
+        if ($id) {
+            $this->db->where('id', $id);
+            $this->db->delete('student_referral_code');
+            $this->response([
+                'status' => true
+            ]);
+        }
+    }
+    function add_referral_code()
+    {
+        if ($post = $this->input->post()) {
+            $this->form_validation->set_rules('code', 'Referral Code', 'required|is_unique[student_referral_code.code]');
+            if ($this->validation()) {
+                $this->db->insert('student_referral_code', $post);
+                $this->response([
+                    'status' => true
+                ]);
+            }
+        }
+    }
     function update_course_payment()
     {
         $post = $this->post();
@@ -24,10 +47,10 @@ class Website extends Ajax_Controller
                 $status = $this->razorpay->fetchOrderStatus($razorpay_order_id);
                 if ($status) {
                     $this->db->where(['starttime' => $merchant_order_id])
-                            ->update('student_courses',[
-                                'status' => 1,
-                                'payment_id' => $razorpay_payment_id
-                            ]);
+                        ->update('student_courses', [
+                            'status' => 1,
+                            'payment_id' => $razorpay_payment_id
+                        ]);
                     $this->response('status', true);
                 }
 
@@ -88,7 +111,7 @@ class Website extends Ajax_Controller
                         } else
                             throw new Exception('Selected course not found..');
                     }
-                    $student = $this->db->where('id',$data['student_id'])->get('students');
+                    $student = $this->db->where('id', $data['student_id'])->get('students');
                     $myData = [
                         'key' => RAZORPAY_KEY_ID,
                         'amount' => $razordata['amount'] * 100,
@@ -107,7 +130,7 @@ class Website extends Ajax_Controller
                         'order_id' => $order_id
                     ];
                     $this->response('status', true);
-                    $this->response('amount',$razordata['amount']);
+                    $this->response('amount', $razordata['amount']);
                     $this->response('option', $myData);
                     $this->response('rdata', $razordata);
                 }

@@ -106,13 +106,13 @@ class Student extends MY_Controller
             'change-password' => ['title' => 'Account Change Password', 'icon' => array('key', 2), 'url' => 'change-password']
         ];
         if (is_numeric($stdId) and $stdId) {
-            // if (!$this->student_model->isStudent()) {
-            //     $tabs['other'] = [
-            //         'title' => 'Setting',
-            //         'icon' => array('setting-2', 2),
-            //         'url' => 'other'
-            //     ];
-            // }
+            if ($this->student_model->isAdmin()) {
+                $tabs['other'] = [
+                    'title' => 'Referral Code',
+                    'icon' => array('gift', 2),
+                    'url' => 'referral-code'
+                ];
+            }
             $get = $this->student_model->get_student_via_id($stdId);
             if ($get->num_rows()) {
                 if (isset($tabs[$tab]))

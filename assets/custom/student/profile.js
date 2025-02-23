@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function (d) {
         var box = $(this).closest('.menu');
         box.find('.message').html('');
         var searchValue = $('.get-std-id').val();
-        
-        if(searchValue == ''){
-            box.find('.message').html(badge('Please Select An Student.','danger'));
+
+        if (searchValue == '') {
+            box.find('.message').html(badge('Please Select An Student.', 'danger'));
             return;
         }
         if (searchValue == uri_segment(3, 0)) {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function (d) {
         }
         SwalShowloading();
         var url = `${base_url}student/profile/${searchValue}/${uri_segment(4)}`;
-        if (box.find('#openNEwTab:checked').val()){
+        if (box.find('#openNEwTab:checked').val()) {
             window.open(url, '_blank');
             SwalHideLoading();
         }
@@ -26,14 +26,40 @@ document.addEventListener('DOMContentLoaded', function (d) {
             window.location.href = url;
         // location.href = ;
     })
-    $(document).on('submit','.submit-bank',function(res){
+    $(document).on('submit', '.submit-bank', function (res) {
         res.preventDefault();
         $.AryaAjax({
-            url : 'website/update-bank',
-            data : new FormData(this),
-            page_reload : true,
-            success_message : 'Bank Details Updated Successfully..'
+            url: 'website/update-bank',
+            data: new FormData(this),
+            page_reload: true,
+            success_message: 'Bank Details Updated Successfully..'
         });
+    })
+    $(document).on('click', '.delete-ref', function () {
+        var id = $(this).data('id');
+        if (id) {
+            SwalWarning('Confirmation!', 'Are you sure you want to delete it.', true, 'delete it').then((r) => {
+                if (r.isConfirmed) {
+                    $.AryaAjax({
+                        url: 'website/delete-ref',
+                        data: { id: id },
+                        success_message: 'Deleted Successfully.',
+                        page_reload: true
+                    });
+                }
+            });
+        }
+        // alert(id);
+
+    })
+    $(document).on('submit', '.submit-referral_code', function (res) {
+        res.preventDefault();
+        $.AryaAjax({
+            url: 'website/add_referral_code',
+            data: new FormData(this),
+            page_reload: true,
+            success_message: 'Referral Code is Added Successfully..'
+        }).then((res) => showResponseError(res));
     })
     if (update_profile) {
         /*
@@ -121,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function (d) {
             }
         });
         */
+
         $(document).on('submit', '.save-student-data', function (r) {
             r.preventDefault();
             $.AryaAjax({
