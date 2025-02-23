@@ -746,7 +746,8 @@ class V1 extends Api_Controller
                     'password' => sha1($this->post('password')),
                     'status' => 1,
                     'added_by' => 'APP',
-                    'admission_type' => 'Online'
+                    'admission_type' => 'Online',
+                    'firebase_token' => $this->post('firebase_token')
                 ];
                 $this->db->insert('students', $data);
                 $student_id = $this->db->insert_id();
