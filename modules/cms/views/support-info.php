@@ -14,6 +14,7 @@
                             <option value="url">URL</option>
                             <option value="email">Email</option>
                             <option value="mobile">Moblie</option>
+                            <option value="whatsapp">Whatsapp</option>
                         </select>
                     </div>
                     <div class="form-group mb-2">

@@ -392,6 +392,39 @@ class V1 extends Api_Controller
             }
         }
     }
+    function live_notification()
+    {
+        if ($this->isGet()) {
+            try {
+                // $student_id = $this->student_id();
+                $get = $this->db->select('title,description,url,starttime,endtime')->order_by('id', 'DESC')->get('live_notification');
+                if ($get->num_rows()) {
+                    $this->response([
+                        'status' => true,
+                        'message' => 'Live notification found.',
+                        'data' => $get->result_array(),
+                        'count' => $get->num_rows()
+                    ]);
+                } else
+                    throw new Exception('Live notifications are not found.');
+            } catch (Exception $e) {
+                $this->response('message', $e->getMessage());
+            }
+        }
+    }
+    function whatsapp_no(){
+        if ($this->isGet()){
+            $whatsapp = ES('recorded_video_send_on',0);
+            if($whatsapp){
+                $this->response([
+                    'status' => true,
+                    'whatsapp_no' => $whatsapp
+                ]);
+            }
+            else
+                $this->response('message','Whatsapp no is not found..');
+        }
+    }
     function supports()
     {
         if ($this->isGet()) {
@@ -399,6 +432,7 @@ class V1 extends Api_Controller
                 $get = $this->db->select("title,value,type,CASE 
                             WHEN type = 'mobile' THEN CONCAT('tel:',value)
                             WHEN type = 'email' THEN CONCAT('mailto:',value)
+                            WHEN type = 'whatsapp' THEN CONCAT('wa.me/91',value)
                             ELSE value
                             END AS url")
                     ->get('supports');
@@ -582,7 +616,7 @@ class V1 extends Api_Controller
                             ->where('sm.course_id', $row['course_id'])
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
-                        $row['referral_code'] = $this->get_referral_code($row['course_id'],$studentId);
+                        $row['referral_code'] = $this->get_referral_code($row['course_id'], $studentId);
                         if ($getVideos->num_rows()) {
                             $videData = [];
                             foreach ($getVideos->result_array() as $video) {

@@ -97,12 +97,6 @@ $config['cms_setting'] = array(
             'url' => 'cms/setting'
         ),
         array(
-            'label' => 'Support Info',
-            'type' => 'support_info',
-            'icon' => array('target', 4),
-            'url' => 'cms/support_info'
-        ),
-        array(
             'label' => 'Gallery Image',
             'type' => 'gallery_setting',
             'icon' => array('folder', 4),
@@ -140,6 +134,25 @@ $config['cms_setting'] = array(
 
             )
         )
+    )
+);
+$config['app'] = array(
+    'title' => 'MY APP',
+    'description' => 'This is my app',
+    'menu' => array(
+        
+        array(
+            'label' => 'Support Info',
+            'type' => 'support_info',
+            'icon' => array('target', 4),
+            'url' => 'cms/support_info'
+        ),
+        array(
+            'label' => 'App Setting',
+            'type' => 'setting',
+            'icon' => array('settings', 4),
+            'url' => 'app/setting',
+            ),
     )
 );
 $staticMenus = array(

@@ -165,26 +165,7 @@
         </form>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <form action="" class="setting-update">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Update Setting</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="" class="form-label required">Withdrawal Minimum Amount</label>
-                        <input name="withdrawal_amount_limit" value="<?=ES('withdrawal_amount_limit',0)?>" type="number" placeholder="Enter Minimum Amount" class="form-control">
-                    </div>
-                </div>
-                <div class="card-footer">
-                    {publish_button}
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+
 <?php
 if (THEME == 'mytheme') {
     echo '<div class="row mb-2 mt-4">
