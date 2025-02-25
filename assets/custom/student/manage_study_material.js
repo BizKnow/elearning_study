@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
             { 'data': null },
             { 'data': null },
             { 'data': null },
+            { 'data': null },
             { 'data': null }
         ],
         columnDefs: [
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 }
             },
             {
-                targets : 2,
+                targets: 2,
                 render: function (data, type, row) {
                     // alert(row.isDemo)
                     log(row);
@@ -100,9 +101,25 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 }
             },
             {
+                targets: 4,
+                render: function (data, type, row) {
+                    return `
+                      <input type="number" class="update-seq form-control" style="
+    width: 100px;
+    text-align: center;
+" value="${row.seq}" data-id="${row.id}">
+                    `;
+                }
+            },
+            {
                 targets: -1,
                 render: function (data, type, row) {
                     return `
+                            <button class="btn btn-info btn-sm update-material" data-id="${row.id}"
+                            data-type="${row.file_type}" data-file="${row.file}"
+                            >
+                                <i class="fa fa-edit"></i> Edit
+                            </button>
                             ${deleteBtnRender(1, row.material_id, 'Study Material')}
                             `;
                 }
@@ -110,14 +127,14 @@ document.addEventListener('DOMContentLoaded', function (e) {
         ]
     }).on('draw', function (r) {
         handleDeleteRows('student/delete-study-material');
-        study_table.find('.change-demo-status').on('change',function(){
+        study_table.find('.change-demo-status').on('change', function () {
             var id = $(this).data('id');
             var status = $(this).is(':checked') ? 1 : 0;
             // alert(checked);
             $.AryaAjax({
-                url : 'student/study-material-for-demo',
-                data : {id,status},
-                success_message : 'Demo status updated..'
+                url: 'student/study-material-for-demo',
+                data: { id, status },
+                success_message: 'Demo status updated..'
             });
         });
         study_table.find('.assign').on('click', function () {
@@ -187,5 +204,60 @@ document.addEventListener('DOMContentLoaded', function (e) {
     // }
     // study_table.DataTable();
 
+    $(document).on('change', '.update-seq', function () {
+        // alert(this.value);
+        var seq = $(this).val();
+        var id = $(this).data('id');
+        $.AryaAjax({
+            url: 'student/update-material-seq',
+            data: { seq, id },
+            success_message: 'Sequence Updated Successfully..'
+        });
+    })
+    $(document).on('click', '.update-material', function () {
+        var id = $(this).data('id');
+        var file_type = $(this).data('type');
+        var file = $(this).data('file');
+        var html = `<input type="hidden" name="id" value="${id}"><input type="hidden" name="type" value="${file_type}">`;
+        if (file_type == 'file') {
+            html += `
+                <input accept="application/pdf" type="file" id="file"  name="file" class="form-control" required>
+            `;
+        }
 
+        if (file_type == 'youtube') {
+            html += `
+                <textarea name="file"class="form-control" required>${file}</textarea>
+            `;
+        }
+        myModel('Update Record', html).then(rs => {
+            rs.form.submit(function (r) {
+                r.preventDefault();
+                var type = $(rs.form).find('[name="type"]').val();
+                var data = new FormData(this);
+                // alert(type);
+                log($(rs.form).find('#file'));
+                if (type == 'file') {
+                    var file = $(rs.form).find('#file')[0].files[0];
+                    // file_type == 'file' ? file : null;
+                    data.append('file', file);
+
+                }
+
+                // alert(3)
+                $.AryaAjax({
+                    url: 'student/update-study-material',
+                    data: data,
+                    success_message: 'Data Updated Successfully..'
+                }).then(myr => {
+                    if (myr.status) {
+                        location.reload();
+                    }
+                    showResponseError(myr)
+                });
+            });
+        });
+
+        ///'student/update-study-material');
+    })
 });

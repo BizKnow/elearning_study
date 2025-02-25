@@ -328,6 +328,7 @@ class V1 extends Api_Controller
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)
                             ->where('sm.course_id', $row['id'])
+                            ->order_by('seq','ASC')
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
                         $row['is_subscribe'] = $this->db->where([

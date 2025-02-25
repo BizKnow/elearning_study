@@ -173,7 +173,36 @@ class Student extends Ajax_Controller
         $list = $this->student_model->get_all_student($this->post());
         $this->response('data', $list);
     }
-    
+    function update_material_seq(){
+        if($post = $this->input->post()){
+            $chk = $this->db->where('id',$post['id'])->update('study_material',[
+                'seq' => $post['seq']
+            ]);
+            if($chk){
+                $this->response([
+                    'status' => true
+                ]);
+            }
+        }
+    }
+    function update_study_material(){
+        if($post = $this->input->post()){
+            
+            if($this->post('type') == 'file'){
+                $file = $this->file_up('file');
+            }
+            else{
+                $file = $this->post('file');
+            }
+
+
+            $chk = $this->db->where('id',$post['id'])->update('study_material',[
+                'file' => $file
+            ]);
+            if($chk)
+                $this->response('status',true);
+        }
+    }
     function upload_study_material()
     {
         // $this->ki_theme->set_default_vars('max_upload_size', 10485760); // 10MB

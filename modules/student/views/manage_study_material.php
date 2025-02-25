@@ -80,6 +80,7 @@
                                 <th>Title</th>
                                 <th>Type</th>
                                 <th>File</th>
+                                <th>Seq</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
