@@ -328,7 +328,7 @@ class V1 extends Api_Controller
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)
                             ->where('sm.course_id', $row['id'])
-                            ->order_by('seq','ASC')
+                            ->order_by('sm.seq','ASC')
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
                         $row['is_subscribe'] = $this->db->where([
@@ -575,6 +575,7 @@ class V1 extends Api_Controller
                     $this->db->from('study_material as sm');
                     $this->db->join('student_courses as s', 's.course_id = sm.course_id');
                     $this->db->where('sm.course_id', $course_id);
+                    $this->db->order_by('sm.seq','ASC');
                     $this->db->where('s.student_id', $studentId);
                     // $this->db->where('sm.idDemo', 0);
                     if ($this->post('type'))
@@ -642,6 +643,7 @@ class V1 extends Api_Controller
                             ->select("sm.material_id,sm.idDemo as isDemo,sm.title,sm.description,sm.file as youtube_url")
                             ->where('sm.idDemo', 1)
                             ->where('sm.course_id', $row['course_id'])
+                            ->order_by('sm.seq','ASC')
                             ->get('study_material as sm');
                         $row['demo_videos'] = [];
                         $row['referral_code'] = $this->get_referral_code($row['course_id'], $studentId);
