@@ -140,6 +140,7 @@ class V1 extends Api_Controller
                         'status' => true,
                         'course_id' => $course_id,
                         'referral_id' => $row->student_id,
+                        'referral_user' => $this->db->where('id', $row->student_id)->get('students')->row('name'),
                         'cashback_amount' => $this->db->select('cashback_amount')->where('id', $course_id)->get('course')->row('cashback_amount')
                     ]);
                 } else {
@@ -153,6 +154,7 @@ class V1 extends Api_Controller
                             'status' => true,
                             'course_id' => $de_course_id,
                             'referral_id' => $de_student_id,
+                            'referral_user' => $this->db->where('id', $de_student_id)->get('students')->row('name'),
                             'cashback_amount' => $this->db->select('cashback_amount')->where('id', $de_course_id)->get('course')->row('cashback_amount')
                         ]);
                     } else
