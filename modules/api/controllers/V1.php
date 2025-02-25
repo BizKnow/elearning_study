@@ -764,7 +764,8 @@ class V1 extends Api_Controller
                         "CONCAT('" . base_url('assets/file/') . "',image) as profile",
                         'contact_number as mobile',
                         'email',
-                        'firebase_token'
+                        'firebase_token',
+                        'wallet'
                     ])->get_where('students', ['id' => $id]);
                     $bank = $this->db->select('
                         bank_name,
