@@ -19,6 +19,7 @@ class V1 extends Api_Controller
                 'fees as amount',
                 "CONCAT(duration, ' ', duration_type) AS duration",
                 'referral_amount',
+                'cashback_amount',
                 'mrp',
                 'image',
                 "CONCAT('" . base_url('assets/file/') . "',image) as course_image",
@@ -389,6 +390,13 @@ class V1 extends Api_Controller
                         'amount' => $amount
                     ]);
                     $this->increase_refer_amount($referral_id, $amount);
+                    $amount = $this->db->select('cashback_amount')->where('id', $course_id)->get('course')->row('cashback_amount');
+                    $this->db->insert('refferal_amount', [
+                        'parent_id' => $lastId,
+                        'amount' => $amount,
+                        'type' => 'cashback'
+                    ]);
+                    $this->increase_refer_amount($student_id, $amount);
                 }
                 $this->response('enrollment_no', $enrollment_no);
                 $this->response('message', 'Student course added successfully.');
@@ -560,8 +568,8 @@ class V1 extends Api_Controller
                 }
                 $get = $this->db->get();
                 $data = [];
-                foreach($get->result_array() as $row){
-                    $row['referral_code'] = $this->get_referral_code($row['course_id'],$id);
+                foreach ($get->result_array() as $row) {
+                    $row['referral_code'] = $this->get_referral_code($row['course_id'], $id);
                     $data[] = $row;
                 }
                 $this->response('data', $data);
@@ -629,6 +637,8 @@ class V1 extends Api_Controller
                 $this->db->select("c.id as course_id,
                                     c.course_name,
                                     c.mrp,
+                                    c.referral_amount,
+                                    c.cashback_amount,
                                     c.fees as course_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
                                     CONCAT('" . base_url('assets/file/') . "',c.image) as course_image,
@@ -854,12 +864,12 @@ class V1 extends Api_Controller
                 $this->db->insert('students', $data);
                 $student_id = $this->db->insert_id();
                 $this->set_data([
-                    'STUDENT_PROFILE_LINK' => base_url('student/profile/'.$student_id),
+                    'STUDENT_PROFILE_LINK' => base_url('student/profile/' . $student_id),
                     'STUDENT_NAME' => $data['name'],
                     'STUDENT_EMAIL' => $data['email'],
                     'STUDENT_PHONE' => $data['contact_number']
                 ]);
-                $this->do_email('rainbowstudentdata@gmail.com','New Student Registration',$this->template('email/student-register'));
+                $this->do_email('rainbowstudentdata@gmail.com', 'New Student Registration', $this->template('email/student-register'));
                 $this->response('status', true);
                 // $token = bin2hex(random_bytes(32));
                 $token = $this->generate_token($student_id);
