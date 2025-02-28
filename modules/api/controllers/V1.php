@@ -561,7 +561,7 @@ class V1 extends Api_Controller
                 $get = $this->db->get();
                 $data = [];
                 foreach($get->result_array() as $row){
-                    $row['referral_code'] = $this->get_referral_code($row->course_id,$id);
+                    $row['referral_code'] = $this->get_referral_code($row['course_id'],$id);
                     $data[] = $row;
                 }
                 $this->response('data', $data);
