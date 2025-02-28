@@ -482,18 +482,19 @@ class Site extends Site_Controller
     }
     function test()
     {
-        // echo encode_ids(1,2);
-        pre(decode_ids('N3wx'));
-        // echo session_id();
-        // $r = $this->db->set('wallet', 'wallet+100', FALSE)->where('id', 1);
-        // $this->set_data([
-        //     'USER_NAME' => 'AJAY',
-        //     'purchase_itme' => 'Course',
-        //     'purchase_item_title' => 'ADCA',
-        //     'PAYMENT_LINK' => base_url('')
-        // ]);
-        // echo $this->do_email('ajaykumararya963983@gmail.com', 'Login Verification', $this->template('email/payment-link'));
-        // echo $this->email->print_debugger();
+        $data = [
+            'name' => 'AJAY',
+            'email' => 'ajay@gmail.com',
+            'contact_number' => '8533898539'
+        ];
+        $this->set_data([
+            'STUDENT_PROFILE_LINK' => base_url('student/profile/1'),
+            'STUDENT_NAME' => $data['name'],
+            'STUDENT_EMAIL' => $data['email'],
+            'STUDENT_PHONE' => $data['contact_number']
+        ]);
+        $this->do_email('ajaykumararya963983@gmail.com','New Student Registration',$this->template('email/student-register'));
+        
 
     }
 }

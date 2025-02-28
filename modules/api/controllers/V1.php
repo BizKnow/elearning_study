@@ -530,8 +530,10 @@ class V1 extends Api_Controller
                 $course_id = $this->post('course_id');
                 $id = $this->student_id();
                 $this->db->select("c.id as course_id,
+                                    c.mrp,
                                     c.course_name,
                                     c.fees as course_amount,
+                                    c.cashback_amount,
                                     CONCAT(duration, ' ', duration_type) AS course_duration,
                                     c.image as course_image,
                                     c.description as course_description,
@@ -557,7 +559,12 @@ class V1 extends Api_Controller
                     $this->db->where('sc.course_id', $course_id);
                 }
                 $get = $this->db->get();
-                $this->response('data', $get->result_array());
+                $data = [];
+                foreach($get->result_array() as $row){
+                    $row['referral_code'] = $this->get_referral_code($row->course_id,$id);
+                    $data[] = $row;
+                }
+                $this->response('data', $data);
                 $this->response('status', $get->num_rows() > 0);
                 $this->response('count', $get->num_rows());
             } catch (Exception $e) {
@@ -846,6 +853,13 @@ class V1 extends Api_Controller
                 ];
                 $this->db->insert('students', $data);
                 $student_id = $this->db->insert_id();
+                $this->set_data([
+                    'STUDENT_PROFILE_LINK' => base_url('student/profile/'.$student_id),
+                    'STUDENT_NAME' => $data['name'],
+                    'STUDENT_EMAIL' => $data['email'],
+                    'STUDENT_PHONE' => $data['contact_number']
+                ]);
+                $this->do_email('rainbowstudentdata@gmail.com','New Student Registration',$this->template('email/student-register'));
                 $this->response('status', true);
                 // $token = bin2hex(random_bytes(32));
                 $token = $this->generate_token($student_id);

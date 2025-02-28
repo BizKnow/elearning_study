@@ -131,6 +131,9 @@ class Student_model extends MY_Model
                 $this->db->order_by('s.id', 'DESC')->limit($limit);
                 break;
             case 'all':
+                $this->db->select('COUNT(sc.id) as total_courses');
+                $this->db->join('student_courses as sc', 'sc.student_id = s.id','left'); //AND sce.course_id = s.course_id
+                $this->db->group_by('s.id');
                 if (isset($condition['without_admission_status']))
                     unset($condition['without_admission_status']);
                 $this->myWhere('s', $condition);
@@ -177,14 +180,14 @@ class Student_model extends MY_Model
                 $this->myWhere('s', $condition);
                 break;
             case 'active_student':
-                // $this->db->join('student_certificates as sce', 'sce.student_id = s.id', 'left'); //AND sce.course_id = s.course_id
-
+                
                 // $this->db->where('sce.student_id IS NULL');
                 if (isset($condition['session_id'])) {
                     $this->db->where('s.session_id', $condition['session_id']);
                     unset($condition['session_id']);
                 }
                 $this->db->order_by('s.id','DESC');
+                $this->db->group_by('s.id');
                 $this->myWhere('s', $condition);
                 break;
             case 'course':

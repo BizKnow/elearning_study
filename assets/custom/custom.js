@@ -12,8 +12,8 @@ const defaultStudent = base_url + 'assets/media/student.png';
 
 if (typeof ajax_url == 'undefined')
     var ajax_url = `${base_url}ajax/`;
-class Theme{
-    getMode(){
+class Theme {
+    getMode() {
         return $('html').data('bs-theme') ?? 'light'
     }
 };
@@ -283,10 +283,10 @@ const hourConvert = (timeString) => {
     }
     return output;
 }
-$(document).on('keyup','#search-study',function(){
+$(document).on('keyup', '#search-study', function () {
     var searchText = $(this).val().toLowerCase();
     // alert(search)
-    $(this).closest('.card').find('.card').each(function(){
+    $(this).closest('.card').find('.card').each(function () {
         let cardText = $(this).data('text').toLowerCase();
         if (cardText.includes(searchText)) {
             $(this).closest('.col-md-4').removeClass('d-none');
@@ -912,15 +912,16 @@ const generateSHA1Hash = (input) => {
     });
 }
 const small_dom = 'Bfrtip';// '<"wrapper"ltipf>';
-// const small_dom = "<'row'" +
-//     "<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
-//     "<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
-//     ">" +
-//     "<'table-responsive'tr>" +
-//     "<'row'" +
-//     "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
-//     "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
-//     ">";
+const small_dom1 = "<'row'" +
+    "<'col-sm-4 d-flex align-items-center justify-conten-start'l>" +
+    "<'col-sm-4 d-flex align-items-center justify-conten-start'f>" +
+    "<'col-sm-4 d-flex align-items-center justify-content-end'B>" +
+    ">" +
+    "<'table-responsive'tr>" +
+    "<'row'" +
+    "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+    "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+    ">";
 /*
 $.extend(true, $.fn.dataTable.defaults, {
 // Your default options go here
@@ -1543,8 +1544,8 @@ $(document).ready(function () {
 });
 const mydrawer = (title) => {
     var drawerEl = document.querySelector("#offcanvasExample");
-    var offcanvasElement = new bootstrap.Offcanvas(drawerEl,{
-        backdrop :'static'
+    var offcanvasElement = new bootstrap.Offcanvas(drawerEl, {
+        backdrop: 'static'
     });
     // const drawerElement = document.querySelector("#kt_drawer_view_details_box");
     // const drawer = KTDrawer.getInstance(drawerElement, { overlay: true });
@@ -2143,11 +2144,11 @@ $(document).on('change', '[name="avatar"]', function (e) {
         }).then((res) => {
             // log(res);
             if (res.status) {
-                mySwal('Successful', 'Profile Image Uploaded Successfully..',true,'ok').then(res => {
-                    if(res.isConfirmed)
+                mySwal('Successful', 'Profile Image Uploaded Successfully..', true, 'ok').then(res => {
+                    if (res.isConfirmed)
                         location.reload();
                 });
-                
+
             }
             showResponseError(res);
         });
@@ -2275,6 +2276,7 @@ const list_students = (admission_status = 0, center_id = 0) => {
     var my__table = $(document).find('#list-students');
     var dt = my__table.DataTable({
         searching: true,
+        dom : small_dom1,
         "order": [[1, "desc"]],
         'ajax': {
             'url': ajax_url + 'student/list',
@@ -2313,7 +2315,7 @@ const list_students = (admission_status = 0, center_id = 0) => {
             { 'data': 'student_name' },
             { 'data': 'contact_number' },
             { 'data': 'email' },
-            { 'data': null },
+            { 'data': 'total_courses' },
             { 'data': 'admission_type' },
             { 'data': null }
             // Add more columns as needed
@@ -2337,16 +2339,16 @@ const list_students = (admission_status = 0, center_id = 0) => {
             //     }
             // },
             {
-                targets : 1,
+                targets: 1,
                 render: function (data, type, row) {
                     log(row);
                     return moment(data).format('DD-MM-YYYY');
-                    }
+                }
             },
             {
-                targets : 5,
-                render : function(data){
-                    return `<button class="btn btn-info"><i class="fa fa-eye"></i></button>`;
+                targets: 5,
+                render: function (data) {
+                    return `${data} Course(s)`;
                 }
             },
             {
@@ -2468,12 +2470,38 @@ const list_students = (admission_status = 0, center_id = 0) => {
             }
         });
     });
+    $('#filterBtn').on('click', function () {
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        // alert(fromDate);
+        dt.draw();
+    });
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        var date = formatDate(data[1]); // 2nd column (date)
+    
+        if ((fromDate === "" || date >= fromDate) && (toDate === "" || date <= toDate)) {
+            return true;
+        }
+        return false;
+    });
     return dt;
 }
+function formatDate(dateStr) {
+    if (!dateStr) return "";
+    let parts = dateStr.split("-");
+    return parts[2] + "-" + parts[1] + "-" + parts[0]; // YYYY-MM-DD format
+}
+
+// Date Filter Function
+
+
+
 $(document).on('click', '.advanced-set-page', function () {
     var drawerEl = document.querySelector("#offcanvasExample");
-    var offcanvasElement = new bootstrap.Offcanvas(drawerEl,{
-        backdrop :'static'
+    var offcanvasElement = new bootstrap.Offcanvas(drawerEl, {
+        backdrop: 'static'
     });
     // $('#offcanvasExample').data('bs-backdrop');
     $pages = (JSON.parse(drawerEl.getAttribute('data-pages')));
@@ -2681,7 +2709,7 @@ $(document).on("submit", 'form.extra-setting', function (d) {
         success_message: 'Your Proccss Compeleted Successfully.',
         page_reload: page_reload
     }).then((res) => {
-        if(!res.status){
+        if (!res.status) {
             showResponseError(res);
         }
     });

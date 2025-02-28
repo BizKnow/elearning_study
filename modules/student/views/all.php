@@ -9,6 +9,9 @@
             </div>
             <div id="list" class="collapse show">
                 <div class="card-body">
+                    <label>From Date: <input type="date" id="fromDate" class="form-control"></label>
+                    <label>To Date: <input type="date" id="toDate" class="form-control"></label>
+                    <button id="filterBtn" class="btn btn-info btn-xs btn-sm">Filter</button>
                     <div class="table-responsive">
                         <!--begin::Datatable-->
                         <table id="list-students" class="table align-middle table-row-dashed fs-6 gy-5">
