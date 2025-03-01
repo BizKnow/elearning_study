@@ -798,7 +798,7 @@ class V1 extends Api_Controller
                     $this->response('status', true);
                     $this->response('student', $student->row());
                     if ($bank->num_rows()) {
-                        $this->response('bank', $bank->result_array());
+                        $this->response('bank', $bank->row_array());
                     } else {
                         $this->response('bank', [
                             'bank_name' => null,
