@@ -85,7 +85,30 @@ $config['menu'] = array(
         )
     )
 );
-
+$config['app'] = array(
+    'title' => 'MY APP',
+    'description' => 'This is my app',
+    'menu' => array(
+        array(
+            'label' => 'Support Info',
+            'type' => 'support_info',
+            'icon' => array('target', 4),
+            'url' => 'cms/support_info'
+        ),
+        array(
+            'label' => 'App Setting',
+            'type' => 'setting',
+            'icon' => array('settings', 4),
+            'url' => 'app/setting'
+        ),
+        array(
+            'label' => 'Live Notification',
+            'type' => 'live-notification',
+            'icon' => array('bell', 4),
+            'url' => 'app/live-notification'
+        ),
+    )
+);
 $config['cms_setting'] = array(
     'title' => 'CMS',
     'condition' => OnlyForAdmin(),
@@ -136,25 +159,7 @@ $config['cms_setting'] = array(
         )
     )
 );
-$config['app'] = array(
-    'title' => 'MY APP',
-    'description' => 'This is my app',
-    'menu' => array(
-        
-        array(
-            'label' => 'Support Info',
-            'type' => 'support_info',
-            'icon' => array('target', 4),
-            'url' => 'cms/support_info'
-        ),
-        array(
-            'label' => 'App Setting',
-            'type' => 'setting',
-            'icon' => array('settings', 4),
-            'url' => 'app/setting',
-            ),
-    )
-);
+
 $staticMenus = array(
     array(
         'label' => 'Forms',

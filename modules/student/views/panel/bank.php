@@ -1,10 +1,14 @@
 <div class="row">
     <div class="col-md-12">
         <?php
-        $get = $this->db->where('student_id', $this->student_model->studentId())->get('student_banks');
+        $student_id = (isset($student_id)) ? $student_id : 0;
+        if (!$this->center_model->isAdmin())
+            $student_id = $this->student_model->studentId();
+        $get = $this->db->where('student_id', $student_id)->get('student_banks');
+        // echo $this->db->last_query();
         $disabled = '';
-        if (!$get->num_rows())
-            echo '<form class="submit-bank"><input type="hidden" name="student_id" value="'.$this->student_model->studentId().'">';
+        if (!$get->num_rows() OR $this->center_model->isAdmin())
+            echo '<form class="submit-bank"><input type="hidden" name="student_id" value="' . $student_id . '">';
         else
             $disabled = 'disabled';
         ?>
@@ -16,27 +20,28 @@
 
                 <div class="form-group col-md-12 mb-2">
                     <label for="" class="form-label required">Bank Name</label>
-                    <input <?= $disabled ?> type="text" placeholder="Enter Bank Name" name="bank_name" value="<?=($get->num_rows() ? $get->row('bank_name') : '')?>"
-                        class="form-control">
+                    <input <?= $disabled ?> type="text" placeholder="Enter Bank Name" name="bank_name"
+                        value="<?= ($get->num_rows() ? $get->row('bank_name') : '') ?>" class="form-control">
                 </div>
                 <div class="form-group col-md-12 mb-2">
                     <label for="" class="form-label required">Account Number</label>
-                    <input <?= $disabled ?> type="text" placeholder="Enter Account Number" name="account_number" value="<?=($get->num_rows() ? $get->row('account_number') : '')?>"
-                        class="form-control">
+                    <input <?= $disabled ?> type="text" placeholder="Enter Account Number" name="account_number"
+                        value="<?= ($get->num_rows() ? $get->row('account_number') : '') ?>" class="form-control">
                 </div>
                 <div class="from-group col-md-6 mb-2">
                     <label for="" class="form-label required">IFSC CODE</label>
-                    <input <?= $disabled ?> type="text" placeholder="Enter IFSC CODE" name="ifsc_code" value="<?=($get->num_rows() ? $get->row('ifsc_code') : '')?>"
-                        class="form-control">
+                    <input <?= $disabled ?> type="text" placeholder="Enter IFSC CODE" name="ifsc_code"
+                        value="<?= ($get->num_rows() ? $get->row('ifsc_code') : '') ?>" class="form-control">
                 </div>
                 <div class="from-group col-md-6 mb-2">
                     <label for="" class="form-label required">Holder Name</label>
-                    <input <?= $disabled ?> type="text" placeholder="Enter Holder Name" name="holder_name" value="<?=($get->num_rows() ? $get->row('holder_name') : '')?>"
-                        class="form-control">
+                    <input <?= $disabled ?> type="text" placeholder="Enter Holder Name" name="holder_name"
+                        value="<?= ($get->num_rows() ? $get->row('holder_name') : '') ?>" class="form-control">
                 </div>
                 <div class="from-group col-md-12 mb-2">
                     <label for="" class="form-label">UPI</label>
-                    <input <?= $disabled ?> type="text" placeholder="Enter UPI" name="upi" value="<?=($get->num_rows() ? $get->row('upi') : '')?>" class="form-control">
+                    <input <?= $disabled ?> type="text" placeholder="Enter UPI" name="upi"
+                        value="<?= ($get->num_rows() ? $get->row('upi') : '') ?>" class="form-control">
                 </div>
             </div>
             <div class="card-footer">

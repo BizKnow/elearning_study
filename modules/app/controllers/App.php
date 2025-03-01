@@ -4,7 +4,9 @@ class App extends MY_Controller{
         parent::__construct();
     }
     function setting(){
-        $this->view('setting');
-        
+        $this->view('setting');        
+    }
+    function live_notification(){
+        $this->view('live-notification');
     }
 }

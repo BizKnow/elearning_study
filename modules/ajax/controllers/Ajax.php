@@ -1,7 +1,34 @@
 <?php
 class Ajax extends Ajax_Controller
 {
-
+    function add_notification()
+    {
+        if ($post = $this->input->post()) {
+            $data = [
+                'title' => $post['title'],
+                'description' => $post['description'],
+                'starttime' => strtotime($post['starttime']),
+                'url' => $post['url'],
+                'endtime' => strtotime($post['endtime'])
+            ];
+            $this->db->insert('live_notification', $data);
+            $this->response('status', true);
+        }
+    }
+    function live_notifications()
+    {
+        $this->response(
+            array(
+                'status' => true,
+                'data' => $this->db->get('live_notification')->result_array()
+            )
+        );
+    }
+    function delete_live_notifications($id)
+    {
+        $this->db->where('id', $id)->delete('live_notification');
+        $this->response('status', true);
+    }
     function generate_link()
     {
         $allLinks = $this->ki_theme->project_config('open_links');
