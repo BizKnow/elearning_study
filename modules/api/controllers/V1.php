@@ -737,7 +737,8 @@ class V1 extends Api_Controller
                     'account_number' => $account_number,
                     'ifsc_code' => $bank_ifsc,
                     'holder_name' => $holder_name,
-                    'upi' => $upi
+                    'upi' => $upi,
+                    'student_id' => $student_id
                 ];
                 $bank = $this->db->where('student_id', $student_id)->get('student_banks');
                 if ($bank->num_rows()) {
