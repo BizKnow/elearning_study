@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const notification_list = $('#notification_list');
     // const form = document.getElementById('');
     // var validation = MyFormValidation(form);
-    $(document).on('submit', '#live-notification', function () {
+    $(document).on('submit', '#live-notification', function (e) {
+        e.preventDefault();
         $.AryaAjax({
             url: 'add-notification',
             data: new FromData(this),
