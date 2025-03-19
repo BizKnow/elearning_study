@@ -11,6 +11,7 @@ class Ajax extends Ajax_Controller
                 'url' => $post['url'],
                 'endtime' => strtotime($post['endtime'])
             ];
+            $this->response('data',$data);
             $this->db->insert('live_notification', $data);
             $this->response('status', true);
         }

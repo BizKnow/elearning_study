@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group mb-2 col-md-12">
                         <label for="" class="form-label">Url</label>
-                        <textarea type="text" name="Url" required placeholder="Enter Link"
+                        <textarea type="text" name="url" required placeholder="Enter Link"
                             class="form-control"></textarea>
                     </div>
                     <div class="form-group mb-2 col-md-6">

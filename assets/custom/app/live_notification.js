@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
             data: new FormData(this),
             page_reload: true,
             success_message: 'Notification Added Successfully..'
-        }).then((res) => showResponseError(res));
+        }).then((res) => {
+            showResponseError(res)
+            console.log(res)
+    });
     })
     // alert(3);
     var dt = notification_list.DataTable({
