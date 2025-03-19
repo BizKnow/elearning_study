@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         $.AryaAjax({
             url: 'add-notification',
-            data: new FromData(this),
+            data: new FormData(this),
             page_reload: true,
             success_message: 'Notification Added Successfully..'
         }).then((res) => showResponseError(res));
